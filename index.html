@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uji Kompetensi Awal / Initial Competency Test: IT Specialist (AI & Automation)</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2b6cb0;
+            --success-color: #38a169;
+            --fail-color: #e53e3e;
+            --background-color: #f7fafc;
+            --text-color: #2d3748;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        /* Language Switcher Button UI */
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            gap: 5px;
+            background-color: #edf2f7;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+        }
+
+        .lang-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px double #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        .meta-info {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .participant-box {
+            background-color: #ebf8ff;
+            border: 1px solid #bee3f8;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        .participant-box h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        .form-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .form-control {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-control label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-control input {
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .section-title {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 8px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #edf2f7;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .code-block {
+            background-color: #2d3748;
+            color: #f7fafc;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            margin-bottom: 15px;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #edf2f7;
+        }
+
+        .option-label input {
+            margin-right: 12px;
+            margin-top: 5px;
+        }
+
+        .correct-answer {
+            background-color: #c6f6d5 !important;
+            border-color: #38a169 !important;
+            font-weight: bold;
+        }
+
+        .wrong-answer {
+            background-color: #fed7d7 !important;
+            border-color: #e53e3e !important;
+        }
+
+        .action-area {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn-submit, .btn-print {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+        }
+        .btn-print {
+            background-color: var(--success-color);
+            margin-top: 20px;
+        }
+        .btn-submit:hover { background-color: #1a365d; }
+        .btn-print:hover { background-color: #276749; }
+
+        /* Hasil Dashboard */
+        #result-dashboard {
+            display: none;
+            margin-top: 40px;
+            padding: 35px;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .result-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .score-big {
+            font-size: 64px;
+            font-weight: bold;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            font-weight: bold;
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .status-highly-rec { background-color: var(--success-color); }
+        .status-consider { background-color: #d69e2e; }
+        .status-not-rec { background-color: var(--fail-color); }
+
+        .analysis-section {
+            margin-top: 30px;
+            text-align: left;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 25px;
+        }
+
+        .skill-container { margin-bottom: 18px; }
+        .skill-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress-bar-bg {
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            height: 15px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+        .fill-ai { background-color: #4299e1; }
+        .fill-code { background-color: #9f7aea; }
+        .fill-video { background-color: #ed64a6; }
+        .fill-system { background-color: #ecc94b; }
+
+        .print-meta {
+            display: none;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2d3748;
+            padding-bottom: 15px;
+        }
+
+        /* Bilingual Multi-lang hiding logic toggles */
+        [lang="en"] { display: none; }
+
+        /* PRINT STYLING */
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+                font-size: 12pt;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+            #quiz-form, .header, .participant-box, .btn-print, .lang-switcher {
+                display: none !important;
+            }
+            #result-dashboard {
+                display: block !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .print-meta {
+                display: block !important;
+            }
+            .score-big {
+                color: #000000 !important;
+                font-size: 40pt;
+            }
+            .status-badge {
+                border: 2px solid #000000;
+                color: #000000 !important;
+                background-color: transparent !important;
+            }
+            .progress-bar-bg {
+                border: 1px solid #000000;
+                background-color: #ffffff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- LANGUAGE CONTROLLER BUTTONS -->
+    <div class="lang-switcher no-print">
+        <button class="lang-btn active" id="btn-id" onclick="setLanguage('id')">ID</button>
+        <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</button>
+    </div>
+
+    <div class="header">
+        <h1 lang="id">Uji Kompetensi Awal: IT Specialist (AI & Automation)</h1>
+        <h1 lang="en">Initial Competency Test: IT Specialist (AI & Automation)</h1>
+        
+        <div class="meta-info" lang="id">Waktu: 60 Menit | Sifat: Pilihan Ganda (30 Pertanyaan) | Fokus: Efisiensi Biaya & Performa</div>
+        <div class="meta-info" lang="en">Time: 60 Minutes | Type: Multiple Choice (30 Questions) | Focus: Cost-Efficiency & Performance</div>
+    </div>
+
+    <!-- BOX DATA DIRI PARTICIPANT -->
+    <div class="participant-box" id="info-box">
+        <h3 lang="id">Formulir Data Diri Peserta</h3>
+        <h3 lang="en">Participant Personal Information Form</h3>
+        <div class="form-group">
+            <div class="form-control">
+                <label lang="id">Nama Lengkap Peserta <span style="color:red">*</span></label>
+                <label lang="en">Full Name of Participant <span style="color:red">*</span></label>
+                <input type="text" id="p_name" placeholder="..." required>
+            </div>
+            <div class="form-control">
+                <label lang="id">Alamat Email <span style="color:red">*</span></label>
+                <label lang="en">Email Address <span style="color:red">*</span></label>
+                <input type="email" id="p_email" placeholder="contoh@perusahaan.com" required>
+            </div>
+            <div class="form-control">
+                <label lang="id">Nomor Telepon / WhatsApp <span style="color:red">*</span></label>
+                <label lang="en">Mobile Phone / WhatsApp Number <span style="color:red">*</span></label>
+                <input type="tel" id="p_phone" placeholder="Contoh: 0812XXXXXXXX" required>
+            </div>
+        </div>
+    </div>
+
+    <!-- HASIL DASHBOARD / REPORT CARD (PRINT FRIENDLY) -->
+    <div id="result-dashboard">
+        <div class="print-meta">
+            <h2 lang="id" style="margin: 0 0 10px 0; text-transform: uppercase;">KARTU HASIL UJI KOMPETENSI RESMI</h2>
+            <h2 lang="en" style="margin: 0 0 10px 0; text-transform: uppercase;">OFFICIAL COMPETENCY REPORT CARD</h2>
+            
+            <p><strong lang="id">Nama Peserta:</strong><strong lang="en">Participant Name:</strong> <span id="lbl-print-name">-</span></p>
+            <p><strong lang="id">Email Peserta:</strong><strong lang="en">Participant Email:</strong> <span id="lbl-print-email">-</span></p>
+            <p><strong lang="id">No. Telepon:</strong><strong lang="en">Phone Number:</strong> <span id="lbl-print-phone">-</span></p>
+            <p><strong lang="id">Tanggal Tes:</strong><strong lang="en">Test Date:</strong> <span id="lbl-print-date">-</span></p>
+        </div>
+
+        <h2 lang="id" style="text-align: center; color: var(--primary-color); margin-top: 0;">HASIL EVALUASI KOMPETENSI AI</h2>
+        <h2 lang="en" style="text-align: center; color: var(--primary-color); margin-top: 0;">AI COMPETENCY EVALUATION SCORE</h2>
+        
+        <div class="result-grid">
+            <div class="score-big" id="score-text">0 / 30</div>
+            <div id="percentage-text" style="font-size: 20px; font-weight: 600;">(0%)</div>
+            <div id="badge-area"></div>
+        </div>
+
+        <div class="analysis-section">
+            <h3 lang="id">Analisis Pemetaan Keahlian Praktis:</h3>
+            <h3 lang="en">Practical Skill Mapping Analysis:</h3>
+            
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span lang="id">Fondasi AI & Optimasi Biaya API (Soal 1-10)</span>
+                    <span lang="en">AI Foundations & API Cost Optimization (Q1-10)</span>
+                    <span id="txt-ai">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-ai" class="progress-bar-fill fill-ai"></div></div>
+            </div>
+
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span lang="id">Coding & Otomatisasi Workflow Python (Soal 11-20)</span>
+                    <span lang="en">Coding & Python Workflow Automation (Q11-20)</span>
+                    <span id="txt-code">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-code" class="progress-bar-fill fill-code"></div></div>
+            </div>
+
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span lang="id">Pemrosesan Video & Rekayasa Media (Soal 21-25)</span>
+                    <span lang="en">Video Processing & Media Engineering (Q21-25)</span>
+                    <span id="txt-video">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-video" class="progress-bar-fill fill-video"></div></div>
+            </div>
+
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span lang="id">Desain Sistem & Manajemen QC (Soal 26-30)</span>
+                    <span lang="en">System Design & Quality Control Management (Q26-30)</span>
+                    <span id="txt-system">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-system" class="progress-bar-fill fill-system"></div></div>
+            </div>
+
+            <h3 style="margin-top: 30px; color: #4a5568; border-bottom: 1px solid #edf2f7; padding-bottom: 5px;"><span lang="id">Rekomendasi Keputusan HRD:</span><span lang="en">HRD Decision Recommendation:</span></h3>
+            <p id="analysis-text" style="font-size: 15px; font-weight: 500; color: #2d3748; line-height: 1.7; text-align: justify;"></p>
+            
+            <div style="text-align: center;">
+                <button type="button" class="btn-print" onclick="window.print()"><span lang="id">Cetak Hasil (Print to PDF)</span><span lang="en">Print Result (Print to PDF)</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOAL JAWABAN FORM -->
+    <form id="quiz-form">
+        
+        <!-- KELOMPOK A -->
+        <div class="section-title"><span lang="id">KELOMPOK A: FONDASI AI, LLM, & OPTIMASI BIAYA API</span><span lang="en">GROUP A: AI FOUNDATIONS, LLM, & API COST OPTIMIZATION</span></div>
+
+        <div class="question-block" data-qnum="1">
+            <div class="question-text" lang="id">1. Jika perusahaan perlu mengekstrak data dari ribuan dokumen panjang setiap hari, metode mana yang paling hemat biaya (cost-efficient) tanpa mengorbankan kualitas konteks?</div>
+            <div class="question-text" lang="en">1. If the company needs to extract critical data from thousands of long documents daily, which method is the most cost-efficient without sacrificing context quality?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q1" value="A"> <span>A. <span lang="id">Mengirimkan seluruh teks dokumen secara utuh ke model GPT-4o pada setiap permintaan.</span><span lang="en">Sending the entire document text as a whole to the premium GPT-4o model for every single request.</span></span></label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> <span>B. <span lang="id">Menggunakan arsitektur RAG (Retrieval-Augmented Generation) dengan Vector Database lokal untuk mengirimkan potongan teks yang relevan saja.</span><span lang="en">Using a RAG (Retrieval-Augmented Generation) architecture with a local Vector Database to send only relevant text chunks.</span></span></label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> <span>C. <span lang="id">Menggunakan teknik Few-Shot Prompting dengan memberikan 10 contoh dokumen utuh di dalam setiap instruksi.</span><span lang="en">Using Few-Shot Prompting by attaching 10 complete example documents inside every instruction payload.</span></span></label>
+                <label class="option-label"><input type="radio" name="q1" value="D"> <span>D. <span lang="id">Menggunakan model open-source berukuran terkecil (seperti 1B parameter) yang dijalankan di cloud berbayar tanpa optimasi teks.</span><span lang="en">Using the smallest open-source model size (like 1B parameters) hosted on a paid cloud server without any text pre-processing.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="2">
+            <div class="question-text" lang="id">2. Apa kegunaan utama dari "Semantic Caching" pada aplikasi berbasis LLM internal perusahaan?</div>
+            <div class="question-text" lang="en">2. What is the primary purpose of implementing "Semantic Caching" in an internal corporate LLM application?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q2" value="A"> <span>A. <span lang="id">Mempercepat koneksi internet antara server kantor dan penyedia API.</span><span lang="en">To accelerate the raw internet network bandwidth speed between office servers and the cloud API gateway.</span></span></label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> <span>B. <span lang="id">Menyimpan respons LLM di database lokal untuk instruksi yang mirip, sehingga menghemat biaya token API untuk pertanyaan yang berulang.</span><span lang="en">To store LLM responses in a local database for semantically similar inputs, saving API token expenses on repeating questions.</span></span></label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> <span>C. <span lang="id">Menghapus data sensitif perusahaan sebelum dikirim ke server eksternal secara otomatis.</span><span lang="en">To scrub sensitive corporate metadata out of the payload before sending it to an external server automatically.</span></span></label>
+                <label class="option-label"><input type="radio" name="q2" value="D"> <span>D. <span lang="id">Mengubah teks dokumen PDF hasil scan menjadi teks digital siap pakai.</span><span lang="en">To transform scanned visual PDF assets into digital textual strings that are ready to read.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="3">
+            <div class="question-text" lang="id">3. Manakah kombinasi model LLM yang paling bijaksana secara finansial bagi perusahaan yang membutuhkan fitur chat internal cerdas sekaligus penanganan tugas ekstraksi data sederhana dalam jumlah masif?</div>
+            <div class="question-text" lang="en">3. Which LLM selection strategy is the most financially wise for an organization requiring both complex reasoning internal chats and massive simple data extraction routines?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q3" value="A"> <span>A. <span lang="id">Menggunakan GPT-4o untuk semua jenis tugas tanpa pengecualian.</span><span lang="en">Deploying premium GPT-4o uniformly across all tasks regardless of complexity constraints.</span></span></label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> <span>B. <span lang="id">Menggunakan model open-source lokal untuk chat kompleks, dan GPT-4o untuk tugas sederhana.</span><span lang="en">Hosting a small local open-source model for complex thinking, and paying premium GPT-4o for simple mundane extraction data.</span></span></label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> <span>C. <span lang="id">Menggunakan GPT-4o atau Claude 3.5 Sonnet untuk penalaran logika kompleks, dan model hemat seperti DeepSeek-V3 atau GPT-4o-mini untuk ekstraksi data masif.</span><span lang="en">Routing complex logical reasonings to premium GPT-4o/Claude 3.5, and massive standard tasks to hyper-economical models like DeepSeek-V3 or GPT-4o-mini.</span></span></label>
+                <label class="option-label"><input type="radio" name="q3" value="D"> <span>D. <span lang="id">Membeli lisensi perangkat lunak AI eksternal yang mengenakan biaya per jumlah karyawan bulanan.</span><span lang="en">Subscribing to enterprise external off-the-shelf wrappers that levy fixed subscription pricing metrics per employee head per month.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="4">
+            <div class="question-text" lang="id">4. Ketika sebuah model AI mengalami "Hallucination" (memberikan jawaban fiktif/salah), tindakan teknis berbiaya rendah mana yang harus pertama kali dicoba oleh seorang IT Specialist?</div>
+            <div class="question-text" lang="en">4. When an AI model encounters "Hallucination" (producing false data), which low-cost remedy should an IT Specialist implement first?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q4" value="A"> <span>A. <span lang="id">Melatih ulang model dasar (Fine-Tuning) menggunakan server GPU sewaan yang mahal.</span><span lang="en">Retraining the base model (Fine-Tuning) utilizing expensive, on-demand rented cloud GPU clusters.</span></span></label>
+                <label class="option-label"><input type="radio" name="q4" value="B"> <span>B. <span lang="id">Menurunkan parameter Temperature mendekati 0 dan memperketat batasan (constraints) instruksi pada System Prompt.</span><span lang="en">Lowering the model Temperature parameter close to 0 and inserting strict constraint instructions inside the System Prompt.</span></span></label>
+                <label class="option-label"><input type="radio" name="q4" value="C"> <span>C. <span lang="id">Mengganti penyedia API ke model yang lebih besar tanpa mengubah instruksi penulisan.</span><span lang="en">Migrating the API subscription tier to a larger parameters model instantly without altering the baseline prompt text.</span></span></label>
+                <label class="option-label"><input type="radio" name="q4" value="D"> <span>D. <span lang="id">Menghapus seluruh database dokumen dan meminta karyawan mengetik ulang data secara manual.</span><span lang="en">Purging the entire physical vector database and ordering employees to manually type back the operational sheets.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="5">
+            <div class="question-text" lang="id">5. Apa risiko terbesar dari tindakan menulis API Key secara langsung (hardcoded) di dalam file kode aplikasi (misal: main.py)?</div>
+            <div class="question-text" lang="en">5. What is the most severe operational threat posed by writing an API secret key directly (hardcoding) into an open application file like main.py?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q5" value="A"> <span>A. <span lang="id">Kecepatan eksekusi program akan melambat secara signifikan.</span><span lang="en">The internal script logic execution runtime cycle will suffer a significant compute slowdown.</span></span></label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> <span>B. <span lang="id">Biaya tagihan token API akan otomatis naik dua kali lipat oleh penyedia layanan.</span><span lang="en">The token expense premium billing invoices will automatically double due to provider service penalties.</span></span></label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> <span>C. <span lang="id">Kunci API dapat bocor ke publik atau pihak tidak berwenang jika kode tersebut tersimpan di repositori bersama, memicu kerugian finansial besar.</span><span lang="en">The secret keys can leak to public or unauthorized vectors if the code is saved in shared repositories, causing massive financial losses.</span></span></label>
+                <label class="option-label"><input type="radio" name="q5" value="D"> <span>D. <span lang="id">Model LLM akan menolak memproses instruksi bahasa Indonesia.</span><span lang="en">The deep linguistic comprehension model will systematically refuse to translate any Indonesian instructions.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="6">
+            <div class="question-text" lang="id">6. Mengapa penggunaan format "Structured Outputs" (seperti JSON Mode) sangat disarankan dalam membangun otomatisasi sistem pelaporan berbasis AI?</div>
+            <div class="question-text" lang="en">6. Why is incorporating a "Structured Outputs" schema (like JSON Mode) highly advised when engineering an AI-driven automated reporting framework?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q6" value="A"> <span>A. <span lang="id">Format JSON secara otomatis memotong biaya token API hingga setengah harga.</span><span lang="en">JSON syntactic layouts inherently clip down raw token payload values by half across the gateway wire.</span></span></label>
+                <label class="option-label"><input type="radio" name="q6" value="B"> <span>B. <span lang="id">Menjamin output dari LLM selalu memiliki struktur data yang konsisten sehingga dapat langsung dibaca oleh sistem pengodean lokal tanpa error parsing yang membuang biaya.</span><span lang="en">It guarantees that the LLM engine yields a consistent data schematic that local scripts can read instantly without parsing breaks.</span></span></label>
+                <label class="option-label"><input type="radio" name="q6" value="C"> <span>C. <span lang="id">JSON membuat tampilan grafis laporan menjadi lebih estetik bagi pengguna awam.</span><span lang="en">JSON formatting embeds beautiful aesthetic graphic visuals onto the front-end dashboard for general users.</span></span></label>
+                <label class="option-label"><input type="radio" name="q6" value="D"> <span>D. <span lang="id">Mengubah model bahasa menjadi model pembuat gambar otomatis secara instan.</span><span lang="en">It transitions text language models into autonomous visual pixel image generators natively without secondary layers.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="7">
+            <div class="question-text" lang="id">7. Di antara pilihan berikut, manakah komponen yang BERTUGAS mengubah teks mentah menjadi representasi angka numerik (vektor) agar bisa dipahami oleh Vector Database?</div>
+            <div class="question-text" lang="en">7. Which operational component is responsible for transforming raw natural language text into a series of mathematical array coordinates (vectors) for a database?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q7" value="A"> <span>A. Tokenizer lokal</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> <span>B. Embedding Model</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> <span>C. OCR Engine</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="D"> <span>D. JSON Parser</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="8">
+            <div class="question-text">8. <span lang="id">Perusahaan ingin menerapkan AI untuk menyortir email masuk. Jika kandidat memilih untuk menggunakan teknik "Zero-Shot Prompting" dibandingkan "Fine-Tuning", apa keuntungan utama dari segi efisiensi?</span><span lang="en">An enterprise wants to sort incoming mail via AI. If an engineer decides to utilize "Zero-Shot Prompting" over "Fine-Tuning", what is the primary gain regarding efficiency?</span></div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q8" value="A"> <span>A. <span lang="id">Akurasi Zero-Shot pasti jauh lebih tinggi daripada Fine-Tuning.</span><span lang="en">The accuracy metric of a Zero-Shot attempt will always heavily exceed fine-tuned pipelines.</span></span></label>
+                <label class="option-label"><input type="radio" name="q8" value="B"> <span>B. <span lang="id">Zero-Shot tidak memerlukan biaya komputasi dan waktu untuk pelatihan ulang model; sistem langsung bekerja menggunakan kecerdasan bawaan model.</span><span lang="en">Zero-Shot demands no infrastructure training cost or time; it operates off the foundational intelligence of the model immediately.</span></span></label>
+                <label class="option-label"><input type="radio" name="q8" value="C"> <span>C. <span lang="id">Zero-Shot menghilangkan kebutuhan koneksi internet ke API gateway.</span><span lang="en">Zero-Shot completely bypasses the reliance on active outbound internet webhooks connection.</span></span></label>
+                <label class="option-label"><input type="radio" name="q8" value="D"> <span>D. <span lang="id">Zero-Shot memungkinkan model berjalan tanpa menggunakan token input.</span><span lang="en">Zero-Shot mechanisms permit execution routines without expending input tokens metrics.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="9">
+            <div class="question-text" lang="id">9. Apa yang dimaksud dengan "Context Window" pada sebuah model LLM?</div>
+            <div class="question-text" lang="en">9. What does the term "Context Window" signify in the technical documentation of an LLM?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q9" value="A"> <span>A. Jendela tampilan antarmuka (UI) tempat pengguna mengetik pesan.</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="B"> <span>B. <span lang="id">Batas maksimal jumlah token (input + output) yang dapat diproses oleh model dalam satu kali rangkaian percakapan.</span><span lang="en">The maximum payload threshold of combined input and output tokens that the model can process in a single invocation sequence.</span></span></label>
+                <label class="option-label"><input type="radio" name="q9" value="C"> <span>C. Jendela durasi waktu yang dibutuhkan model untuk membalas pesan pengguna.</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="D"> <span>D. Jumlah total dokumen yang tersimpan di dalam hard drive server lokal.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="10">
+            <div class="question-text" lang="id">10. Jika Anda ingin membatasi agar model AI internal hanya menjawab pertanyaan berdasarkan dokumen SOP perusahaan yang disediakan dan MENOLAK menjawab pertanyaan umum di luar itu, di bagian mana instruksi tersebut paling efektif diletakkan?</div>
+            <div class="question-text" lang="en">10. If you wish to configure an internal AI bot to exclusively parse data from uploaded corporate SOP manuals and strictly REJECT answering general out-of-bounds questions, which message tier handles this rule best?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q10" value="A"> <span>A. User Message</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> <span>B. System Message / System Prompt</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> <span>C. Metadata Dokumen</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="D"> <span>D. Kode Eksekusi Python Timeout</span></label>
+            </div>
+        </div>
+
+
+        <!-- KELOMPOK B -->
+        <div class="section-title"><span lang="id">KELOMPOK B: PENGODEAN & OTOMATISASI WORKFLOW</span><span lang="en">GROUP B: CODING & WORKFLOW AUTOMATION</span></div>
+
+        <div class="question-block" data-qnum="11">
+            <div class="question-text" lang="id">11. Dalam Python, manakah pustaka (library) standar yang paling aman digunakan untuk membaca variabel lingkungan seperti API Key yang disimpan di file .env?</div>
+            <div class="question-text" lang="en">11. Inside Python environment scripting, which native library package is standard for fetching environment variables like hidden API secrets securely?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q11" value="A"> <span>A. sys</span></label>
+                <label class="option-label"><input type="radio" name="q11" value="B"> <span>B. os (os.getenv)</span></label>
+                <label class="option-label"><input type="radio" name="q11" value="C"> <span>C. math</span></label>
+                <label class="option-label"><input type="radio" name="q11" value="D"> <span>D. request</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="12">
+            <div class="question-text" lang="id">12. Anda ingin membangun alur kerja otomatisasi pelaporan internal tanpa biaya langganan bulanan platform pihak ketiga. Solusi arsitektur mana yang paling tepat?</div>
+            <div class="question-text" lang="en">12. You desire to engineer a recurring backend reporting workflow without committing to monthly SaaS subscription fees. Which architecture aligns with low-cost mandates?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q12" value="A"> <span>A. <span lang="id">Menyewa layanan Make.com paket perusahaan berskala besar.</span><span lang="en">Contracting an enterprise multi-tier cloud plan on Make.com.</span></span></label>
+                <label class="option-label"><input type="radio" name="q12" value="B"> <span>B. <span lang="id">Menggunakan Zapier dengan akun premium.</span><span lang="en">Deploying premium tier accounts inside cloud wrappers like Zapier.</span></span></label>
+                <label class="option-label"><input type="radio" name="q12" value="C"> <span>C. <span lang="id">Melakukan self-hosting platform n8n menggunakan Docker di server lokal kantor atau menggunakan skrip Python mandiri.</span><span lang="en">Self-hosting open-source n8n via Docker containerization on internal iron infrastructure or deploying standalone Python cron configurations.</span></span></label>
+                <label class="option-label"><input type="radio" name="q12" value="D"> <span>D. <span lang="id">Membeli software automasi berlisensi proprietary buatan vendor lokal.</span><span lang="en">Acquiring a lifetime single-node commercial license from regional legacy proprietary firms.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="13">
+            <div class="question-text" lang="id">13. Struktur data Python manakah yang paling cocok digunakan untuk menyimpan hasil ekstraksi analisis kualitas dokumen yang membutuhkan pasangan "Kunci" dan "Nilai" (Key-Value Pairs)?</div>
+            <div class="question-text" lang="en">13. Which default Python data structure collection is mathematically ideal for handling parsed document extractions structured in explicit Key-Value Pairs?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q13" value="A"> <span>List [ ]</span></label>
+                <label class="option-label"><input type="radio" name="q13" value="B"> <span>Tuple ( )</span></label>
+                <label class="option-label"><input type="radio" name="q13" value="C"> <span>Dictionary { }</span></label>
+                <label class="option-label"><input type="radio" name="q13" value="D"> <span>Set set()</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="14">
+            <div class="question-text" lang="id">14. Perhatikan potongan kode Python berikut:</div>
+            <div class="question-text" lang="en">14. Analyze the following Python code segment:</div>
+            <div class="code-block">try:
+    response = call_llm_api(prompt)
+except Exception as e:
+    print("Error:", e)</div>
+            <div class="question-text" lang="id">Apa tujuan utama dari penulisan blok kode try-except di atas dalam sistem otomatisasi?</div>
+            <div class="question-text" lang="en">What is the central operational logic of embedding this try-except control wrapper into an autonomous agent pipeline?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q14" value="A"> <span>A. <span lang="id">Membuat performa eksekusi API menjadi lebih cepat.</span><span lang="en">To introduce acceleration benchmarks into the web-request stack runtime.</span></span></label>
+                <label class="option-label"><input type="radio" name="q14" value="B"> <span>B. <span lang="id">Mencegah program berhenti mendadak (crash) secara total jika terjadi gangguan jaringan saat memanggil API, sehingga sistem bisa melakukan penanganan error secara elegan.</span><span lang="en">To avoid total fatal engine script crashes if socket drops occur during API transmission, facilitating grace recoveries.</span></span></label>
+                <label class="option-label"><input type="radio" name="q14" value="C"> <span>C. <span lang="id">Menghapus biaya token jika pemanggilan API gagal di tengah jalan.</span><span lang="en">To wipe away billing charges on the remote server end if data parsing fails mid-stream.</span></span></label>
+                <label class="option-label"><input type="radio" name="q14" value="D"> <span>D. <span lang="id">Mengubah teks instruksi menjadi format JSON secara otomatis.</span><span lang="en">To convert unstructured string text formats into clean JSON structures inherently.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="15">
+            <div class="question-text" lang="id">15. Jika sebuah skrip otomasi Python bertugas memantau folder lokal berisi file video baru setiap 10 menit, mekanisme penjadwalan lokal mana yang paling efisien digunakan di lingkungan server?</div>
+            <div class="question-text" lang="en">15. If an automatic Python system must listen and inspect an unmanaged folder directory for new file arrivals every 10 minutes, which scheduler architecture consumes the least CPU overhead?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q15" value="A"> <span>A. <span lang="id">Membuat loop while True tanpa jeda waktu istirahat (sleep).</span><span lang="en">Spawning an un-throttled continuous infinite loop while True blocks without internal timeout breaks.</span></span></label>
+                <label class="option-label"><input type="radio" name="q15" value="B"> <span>B. <span lang="id">Menggunakan utilitas sistem bawaan OS seperti Cron Job (Linux) atau Task Scheduler (Windows) untuk mengeksekusi skrip setiap 10 menit.</span><span lang="en">Leveraging integrated kernel facilities such as Cron Jobs (Linux environment) or Task Scheduler (Windows native daemon).</span></span></label>
+                <label class="option-label"><input type="radio" name="q15" value="C"> <span>C. <span lang="id">Meminta staf IT mengklik tombol "Run" secara manual setiap 10 menit sekali.</span><span lang="en">Instructing office technicians to trigger manual clicks on execution buttons repeatedly every 10 minutes.</span></span></label>
+                <label class="option-label"><input type="radio" name="q15" value="D"> <span>D. <span lang="id">Membiarkan aplikasi terbuka di latar depan sepanjang hari tanpa pengawasan.</span><span lang="en">Keeping interactive IDE applications idle in foreground view across desktops throughout the day.</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="16">
+            <div class="question-text" lang="id">16. Mengya penggunaan lingkungan virtual (Virtual Environment seperti venv atau conda) sangat krusial dalam pengembangan proyek pengodean Python di perusahaan?</div>
+            <div class="question-text" lang="en">16. Why is creating localized isolation boundaries (Virtual Environments like venv or conda) deemed vital for corporate software repositories?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q16" value="A"> <span>A. Mempercepat performa booting komputer server.</span></label>
+                <label class="option-label"><input type="radio" name="q16" value="B"> <span>B. <span lang="id">Mengisolasi dependensi dan versi pustaka (libraries) khusus untuk tiap proyek, mencegah konflik teknis antar aplikasi yang berbeda di komputer yang sama.</span><span lang="en">To segregate library dependencies and target versions per project, blocking system conflicts across applications on one engine.</span></span></label>
+                <label class="option-label"><input type="radio" name="q16" value="C"> <span>C. Menyediakan enkripsi otomatis tingkat militer untuk file kode sumber.</span></label>
+                <label class="option-label"><input type="radio" name="q16" value="D"> <span>D. Menghubungkan skrip Python ke database cloud secara otomatis tanpa password.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="17">
+            <div class="question-text" lang="id">17. Manakah metode berikut yang digunakan untuk membaca isi dari sebuah file teks secara aman di Python agar file tersebut otomatis tertutup kembali setelah selesai dibaca?</div>
+            <div class="question-text" lang="en">17. Which formulation represents the secure standard pattern to read disk text file streams in Python, ensuring stream teardowns happen automatically?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q17" value="A"> <span>file = open('data.txt')</span></label>
+                <label class="option-label"><input type="radio" name="q17" value="B"> <span>with open('data.txt', 'r') as file:</span></label>
+                <label class="option-label"><input type="radio" name="q17" value="C"> <span>read_file_now('data.txt')</span></label>
+                <label class="option-label"><input type="radio" name="q17" value="D"> <span>import data.txt</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="18">
+            <div class="question-text" lang="id">18. Pustaka Python populer manakah yang paling sering digunakan untuk memanipulasi, membersihkan, dan menganalisis data tabel operasional (seperti file Excel atau CSV) sebelum datanya diproses oleh AI?</div>
+            <div class="question-text" lang="en">18. Which structural data science library package dominates Python script frameworks for scrubbing, parsing, and joining matrices tables like CSV and Excel?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q18" value="A"> <span>Requests</span></label>
+                <label class="option-label"><input type="radio" name="q18" value="B"> <span>Pandas</span></label>
+                <label class="option-label"><input type="radio" name="q18" value="C"> <span>PyTensor</span></label>
+                <label class="option-label"><input type="radio" name="q18" value="D"> <span>Flask</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="19">
+            <div class="question-text" lang="id">19. Jika kandidat ingin membuat purwarupa aplikasi chatbot internal berbasis web hanya menggunakan beberapa baris kode Python murni tanpa perlu belajar HTML/JavaScript dari awal, pustaka mana yang paling tepat dipilih?</div>
+            <div class="question-text" lang="en">19. If an engineer targets constructing light visual interactive dashboard web interfaces inside pure Python without designing separate JS or HTML stacks, what is best?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q19" value="A"> <span>Django</span></label>
+                <label class="option-label"><input type="radio" name="q19" value="B"> <span>Streamlit (or Gradio)</span></label>
+                <label class="option-label"><input type="radio" name="q19" value="C"> <span>FastAPI</span></label>
+                <label class="option-label"><input type="radio" name="q19" value="D"> <span>Pygame</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="20">
+            <div class="question-text" lang="id">20. Apa kegunaan utama dari metode POST dalam protokol HTTP saat aplikasi otomasi Anda berkomunikasi dengan sebuah Webhook API?</div>
+            <div class="question-text" lang="en">20. What is the fundamental transactional instruction of choosing an HTTP POST method action state when transmitting data streams down a remote Webhook API endpoint?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q20" value="A"> <span lang="id">A. Hanya digunakan untuk menghapus data lama dari server eksternal.</span><span lang="en">A. To indicate deletion triggers on legacy relational entries across remote hosts.</span></label>
+                <label class="option-label"><input type="radio" name="q20" value="B"> <span lang="id">B. Digunakan untuk mengirimkan data baru (seperti payload dokumen atau teks laporan) dari aplikasi lokal ke server target.</span><span lang="en">B. To dispatch novel computational payloads (e.g., raw file strings or structured report objects) down to receptor target destinations.</span></label>
+                <label class="option-label"><input type="radio" name="q20" value="C"> <span lang="id">C. Digunakan untuk mengunduh seluruh isi basis data tanpa izin akses.</span><span lang="en">C. To pull down master database schemas over basic public channels without identity challenge vectors.</span></label>
+                <label class="option-label"><input type="radio" name="q20" value="D"> <span lang="id">D. Digunakan untuk mematikan fungsi server target dari jarak jauh.</span><span lang="en">D. To initiate kernel shutdown sequences targeting external node clouds directly.</span></label>
+            </div>
+        </div>
+
+
+        <!-- KELOMPOK C -->
+        <div class="section-title"><span lang="id">KELOMPOK C: PEMROSESAN VIDEO & REKAYASA MEDIA</span><span lang="en">GROUP C: VIDEO PROCESSING & MEDIA ENGINEERING</span></div>
+
+        <div class="question-block" data-qnum="21">
+            <div class="question-text" lang="id">21. Pustaka open-source (bisa diakses via Python/Terminal) manakah yang merupakan standar industri global untuk melakukan kompresi, pemotongan, konversi, dan manipulasi file video secara terotomatisasi tanpa biaya lisensi?</div>
+            <div class="question-text" lang="en">21. Which global free cross-platform utility framework is the definitive tech standard for automatic media transcoding, slicing, and compression pipelines without royalty attachments?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q21" value="A"> <span>Adobe Media Encoder API</span></label>
+                <label class="option-label"><input type="radio" name="q21" value="B"> <span>FFmpeg</span></label>
+                <label class="option-label"><input type="radio" name="q21" value="C"> <span>OpenCV Media Suite</span></label>
+                <label class="option-label"><input type="radio" name="q21" value="D"> <span>VLC Engine SDK</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="22">
+            <div class="question-text" lang="id">22. Tim Quality Control ingin agar AI mendeteksi kecacatan produk fisik melalui rekaman video kamera pengawas. Pustaka Python berbasis visi komputer (computer vision) manakah yang wajib dikuasai staf IT untuk membaca frame-by-frame video tersebut?</div>
+            <div class="question-text" lang="en">22. An inspection department commands an automated neural architecture to scan for faults inside physical parts via closed-circuit video camera records. Which library array ingests frame-by-frame tensors natively?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q22" value="A"> <span>NumPy</span></label>
+                <label class="option-label"><input type="radio" name="q22" value="B"> <span>Matplotlib</span></label>
+                <label class="option-label"><input type="radio" name="q22" value="C"> <span>OpenCV (cv2)</span></label>
+                <label class="option-label"><input type="radio" name="q22" value="D"> <span>BeautifulSoup</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="23">
+            <div class="question-text" lang="id">23. Perusahaan ingin menghemat ruang penyimpanan server lokal yang penuh akibat rekaman video operasional beresolusi tinggi. Langkah optimasi video mana yang paling seimbang antara penghematan ruang penyimpanan dan retensi kualitas visual?</div>
+            <div class="question-text" lang="en">23. Local warehouse servers are nearing memory exhaustion due to raw massive high-resolution operational surveillance video files. Which processing step perfectly balances size shrinkage with target image evidence clarity?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q23" value="A"> <span lang="id">A. Mengonversi seluruh video ke format .gif beresolusi rendah.</span><span lang="en">A. Batch-converting the total inventory logs into low-fidelity animated asset sequences (.gif).</span></label>
+                <label class="option-label"><input type="radio" name="q23" value="B"> <span lang="id">B. Mengompresi video menggunakan codec modern seperti H.264 atau H.265 (HEVC) dengan mengatur parameter Bitrate secara proporsional.</span><span lang="en">B. Re-encoding video tracking structures using highly efficient contemporary codecs like H.264 or H.265 (HEVC) with balanced variable Bitrate mapping settings.</span></label>
+                <label class="option-label"><input type="radio" name="q23" value="C"> <span lang="id">C. Menghapus frame video secara acak menggunakan skrip penghapus otomatis.</span><span lang="en">C. Stripping frame matrices systematically at random indices using basic deletion code routines.</span></label>
+                <label class="option-label"><input type="radio" name="q23" value="D"> <span lang="id">D. Merestrukturisasi rekaman menuju target resolusi 4K untuk memaksimalkan densitas kompresi.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="24">
+            <div class="question-text" lang="id">24. Apa fungsi dari teknologi "Whisper" yang dikembangkan oleh OpenAI dalam ekosistem pengelolaan aset media internal perusahaan?</div>
+            <div class="question-text" lang="en">24. What specific operational optimization does injecting OpenAI's "Whisper" model framework bring to a company's multimedia media data layer?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q24" value="A"> <span lang="id">A. Mengompresi ukuran file video menjadi sekecil mungkin tanpa kehilangan suara.</span><span lang="en">A. Down-scaling audio bit depths while forcing extreme codec visual weight reduction.</span></label>
+                <label class="option-label"><input type="radio" name="q24" value="B"> <span lang="id">B. Melakukan transkripsi otomatis mengubah rekaman suara/audio di dalam video menjadi teks tulisan (Speech-to-Text) dengan akurasi sangat tinggi termasuk dalam Bahasa Indonesia.</span><span lang="en">B. Delivering highly accurate automatic audio transcriptions converting speech-to-text waveforms across multiple idioms, including Indonesian dialects.</span></label>
+                <label class="option-label"><input type="radio" name="q24" value="C"> <span lang="id">C. Membuat animasi video otomatis hanya berdasarkan perintah teks pendek.</span><span lang="en">C. Fabricating multi-actor synthetic canvas animations off basic short textual commands.</span></label>
+                <label class="option-label"><input type="radio" name="q24" value="D"> <span lang="id">D. Mendeteksi jika ada wajah karyawan yang tidak menggunakan masker di dalam area kerja.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="25">
+            <div class="question-text" lang="id">25. Mengapa ekstraksi frame (Frame Extraction) diperlukan sebelum sebuah model AI analisis visual memproses sebuah file rekaman video berdurasi panjang?</div>
+            <div class="question-text" lang="en">25. Why is running a structural Frame Extraction routine mandatory prior to feeding long-form raw video files down standard image analytical AI vision models?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q25" value="A"> <span lang="id">A. Karena model AI pengolah gambar dasar hanya dapat memproses data berupa gambar statis individual, sehingga video harus dipecah menjadi rangkaian gambar per detik.</span><span lang="en">A. Because standard computer vision models evaluate single static array blocks; thus, continuous video files must be dissected into discrete chronological image arrays.</span></label>
+                <label class="option-label"><input type="radio" name="q25" value="B"> <span lang="id">B. Agar suara di dalam video terhapus secara permanen.</span></label>
+                <label class="option-label"><input type="radio" name="q25" value="C"> <span lang="id">C. Langkah ini secara otomatis menaikkan saturasi warna video.</span></label>
+                <label class="option-label"><input type="radio" name="q25" value="D"> <span lang="id">D. Untuk mempercepat durasi jalannya video di layar monitor pengguna.</span></label>
+            </div>
+        </div>
+
+
+        <!-- KELOMPOK D -->
+        <div class="section-title"><span lang="id">KELOMPOK D: DESAIN SISTEM & ALUR KONTROL KUALITAS</span><span lang="en">GROUP D: SYSTEM DESIGN & QUALITY CONTROL MANAGEMENT</span></div>
+
+        <div class="question-block" data-qnum="26">
+            <div class="question-text" lang="id">26. Dalam mendesain sistem kontrol kualitas (QC) berbasis AI, arsitektur "Human-in-the-Loop" (HITL) berarti...</div>
+            <div class="question-text" lang="en">26. When mapping an enterprise AI Quality Control (QC) architecture, executing a "Human-in-the-Loop" (HITL) blueprint explicitly dictates that...</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q26" value="A"> <span lang="id">A. Menyerahkan 100% keputusan akhir operasional kepada robot AI tanpa campur tangan manusia sama sekali.</span><span lang="en">A. Absolute final decision authority is fully automated via autonomous agents without any humancentric validation layers.</span></label>
+                <label class="option-label"><input type="radio" name="q26" value="B"> <span lang="id">B. Memposisikan AI sebagai penyaring awal atau pembuat draf, namun hasil analisis krusial dengan tingkat keyakinan (confidence score) rendah wajib diverifikasi ulang oleh staf manusia sebelum disahkan.</span><span lang="en">B. AI handles bulk sorting or draft generation, but critical outputs flagging low internal confidence scores must route to human eyes for final signing.</span></label>
+                <label class="option-label"><input type="radio" name="q26" value="C"> <span lang="id">C. Mewajibkan staf manusia menulis seluruh baris kode aplikasi secara manual tanpa bantuan generator kode.</span></label>
+                <label class="option-label"><input type="radio" name="q26" value="D"> <span lang="id">D. Mematikan seluruh sistem komputer jika ada kesalahan analisis data terkecil.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="27">
+            <div class="question-text" lang="id">27. Dasbor AI QC Anda menampilkan skor metrik "Confidence Score: 0.42" saat menganalisis kelayakan sebuah laporan dokumen operasional. Apa arti fungsional dari angka tersebut bagi sistem otomasi Anda?</div>
+            <div class="question-text" lang="en">27. An automated data quality model outputs a probabilistic metric reading "Confidence Score: 0.42" for a scanned corporate audit report. What action should your code orchestration trigger?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q27" value="A"> <span lang="id">A. Laporan tersebut memiliki tingkat akurasi 100% benar dan siap diterbitkan.</span><span lang="en">A. The document features perfect structural alignment and is cleared for instant global publishing down client channels.</span></label>
+                <label class="option-label"><input type="radio" name="q27" value="B"> <span lang="id">B. AI memiliki tingkat keyakinan/kepastian yang rendah (hanya sekitar 42%) terhadap kebenaran hasil analisisnya sendiri, sehingga sistem harus otomatis mengarahkan dokumen ini ke jalur peninjauan manual karyawan.</span><span lang="en">B. The neural analyzer possesses weak certainty (roughly 42%) on its parse integrity; thus, the node must auto-route this entry to manual review lines.</span></label>
+                <label class="option-label"><input type="radio" name="q27" value="C"> <span lang="id">C. Sistem akan mengalami kegagalan crash dalam waktu 42 detik ke depan.</span></label>
+                <label class="option-label"><input type="radio" name="q27" value="D"> <span lang="id">D. Ukuran file dokumen tersebut adalah sebesar 42 Megabytes.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="28">
+            <div class="question-text" lang="id">28. Anda sedang merancang alur dokumen internal di mana staf mengunggah file PDF, lalu sistem mengekstrak data teksnya, kemudian AI merangkum isi teks tersebut, dan terakhir mengirimkan notifikasi ke Telegram grup. Di bawah ini, urutan diagram alur (pipeline) sistem yang logis adalah...</div>
+            <div class="question-text" lang="en">28. You are constructing an enterprise document ingestion pipeline: Staff uploads PDF $\rightarrow$ system strips text content $\rightarrow$ LLM models generate data summaries $\rightarrow$ results push down an internal Telegram chat alert. Which flowchart sequence is logis?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q28" value="A"> <span>PDF Upload &rightarrow; Telegram Notification &rightarrow; LLM Summarization &rightarrow; OCR Extraction</span></label>
+                <label class="option-label"><input type="radio" name="q28" value="B"> <span>PDF Upload &rightarrow; OCR Extraction &rightarrow; LLM Summarization &rightarrow; Telegram Notification</span></label>
+                <label class="option-label"><input type="radio" name="q28" value="C"> <span>LLM Summarization &rightarrow; PDF Upload &rightarrow; Telegram Notification &rightarrow; OCR Extraction</span></label>
+                <label class="option-label"><input type="radio" name="q28" value="D"> <span>Telegram Notification &rightarrow; LLM Summarization &rightarrow; OCR Extraction &rightarrow; PDF Upload</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="29">
+            <div class="question-text" lang="id">29. Mengapa penggunaan sistem kontrol versi seperti "Git" sangat direkomendasikan saat staf IT mengembangkan aplikasi AI internal perusahaan secara mandiri?</div>
+            <div class="question-text" lang="en">29. Why is enforcing an internal version control repository architecture (like Git) non-negotiable when a solo IT Specialist engineers proprietary corporate automation software?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q29" value="A"> <span lang="id">A. Git secara otomatis membiayai seluruh tagihan token API bulanan.</span><span lang="en">A. Remote Git servers absorb outbound model API payload billing invoices natively.</span></label>
+                <label class="option-label"><input type="radio" name="q29" value="B"> <span lang="id">B. Git memungkinkan pelacakan riwayat perubahan kode, mempermudah kolaborasi, dan menyediakan fitur rollback (kembali ke versi sebelumnya yang stabil) jika kode baru merusak sistem perusahaan.</span><span lang="en">B. Git records state modifications history, facilitates seamless engineering tracking, and permits reliable rollbacks if fresh code iterations break corporate infrastructure nodes.</span></label>
+                <label class="option-label"><input type="radio" name="q29" value="C"> <span lang="id">C. Git digunakan untuk mendesain logo tampilan antarmuka aplikasi chat internal.</span></label>
+                <label class="option-label"><input type="radio" name="q29" value="D"> <span lang="id">D. Git adalah jenis basis data vektor berkecepatan tinggi khusus untuk file multimedia.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="30">
+            <div class="question-text" lang="id">30. Apa keuntungan utama menggunakan arsitektur Microservices atau modular dalam membangun perkakas AI internal dibandingkan membuat satu file kode raksasa (Monolithic)?</div>
+            <div class="question-text" lang="en">30. What architectural advantage does building decoupled, isolated functional blocks (Microservices/Modular) yield over baking all logical scripts into an expansive single Monolithic file code?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q30" value="A"> <span lang="id">A. File monolithic jauh lebih mudah diperbaiki jika terjadi kerusakan total di tengah malam.</span><span lang="en">A. Monolithic source trees insulate systems against deployment runtime anomalies cleanly.</span></label>
+                <label class="option-label"><input type="radio" name="q30" value="B"> <span lang="id">B. Arsitektur modular membuat aplikasi lebih mudah dirawat, dikembangkan secara terpisah (misal modul pemroses video terpisah dari modul ekstraksi teks), dan meminimalkan dampak kerusakan sistem secara menyeluruh jika salah satu modul mengalami gangguan.</span><span lang="en">B. Modular components facilitate long-term maintenance, enable standalone iteration (e.g., video pipelines decouple from extraction micro-nodes), and cushion the systemic enterprise blast radius if individual nodes crash.</span></label>
+                <label class="option-label"><input type="radio" name="q30" value="C"> <span lang="id">C. Sistem microservices menghilangkan kebutuhan penulisan dokumentasi teknis.</span></label>
+                <label class="option-label"><input type="radio" name="q30" value="D"> <span lang="id">D. Mengurangi penggunaan kapasitas memori RAM komputer server lokal hingga 0%.</span></label>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <button type="button" class="btn-submit" onclick="kalkulasiSkorBilingual()"><span lang="id">Kirim Jawaban</span><span lang="en">Submit Test Answers</span></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Master Global Language Configuration Setting
+    let currentLang = 'id';
+
+    const kunciJawaban = {
+        q1: "B", q2: "B", q3: "C", q4: "B", q5: "C",
+        q6: "B", q7: "B", q8: "B", q9: "B", q10: "B",
+        q11: "B", q12: "C", q13: "C", q14: "B", q15: "B",
+        q16: "B", q17: "B", q18: "B", q19: "B", q20: "B",
+        q21: "B", q22: "C", q23: "B", q24: "B", q25: "A",
+        q26: "B", q27: "B", q28: "B", q29: "B", q30: "B"
+    };
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        
+        // Tampilkan/sembunyikan elemen HTML berdasarkan atribut tag lang
+        const allIdElements = document.querySelectorAll('[lang="id"]');
+        const allEnElements = document.querySelectorAll('[lang="en"]');
+        
+        if (lang === 'id') {
+            allIdElements.forEach(el => el.style.display = 'block');
+            allEnElements.forEach(el => el.style.display = 'none');
+            document.getElementById('btn-id').classList.add('active');
+            document.getElementById('btn-en').classList.remove('active');
+            
+            // Re-translate placeholder
+            document.getElementById('p_name').placeholder = "Masukkan nama sesuai KTP";
+        } else {
+            allIdElements.forEach(el => el.style.display = 'none');
+            allEnElements.forEach(el => el.style.display = 'block');
+            document.getElementById('btn-id').classList.remove('active');
+            document.getElementById('btn-en').classList.add('active');
+            
+            // Re-translate placeholder
+            document.getElementById('p_name').placeholder = "Enter full name as per passport/ID";
+        }
+    }
+
+    function kalkulasiSkorBilingual() {
+        const inputNama = document.getElementById('p_name').value.trim();
+        const inputEmail = document.getElementById('p_email').value.trim();
+        const inputPhone = document.getElementById('p_phone').value.trim();
+
+        // Validasi Bilingual Error Message Check Alert
+        if (!inputNama || !inputEmail || !inputPhone) {
+            if (currentLang === 'id') {
+                alert("Mohon lengkapi Nama, Email, dan Nomor Telepon Anda sebelum mengirimkan jawaban.");
+            } else {
+                alert("Please fill in your Full Name, Email, and Phone Number before submitting your answers.");
+            }
+            document.getElementById('info-box').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        let skorTotal = 0;
+        let catAI = 0; let catCode = 0; let catVideo = 0; let catSystem = 0;
+        const form = document.getElementById('quiz-form');
+        
+        document.querySelectorAll('.option-label').forEach(label => {
+            label.classList.remove('correct-answer', 'wrong-answer');
+        });
+
+        for (let i = 1; i <= 30; i++) {
+            const qName = 'q' + i;
+            const selectedOpt = form.elements[qName].value;
+            const correctOpt = kunciJawaban[qName];
+            
+            const targetBlock = document.querySelector(`[data-qnum="${i}"]`);
+            const labels = targetBlock.querySelectorAll('.option-label');
+            
+            labels.forEach(label => {
+                const input = label.querySelector('input');
+                if (input.value === correctOpt) {
+                    label.classList.add('correct-answer');
+                }
+                if (selectedOpt && selectedOpt !== correctOpt && input.value === selectedOpt) {
+                    label.classList.add('wrong-answer');
+                }
+            });
+
+            if (selectedOpt === correctOpt) {
+                skorTotal++;
+                if (i <= 10) catAI++;
+                else if (i <= 20) catCode++;
+                else if (i <= 25) catVideo++;
+                else catSystem++;
+            }
+        }
+
+        const pctAI = Math.round((catAI / 10) * 100);
+        const pctCode = Math.round((catCode / 10) * 100);
+        const pctVideo = Math.round((catVideo / 5) * 100);
+        const pctSystem = Math.round((catSystem / 5) * 100);
+        const persentaseTotal = Math.round((skorTotal / 30) * 100);
+
+        // Update Text Info Hasil Cetak
+        document.getElementById('lbl-print-name').innerText = inputNama;
+        document.getElementById('lbl-print-email').innerText = inputEmail;
+        document.getElementById('lbl-print-phone').innerText = inputPhone;
+        
+        const formatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' };
+        document.getElementById('lbl-print-date').innerText = new Date().toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US', formatOptions);
+
+        // Update UI Dashboard Data Bars
+        document.getElementById('score-text').innerText = `${skorTotal} / 30`;
+        document.getElementById('percentage-text').innerText = (currentLang === 'id' ? `Persentase Keberhasilan: ` : `Success Passing Rate: `) + `${persentaseTotal}%`;
+        
+        document.getElementById('txt-ai').innerText = pctAI + "%";
+        document.getElementById('bar-ai').style.width = pctAI + "%";
+        document.getElementById('txt-code').innerText = pctCode + "%";
+        document.getElementById('bar-code').style.width = pctCode + "%";
+        document.getElementById('txt-video').innerText = pctVideo + "%";
+        document.getElementById('bar-video').style.width = pctVideo + "%";
+        document.getElementById('txt-system').innerText = pctSystem + "%";
+        document.getElementById('bar-system').style.width = pctSystem + "%";
+
+        const badgeArea = document.getElementById('badge-area');
+        const analysisText = document.getElementById('analysis-text');
+        const dashboard = document.getElementById('result-dashboard');
+        
+        dashboard.style.display = "block";
+        
+        // Logika Evaluasi Status Rekomendasi Bilingual
+        if (skorTotal > 25) {
+            badgeArea.innerHTML = currentLang === 'id' ? 
+                '<span class="status-badge status-highly-rec">Sangat Direkomendasikan</span>' : 
+                '<span class="status-badge status-highly-rec">Highly Recommended</span>';
+            
+            analysisText.innerText = currentLang === 'id' ?
+                "Kandidat memiliki kompetensi luar biasa. Insting efisiensi biaya arsitektur mereka sangat matang. Mampu memimpin tim teknis, merancang ekosistem otomatisasi mandiri rendah biaya, serta mengedukasi departemen internal secara mandiri." :
+                "The candidate possesses exceptional engineering competence. Their cognitive layout for API financial cost-efficiency is highly mature. Capable of spearheading modern technical systems, deploying standalone custom cloudless automation frameworks, and independently train colleagues.";
+        } else if (skorTotal >= 18) {
+            badgeArea.innerHTML = currentLang === 'id' ? 
+                '<span class="status-badge status-consider">Pertimbangkan dengan Catatan</span>' : 
+                '<span class="status-badge status-consider">Consider with Prerequisites</span>';
+            
+            analysisText.innerText = currentLang === 'id' ?
+                "Kandidat menguasai dasar instrumen AI tingkat menengah. Namun terdapat kelemahan spesifik di area tertentu (rujuk grafik performa batang di atas). Layak dipertimbangkan jika perusahaan bersedia memberikan pelatihan komplementer." :
+                "The candidate proves baseline intermediate comprehension of current AI automation engines. However, clear contextual weaknesses exist across specific modules (refer to skill analytics charts above). Worth considering if the firm is prepared to extend supportive technical guidance during onboarding.";
+        } else {
+            badgeArea.innerHTML = currentLang === 'id' ? 
+                '<span class="status-badge status-not-rec">Tidak Direkomendasikan</span>' : 
+                '<span class="status-badge status-not-rec">Not Recommended</span>';
+            
+            analysisText.innerText = currentLang === 'id' ?
+                "Kandidat tidak memenuhi ambang batas kompetensi IT AI internal perusahaan. Hasil analisis mengindikasikan keterbatasan kapabilitas rekayasa kode backend dan minimnya pemahaman optimasi token finansial API." :
+                "The candidate fundamentally fails to cross the organization's core technical benchmark. Analytics suggest restricted backend coding resilience and inadequate grip on token-burn mitigation variables. Proceeding further down the hiring funnel is discouraged.";
+        }
+        
+        dashboard.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
