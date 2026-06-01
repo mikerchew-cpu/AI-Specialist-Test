@@ -354,7 +354,15 @@
 
 <script>
     let lang = 'id';
-    let selectedProvider = 'openai';
+    let selectedProvider = localStorage.getItem('ai_provider') || 'openai';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedKey = localStorage.getItem('ai_api_key');
+        if (savedKey) document.getElementById('api-key-input').value = savedKey;
+        document.querySelectorAll('.provider-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.provider === selectedProvider);
+        });
+    });
 
     function setLang(l) {
         lang = l;
@@ -366,11 +374,13 @@
 
     function selectProvider(name) {
         selectedProvider = name;
+        localStorage.setItem('ai_provider', name);
         document.querySelectorAll('.provider-btn').forEach(b => b.classList.toggle('active', b.dataset.provider === name));
     }
 
     async function analyzeWithAI() {
         const apiKey = document.getElementById('api-key-input').value.trim();
+        if (apiKey) localStorage.setItem('ai_api_key', apiKey);
         const answers = document.getElementById('ai-answers-input').value.trim();
         const statusEl = document.getElementById('ai-status');
         const resultEl = document.getElementById('ai-result');
