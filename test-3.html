@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uji Literasi AI Perusahaan / Corporate AI Literacy Test</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #2980b9;
+            --success-color: #27ae60;
+            --fail-color: #7f8c8d;
+            --background-color: #f4f6f7;
+            --text-color: #34495e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            gap: 5px;
+            background-color: #edf2f7;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+        }
+
+        .lang-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px double #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        .meta-info {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .participant-box {
+            background-color: #ebf5fb;
+            border: 1px solid #a9ccee;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        .participant-box h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        .form-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .form-control {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-control label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-control input {
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .section-title {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 8px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #edf2f7;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #edf2f7;
+        }
+
+        .option-label input {
+            margin-right: 12px;
+            margin-top: 5px;
+        }
+
+        .correct-answer {
+            background-color: #d4efdf !important;
+            border-color: #27ae60 !important;
+            font-weight: bold;
+        }
+
+        .wrong-answer {
+            background-color: #fadbd8 !important;
+            border-color: #c0392b !important;
+        }
+
+        .action-area {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn-submit, .btn-print {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-print {
+            background-color: var(--success-color);
+            margin-top: 20px;
+        }
+
+        #result-dashboard {
+            display: none;
+            margin-top: 40px;
+            padding: 35px;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .result-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .score-big {
+            font-size: 64px;
+            font-weight: bold;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            font-weight: bold;
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .status-highly-rec { background-color: var(--success-color); }
+        .status-consider { background-color: #f39c12; }
+        .status-not-rec { background-color: var(--fail-color); }
+
+        .analysis-section {
+            margin-top: 30px;
+            text-align: left;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 25px;
+        }
+
+        .skill-container { margin-bottom: 18px; }
+        .skill-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress-bar-bg {
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            height: 15px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+        .fill-ai { background-color: #3498db; }
+        .fill-install { background-color: #9b59b6; }
+        .fill-github { background-color: #e67e22; }
+
+        .print-meta {
+            display: none;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2d3748;
+            padding-bottom: 15px;
+        }
+
+        .lang-en { display: none; }
+
+        @media print {
+            body { background-color: #ffffff; color: #000000; font-size: 12pt; }
+            .container { box-shadow: none; padding: 0; margin: 0; max-width: 100%; }
+            #quiz-form, .header, .participant-box, .btn-print, .lang-switcher { display: none !important; }
+            #result-dashboard { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+            .print-meta { display: block !important; }
+            .score-big { color: #000000 !important; font-size: 40pt; }
+            .status-badge { border: 2px solid #000000; color: #000000 !important; background-color: transparent !important; }
+            .progress-bar-bg { border: 1px solid #000000; background-color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="lang-switcher no-print">
+        <button class="lang-btn active" id="btn-id" onclick="toggleLanguage('id')">ID</button>
+        <button class="lang-btn" id="btn-en" onclick="toggleLanguage('en')">EN</button>
+    </div>
+
+    <div class="header">
+        <h1 class="lang-id">Pemetaan Literasi AI Karyawan Perusahaan</h1>
+        <h1 class="lang-en">Corporate Employee AI Literacy Mapping Test</h1>
+        
+        <div class="meta-info lang-id">Tujuan: Mengukur tingkat adopsi dan kemahiran AI internal untuk merencanakan program pelatihan yang tepat.</div>
+        <div class="meta-info lang-en">Purpose: To evaluate internal AI adoption and proficiency tiers for planning training programs.</div>
+    </div>
+
+    <div class="participant-box" id="info-box">
+        <h3 class="lang-id">Formulir Identitas Karyawan</h3>
+        <h3 class="lang-en">Employee Identity Form</h3>
+        <div class="form-group">
+            <div class="form-control">
+                <label class="lang-id">Nama Lengkap Peserta <span style="color:red">*</span></label>
+                <label class="lang-en">Full Name of Employee <span style="color:red">*</span></label>
+                <input type="text" id="p_name" placeholder="Nama / Name" required>
+            </div>
+            <div class="form-control">
+                <label class="lang-id">Divisi / Departemen <span style="color:red">*</span></label>
+                <label class="lang-en">Division / Department <span style="color:red">*</span></label>
+                <input type="text" id="p_email" placeholder="Contoh: Operation / HR / Sales" required>
+            </div>
+            <div class="form-control">
+                <label class="lang-id">Nomor Telepon / WA <span style="color:red">*</span></label>
+                <label class="lang-en">Phone / WhatsApp Number <span style="color:red">*</span></label>
+                <input type="tel" id="p_phone" placeholder="0812xxxxxxxx" required>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-dashboard">
+        <div class="print-meta">
+            <h2 class="lang-id" style="margin: 0 0 10px 0; text-transform: uppercase;">HASIL EVALUASI LITERASI AI KARYAWAN</h2>
+            <h2 class="lang-en" style="margin: 0 0 10px 0; text-transform: uppercase;">OFFICIAL EMPLOYEE AI LITERACY REPORT CARD</h2>
+            <p><strong class="lang-id">Nama:</strong><strong class="lang-en">Name:</strong> <span id="lbl-print-name">-</span></p>
+            <p><strong class="lang-id">Divisi/Dept:</strong><strong class="lang-en">Division/Dept:</strong> <span id="lbl-print-email">-</span></p>
+            <p><strong class="lang-id">Telepon:</strong><strong class="lang-en">Phone:</strong> <span id="lbl-print-phone">-</span></p>
+            <p><strong class="lang-id">Tanggal:</strong><strong class="lang-en">Date:</strong> <span id="lbl-print-date">-</span></p>
+        </div>
+
+        <h2 class="lang-id" style="text-align: center; color: var(--primary-color); margin-top: 0;">RAPOR HASIL SKOR AI</h2>
+        <h2 class="lang-en" style="text-align: center; color: var(--primary-color); margin-top: 0;">AI PROFICIENCY EVALUATION SCORE</h2>
+        
+        <div class="result-grid">
+            <div class="score-big" id="score-text">0 / 30</div>
+            <div id="percentage-text" style="font-size: 20px; font-weight: 600;">(0%)</div>
+            <div id="badge-area"></div>
+        </div>
+
+        <div class="analysis-section">
+            <h3 class="lang-id">Analisis Kompetensi Berdasarkan Pilar:</h3>
+            <h3 class="lang-en">Competency Analysis by Pillars:</h3>
+            
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span class="lang-id">Pilar 1: Fondasi Alat AI & Penggunaan Sehari-hari (Soal 1-10)</span>
+                    <span class="lang-en">Pillar 1: AI Tools Foundations & Daily Usage (Q1-10)</span>
+                    <span id="txt-ai">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-ai" class="progress-bar-fill fill-ai"></div></div>
+            </div>
+
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span class="lang-id">Pilar 2: Teknik Efisiensi Prompting Kantor (Soal 11-20)</span>
+                    <span class="lang-en">Pillar 2: Office Prompting Efficiency Techniques (Q11-20)</span>
+                    <span id="txt-install">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-install" class="progress-bar-fill fill-install"></div></div>
+            </div>
+
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span class="lang-id">Pilar 3: Etika Keselamatan & Keamanan Data Perusahaan (Soal 21-30)</span>
+                    <span class="lang-en">Pillar 3: Ethics, Safety & Corporate Data Security (Q21-30)</span>
+                    <span id="txt-github">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-github" class="progress-bar-fill fill-github"></div></div>
+            </div>
+
+            <h3 style="margin-top: 30px; color: #4a5568; border-bottom: 1px solid #edf2f7; padding-bottom: 5px;"><span class="lang-id">Analisis Profil Karyawan & Pelatihan yang Cocok:</span><span class="lang-en">Employee Profile Analysis & Target Training Match:</span></h3>
+            <p id="analysis-text" style="font-size: 15px; font-weight: 500; color: #2d3748; line-height: 1.7; text-align: justify;"></p>
+            
+            <div style="text-align: center;">
+                <button type="button" class="btn-print" onclick="window.print()"><span class="lang-id">Cetak / Simpan Laporan</span><span class="lang-en">Print / Save Report</span></button>
+            </div>
+        </div>
+    </div>
+
+    <form id="quiz-form">
+        
+        <div class="section-title">
+            <span class="lang-id">PILAR 1: FONDASI ALAT AI & PENGGUNAAN SEHARI-HARI (ADOPSI DASAR)</span>
+            <span class="lang-en">PILLAR 1: AI TOOLS FOUNDATIONS & DAILY USAGE (BASIC ADOPTION)</span>
+        </div>
+
+        <div class="question-block" data-qnum="1">
+            <div class="question-text lang-id">1. Manakah di bawah ini yang merupakan contoh pemanfaatan teknologi Generative AI (Kecerdasan Buatan Generatif) untuk tugas kantor?</div>
+            <div class="question-text lang-en">1. Which of the following is an example of leveraging Generative AI technology for office tasks?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q1" value="A"> <span class="lang-id">A. Mengirim email secara manual satu per satu ke daftar klien.</span><span class="lang-en">A. Manually typing and sending emails one by one to a client list.</span></label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> <span class="lang-id">B. Memasukkan teks berantakan hasil rapat dan meminta ChatGPT/Claude menyusunnya menjadi draf memo ringkas yang rapi.</span><span class="lang-en">B. Inputting messy meeting minutes text and asking ChatGPT/Claude to structure it into a neat draft memo.</span></label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> <span class="lang-id">C. Menyimpan file data tabel bulanan ke dalam flashdisk cadangan.</span><span class="lang-en">C. Copying monthly spreadsheet log reports onto an external backup flash drive.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="2">
+            <div class="question-text lang-id">2. Penyedia model AI populer manakah yang memproduksi asisten cerdas bernama "Claude"?</div>
+            <div class="question-text lang-en">2. Which prominent AI organization produces the intelligent chat assistant named "Claude"?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q2" value="A"> <span>OpenAI</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> <span>Anthropic</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> <span>Google</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="3">
+            <div class="question-text lang-id">3. Jika Anda memiliki file dokumen PDF laporan yang sangat panjang dan ingin tahu intisari isinya dalam waktu 1 menit, apa yang harus Anda lakukan?</div>
+            <div class="question-text lang-en">3. If you possess a very long report PDF file and need to extract its core takeaways within 1 minute, what should you do?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q3" value="A"> <span class="lang-id">A. Membaca cepat halaman demi halaman tanpa istirahat.</span><span class="lang-en">A. Speed-reading page after page across the document without stopping.</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> <span class="lang-id">B. Mengunggah berkas PDF tersebut ke Claude atau ChatGPT dan menulis prompt: "Rangkum isi dokumen ini menjadi 5 poin bullet-points penting."</span><span class="lang-en">B. Uploading the PDF file into Claude or ChatGPT and typing: "Summarize this document into 5 critical bullet points."</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> <span class="lang-id">C. Mencari judul dokumen tersebut di mesin pencari Google biasa.</span><span class="lang-en">C. Querying the exact title of the file into a standard Google search bar.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="4">
+            <div class="question-text lang-id">4. Apa keterbatasan utama dari model AI bahasa (LLM) seperti ChatGPT gratis yang harus dipahami oleh karyawan saat mencari informasi data tren terbaru?</div>
+            <div class="question-text lang-en">4. What major limitation of free-tier language models (LLMs) must employees keep in mind when looking for recent data trends?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q4" value="A"> <span class="lang-id">A. AI tidak bisa membaca tulisan teks yang diketik dalam Bahasa Indonesia.</span><span class="lang-en">A. The AI cannot read or interpret text queries written in the Indonesian language.</span></label>
+                <label class="option-label"><input type="radio" name="q4" value="B"> <span class="lang-id">B. Memiliki batas waktu pemutusan pengetahuan (Knowledge Cutoff), sehingga tidak tahu peristiwa/data teranyar kecuali jika diberi akses browsing internet.</span><span class="lang-en">B. They have a Knowledge Cutoff date, meaning they lack awareness of recent data unless granted web browsing access hooks.</span></label>
+                <label class="option-label"><input type="radio" name="q4" value="C"> <span class="lang-id">C. AI hanya bisa membalas maksimal 3 baris kata untuk setiap pertanyaan.</span><span class="lang-en">C. The AI system can only yield a maximum of 3 sentences per response query.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="5">
+            <div class="question-text lang-id">5. Manakah di bawah ini alat AI komersial terkemuka yang dikembangkan khusus oleh Microsoft untuk menyatu di dalam aplikasi Office seperti Word, Excel, dan PowerPoint?</div>
+            <div class="question-text lang-en">5. Which prominent commercial AI assistant is developed by Microsoft to integrate natively inside Office applications like Word, Excel, and PowerPoint?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q5" value="A"> <span>Microsoft Gemini</span></label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> <span>Microsoft Copilot</span></label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> <span>Microsoft DeepSeek Suite</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="6">
+            <div class="question-text lang-id">6. Anda ingin membuat sebuah draf balasan email keluhan pelanggan dengan nada bahasa yang sopan, formal, dan menawarkan solusi diskon. Langkah mana yang mencerminkan pemakaian AI?</div>
+            <div class="question-text lang-en">6. You want to draft a customer complaint email reply with a polite, formal tone that offers a discount solution. Which step reflects proper AI usage?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q6" value="A"> <span class="lang-id">A. Menyalin template draf email lama dari arsip folder tahun lalu.</span><span class="lang-en">A. Copying legacy email templates stored inside last year's archive folders.</span></label>
+                <label class="option-label"><input type="radio" name="q6" value="B"> <span class="lang-id">B. Membuka ChatGPT/Claude, mengetik kronologi masalah pelanggan, dan meminta AI membuatkan draf balasannya sesuai instruksi nada bicara tersebut.</span><span class="lang-en">B. Opening ChatGPT/Claude, typing the case details, and prompting it to generate a reply draft matching that specific tone directive.</span></label>
+                <label class="option-label"><input type="radio" name="q6" value="C"> <span class="lang-id">C. Menulis draf dari awal di Microsoft Word tanpa bantuan asisten cerdas.</span><span class="lang-en">C. Drafting the message on a blank Microsoft Word sheet from scratch without interactive assistance.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="7">
+            <div class="question-text lang-id">7. Apa arti dari istilah "AI Hallucination" (Halusinasi AI) yang sering menjadi tantangan dalam penggunaan Kecerdasan Buatan?</div>
+            <div class="question-text lang-en">7. What does the term "AI Hallucination" signify in the context of working with Artificial Intelligence?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q7" value="A"> <span class="lang-id">A. Layar monitor komputer bergetar saat memproses data besar.</span><span class="lang-en">A. The physical monitor screen flickering when evaluating computational structures.</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> <span class="lang-id">B. Kondisi di mana model AI memberikan jawaban yang terdengar sangat meyakinkan dan masuk akal, tetapi sebenarnya data tersebut sepenuhnya salah atau fiktif.</span><span class="lang-en">B. A state where the AI yields highly convincing and confident responses that are actually completely factually incorrect or fabricated.</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> <span class="lang-id">C. AI menolak memproses perintah karena mendeteksi kata-kata kasar.</span><span class="lang-en">C. The AI system refusing to process queries because it flags rude phrases inside inputs.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="8">
+            <div class="question-text lang-id">8. Jika perusahaan meminta Anda menyusun tabel data masukan karyawan ke dalam format bagan grafik, jenis instruksi AI apa yang sedang Anda gunakan jika Anda mengetik perintah teks?</div>
+            <div class="question-text lang-en">8. If the company requests you to structure raw text inputs into clean data tables, what is the text instruction called that you feed to the AI?</div>
+            <div class="options-container">
+                <label class="option-label"><span>A. Prompt</span></label>
+                <label class="option-label"><span>B. Algorithm File</span></label>
+                <label class="option-label"><span>C. Dataset Entry</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="9">
+            <div class="question-text lang-id">9. Manakah di bawah ini yang merupakan fungsi dari fitur "Vision" (Melihat) pada ChatGPT atau Claude modern?</div>
+            <div class="question-text lang-en">9. Which of the following describes the function of the "Vision" capability in modern ChatGPT or Claude models?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q9" value="A"> <span class="lang-id">A. AI memantau wajah karyawan lewat kamera webcam saat bekerja.</span><span class="lang-en">A. The AI system actively tracking employee faces via webcam hardware inputs during work shifts.</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="B"> <span class="lang-id">B. Kemampuan AI untuk menerima unggahan file gambar (seperti foto nota, grafik komparasi, atau diagram alur) lalu menganalisis isi gambar tersebut berdasarkan teks perintah.</span><span class="lang-en">B. The AI's capability to ingest uploaded image files (like photos, charts, or flowcharts) and analyze their contents based on text commands.</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="C"> <span class="lang-id">C. AI secara otomatis mengubah teks ketikan Anda menjadi video animasi 3D.</span><span class="lang-en">C. The AI transforming text sequences into full-scale 3D animated high-definition footage automatically.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="10">
+            <div class="question-text lang-id">10. Seberapa sering idealnya seorang karyawan melakukan pengecekan ulang (*double-check*) terhadap data angka hasil perhitungan yang dikeluarkan oleh AI sebelum diserahkan ke manajemen?</div>
+            <div class="question-text lang-en">10. How often should an employee verify mathematical data points computed by an AI before presenting them to management?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q10" value="A"> <span class="lang-id">A. Tidak perlu sama sekali, karena hitungan komputer AI pasti selalu 100% benar.</span><span class="lang-en">A. Never, because computer systems process analytical calculations with infallible accuracy.</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> <span class="lang-id">B. Selalu wajib diperiksa ulang setiap saat (100% wajib), karena AI bahasa rentan melakukan kesalahan logika matematika atau mengalami halusinasi angka.</span><span class="lang-en">B. Always (100% mandatory), because text-based AI models are prone to logical errors or number hallucinations.</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> <span class="lang-id">C. Diperiksa hanya jika ukuran file dokumen di atas 10 Megabytes.</span><span class="lang-en">C. Only verify if the output file dimensions exceed 10 Megabytes in storage weight.</span></label>
+            </div>
+        </div>
+
+
+        <div class="section-title">
+            <span class="lang-id">PILAR 2: TEKNIK EFISIENSI PROMPTING KANTOR (KEMAHIRAN OPERASIONAL)</span>
+            <span class="lang-en">PILLAR 2: OFFICE PROMPTING EFFICIENCY TECHNIQUES (OPERATIONAL PROFICIENCY)</span>
+        </div>
+
+        <div class="question-block" data-qnum="11">
+            <div class="question-text lang-id">11. Apa keuntungan utama dari menetapkan peran khusus (*Role-Playing Persona*) pada prompt awal AI, seperti kalimat "Bertindaklah sebagai Manajer Riset Pasar yang kritis"?</div>
+            <div class="question-text lang-en">11. What is the benefit of setting a specific persona in an AI prompt, such as "Act as a critical Market Research Manager"?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q11" value="A"> <span class="lang-id">A. Membuat AI membalas jawaban menggunakan rekaman suara narator profesional.</span><span class="lang-en">A. Forcing the model to reply using high-quality vocal narration tracks.</span></label>
+                <label class="option-label"><input type="radio" name="q11" value="B"> <span class="lang-id">B. Membantu mengondisikan pola pikir, kosakata, dan batasan standar kualitas keluaran AI agar sesuai dengan perspektif profesional yang kita harapkan.</span><span class="lang-en">B. Aligning the mindset, vocabulary, and response constraints of the AI to match the desired professional benchmark.</span></label>
+                <label class="option-label"><input type="radio" name="q11" value="C"> <span class="lang-id">C. Menghilangkan batasan jumlah karakter kata balasan dari server AI.</span><span class="lang-en">C. Removing the total word count constraint limitations from cloud servers.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="12">
+            <div class="question-text lang-id">12. Anda ingin merangkum teks ulasan pelanggan. Jika Anda memberikan 3 contoh format ringkasan yang Anda inginkan di dalam instruksi sebelum memasukkan teks asli, teknik apa yang sedang Anda gunakan?</div>
+            <div class="question-text lang-en">12. You want to summarize client review texts. If you include 3 structural examples of your desired layout inside the instructions before pasting the raw text, which technique are you using?</div>
+            <div class="options-container">
+                <label class="option-label"><span>A. Zero-Shot Prompting</span></label>
+                <label class="option-label"><span>B. Few-Shot Prompting</span></label>
+                <label class="option-label"><span>C. Negative Prompting</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="13">
+            <div class="question-text lang-id">13. Apa kegunaan utama dari fitur "Claude Projects" atau "Custom GPTs" yang ada pada versi AI berbayar untuk menunjang produktivitas divisi kantor?</div>
+            <div class="question-text lang-en">13. What is the primary operational utility of "Claude Projects" or "Custom GPTs" in paid enterprise tiers for boosting department workflows?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q13" value="A"> <span class="lang-id">A. Untuk melacak lokasi GPS pengerjaan tugas harian karyawan secara online.</span><span class="lang-en">A. To track the active physical coordinates layout tracking of employees during remote shifts.</span></label>
+                <label class="option-label"><input type="radio" name="q13" value="B"> <span class="lang-id">B. Memungkinkan pembuatan bot asisten khusus yang sudah dikunci dengan dokumen pengetahuan internal (SOP/data) dan aturan instruksi spesifik, tanpa memerlukan keahlian coding.</span><span class="lang-en">B. Enabling the creation of tailored assistant bots locked with internal reference files (SOPs/data) and specific prompt guardrails without requiring coding skills.</span></label>
+                <label class="option-label"><input type="radio" name="q13" value="C"> <span class="lang-id">C. Menghubungkan printer kantor ke laptop karyawan secara otomatis lewat cloud.</span><span class="lang-en">C. Bridging hardware print nodes to desktop arrays via integrated cloud commands.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="14">
+            <div class="question-text lang-id">14. Mengapa teknik "Chain of Thought" (meminta AI menjelaskan langkah-demi-langkah proses berpikirnya) sangat penting saat menggunakan AI untuk menganalisis data keuangan atau laporan QC?</div>
+            <div class="question-text lang-en">14. Why is the "Chain of Thought" technique (asking the AI to outline its reasoning step-by-step) crucial when analyzing financial statements or QC sheets?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q14" value="A"> <span class="lang-id">A. Karena membuat teks balasan dari AI menjadi penuh dengan kode pemrograman rumit.</span><span class="lang-en">A. Because it forces the text output to be heavily crowded with intricate source code logic.</span></label>
+                <label class="option-label"><input type="radio" name="q14" value="B"> <span class="lang-id">B. Memaksa AI mengurai logika urutan perhitungan secara transparan, yang secara ilmiah terbukti menurunkan risiko halusinasi angka dan mempermudah manusia melacak jika ada salah hitung.</span><span class="lang-en">B. It forces the AI to map out its calculations transparently, which significantly reduces data hallucinations and allows human auditors to spot flaws easily.</span></label>
+                <label class="option-label"><input type="radio" name="q14" value="C"> <span class="lang-id">C. Agar kuota token pengeluaran bulanan akun perusahaan menjadi lebih hemat.</span><span class="lang-en">C. To save the total amount of monthly API token expenses processed across company plans.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="15">
+            <div class="question-text lang-id">15. Fitur "Artifacts" di Claude menyediakan jendela interaktif terpisah di sebelah kanan layar. Apa fungsi utama fitur ini untuk membantu pekerjaan kantor?</div>
+            <div class="question-text lang-en">15. The "Artifacts" panel in Claude offers a separate interactive side window. What is its core function to help with business operations?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q15" value="A"> <span class="lang-id">A. Mengenkripsi file dokumen rahasia agar tidak bisa dibuka oleh divisi lain.</span><span class="lang-en">A. Encrypting document assets securely to block view access from other divisions.</span></label>
+                <label class="option-label"><input type="radio" name="q15" value="B"> <span class="lang-id">B. Mengisolasi konten panjang (seperti draf halaman web HTML, dokumen legal panjang, atau bagan) ke panel khusus agar mudah ditinjau, diedit, dan dilihat visualisasinya secara langsung.</span><span class="lang-en">B. Isolating extensive blocks (like HTML visual frameworks, long legal text drafts, or graphics charts) into a dedicated view window for seamless editing and real-time previews.</span></label>
+                <label class="option-label"><input type="radio" name="q15" value="C"> <span class="lang-id">C. Otomatis mengubah ukuran file dokumen besar menjadi file ZIP terkompresi.</span><span class="lang-en">C. Compressing heavy document assets into local ZIP file containers natively.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="16">
+            <div class="question-text lang-id">16. Jika AI memberikan hasil analisis laporan yang terlalu bertele-tele dan panjang, tindakan modifikasi prompt apa yang paling efektif Anda lakukan?</div>
+            <div class="question-text lang-en">16. If an AI yields an analysis output that is too long-winded and wordy, which prompt modification strategy is most effective?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q16" value="A"> <span class="lang-id">A. Menghapus seluruh percakapan dan mengetik ulang dari awal dengan tanda seru.</span><span class="lang-en">A. Purging the total session thread and re-typing the inputs with heavy exclamation marks.</span></label>
+                <label class="option-label"><input type="radio" name="q16" value="B"> <span class="lang-id">B. Memberikan batasan instruksi (*Negative Constraints*) yang jelas, seperti: "Berikan ringkasan eksekutif maksimal dalam 3 kalimat padat, hindari kalimat pengantar jargon".</span><span class="lang-en">B. Injecting clear negative constraints into the prompt, such as: "Provide an executive summary in 3 concise sentences max; avoid introductory jargon or pleasantries."</span></label>
+                <label class="option-label"><input type="radio" name="q16" value="C"> <span class="lang-id">C. Mengganti model bahasa ke model pembuat gambar otomatis.</span><span class="lang-en">C. Switching the model gateway type over to an image generator node.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="17">
+            <div class="question-text lang-id">17. Anda ingin membandingkan data tabel dari dua file laporan bulanan yang berbeda menggunakan ChatGPT. Langkah mana yang mencerminkan pemakaian tingkat lanjut (*proficient*)?</div>
+            <div class="question-text lang-en">17. You need to cross-examine table logs matching two separate monthly reports inside ChatGPT. Which workflow reflects proficient execution benchmarks?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q17" value="A"> <span class="lang-id">A. Mencetak kedua dokumen di kertas lalu mengetik isinya satu per satu ke kolom chat.</span><span class="lang-en">A. Printing out both document files and manually typing text inputs line-by-line into the prompt box.</span></label>
+                <label class="option-label"><input type="radio" name="q17" value="B"> <span class="lang-id">B. Mengunggah kedua file berkas data tersebut sekaligus, lalu meminta fitur Advanced Data Analysis (Code Interpreter) ChatGPT menjalankan skrip hitungan internal untuk mencocokkan perbedaan sel data secara otomatis.</span><span class="lang-en">B. Uploading both source data files simultaneously, and commanding ChatGPT's Advanced Data Analysis (Code Interpreter) feature to run computing scripts to auto-map data variances.</span></label>
+                <label class="option-label"><input type="radio" name="q17" value="C"> <span class="lang-id">C. Menyalin sebagian teks secara acak dan berharap AI menebak perbedaannya sendiri.</span><span class="lang-en">C. Copy-pasting random text snippets and hoping the system guesses the anomalies.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="18">
+            <div class="question-text lang-id">18. Apa fungsi dari menyertakan pembatas teks seperti tanda kutip tiga (`"""`) atau tanda pagar tiga (`###`) di dalam prompt kantor yang panjang?</div>
+            <div class="question-text lang-en">18. What is the tactical purpose of using explicit structural delimiters like triple quotes (`"""`) or triple hashtags (`###`) inside a long office prompt?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q18" value="A"> <span class="lang-id">A. Berfungsi sebagai kode perintah rahasia untuk meretas sistem server penyedia AI.</span><span class="lang-en">A. Serving as a secret command override code to bypass the system's prompt token meters.</span></label>
+                <label class="option-label"><input type="radio" name="q18" value="B"> <span class="lang-id">B. Membantu AI memisahkan dengan jelas mana bagian teks instruksi perintah, mana bagian teks data mentah dokumen, dan mana draf acuan, sehingga hasil pemrosesan data menjadi jauh lebih akurat.</span><span class="lang-en">B. Helping the AI isolate cleanly between instruction commands, raw context data strings, and reference sheets, maximizing data processing accuracy.</span></label>
+                <label class="option-label"><input type="radio" name="q18" value="C"> <span class="lang-id">C. Membuat tampilan teks di layar komputer kantor menjadi berwarna-warni.</span><span class="lang-en">C. Allowing the typographical interface layout presentation across screens to flash color elements.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="19">
+            <div class="question-text lang-id">19. Ketika membuat prompt kustom untuk membantu analisis kelayakan kontrol kualitas (QC), apa yang dimaksud dengan menyertakan instruksi *Output Format Customization*?</div>
+            <div class="question-text lang-en">19. When writing custom prompt parameters to support Quality Control (QC) evaluations, what does implementing Output Format Customization mean?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q19" value="A"> <span class="lang-id">A. Mengubah ukuran bodi casing komputer server agar muat dokumen.</span><span class="lang-en">A. Re-adjusting the casing properties geometry of physical operational server units.</span></label>
+                <label class="option-label"><input type="radio" name="q19" value="B"> <span class="lang-id">B. Memerintahkan AI untuk menyajikan jawaban akhir dalam bentuk format tabel markdown, daftar kronologis, atau skrip kode tertentu agar bisa langsung dipakai sistem lain.</span><span class="lang-en">B. Directing the AI to package its final answers explicitly into markdown tables, chronological bullet lists, or code scripts so secondary software can consume it.</span></label>
+                <label class="option-label"><input type="radio" name="q19" value="C"> <span class="lang-id">C. Meminta AI mengirimkan berkas cetak dokumen fisik langsung ke mesin printer meja kerja.</span><span class="lang-en">C. Instructing the AI entity to trigger a physical print command to nearby hardware tray units.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="20">
+            <div class="question-text lang-id">20. Manakah dari skenario berikut yang mencerminkan karyawan tingkat *Power User* dalam menghemat waktu kerja menggunakan ekosistem AI?</div>
+            <div class="question-text lang-en">20. Which scenario reflects a Power User employee utilizing the AI ecosystem to maximize work hour savings?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q20" value="A"> <span class="lang-id">A. Menghabiskan waktu 3 jam sehari hanya untuk mengobrol santai dengan chatbot AI tentang topik hobi pribadi di jam kantor.</span><span class="lang-en">A. Spending 3 hours a day chatting casually with an AI model regarding personal hobbies during work shifts.</span></label>
+                <label class="option-label"><input type="radio" name="q20" value="B"> <span class="lang-id">B. Membuat alur kerja semi-otomatis visual lewat ekstensi atau platform otomasi visual (n8n/Make/Sheets Add-on) untuk menyortir lampiran berkas dokumen, mengekstrak nilainya via AI, dan mengonversinya menjadi draf laporan otomatis sekali klik.</span><span class="lang-en">B. Engineering a semi-automated visual workflow (via extensions or visual automation nodes like n8n/Make/Sheets Add-on) to sort file attachments, extract records via AI, and compile report summaries in one click.</span></label>
+                <label class="option-label"><input type="radio" name="q20" value="C"> <span class="lang-id">C. Meminta staf IT programmer membuat aplikasi chatting baru yang meniru tampilan ChatGPT.</span><span class="lang-en">C. Ordering programming staff to code a custom messaging software that clones the raw view interface layout of ChatGPT.</span></label>
+            </div>
+        </div>
+
+
+        <div class="section-title">
+            <span class="lang-id">BAGIAN 3: ETIKA, KESELAMATAN & KEAMANAN DATA PERUSAHAAN (RISK MITIGATION)</span>
+            <span class="lang-en">PART 3: ETHICS, SAFETY & CORPORATE DATA SECURITY (RISK MITIGATION)</span>
+        </div>
+
+        <div class="question-block" data-qnum="21">
+            <div class="question-text lang-id">21. Mengapa tindakan memasukkan (*copy-paste*) data rahasia keuangan internal perusahaan atau data KTP pelanggan ke dalam jendela chat AI versi publik/gratis sangat DILARANG keras oleh manajemen?</div>
+            <div class="question-text lang-en">21. Why is copy-pasting confidential internal financial reports or client identity numbers (KTP/ID) into public/free AI chat models strictly PROHIBITED by corporate management?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q21" value="A"> <span class="lang-id">A. Karena membuat kecepatan membalas dari server AI menjadi lambat.</span><span class="lang-en">A. Because it drags down the baseline interaction processing speeds across cloud servers.</span></label>
+                <label class="option-label"><input type="radio" name="q21" value="B"> <span class="lang-id">B. Karena pada versi publik gratis, teks input pengguna akan disimpan di server cloud eksternal dan dijadikan bahan pelatihan model AI masa depan, memicu risiko kebocoran data rahasia perusahaan ke publik.</span><span class="lang-en">B. Because free public models log user inputs on external cloud nodes to train future public engines, triggering high operational risks of corporate intellectual property leaks.</span></label>
+                <label class="option-label"><input type="radio" name="q21" value="C"> <span class="lang-id">C. Karena AI akan menghapus file data tersebut secara permanen dari memori komputer kantor.</span><span class="lang-en">C. Because the AI model will permanently delete those specific file items out of the local office hard drive memory.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="22">
+            <div class="question-text lang-id">22. Jika Anda terpaksa harus menggunakan bantuan AI versi publik gratis untuk mengecek kesalahan tata bahasa pada draf surat bisnis perusahaan yang mengandung nama-nama klien rahasia, langkah pencegahan risiko apa yang wajib Anda lakukan?</div>
+            <div class="question-text lang-en">22. If you must use a free public AI model to review grammatical structures inside corporate business letters containing sensitive client names, what risk mitigation step is mandatory?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q22" value="A"> <span class="lang-id">A. Meminta AI berjanji di dalam chat untuk tidak membocorkan data tersebut.</span><span class="lang-en">A. Requesting the AI inside the chat log window to cross-promise not to share the inputs with external actors.</span></label>
+                <label class="option-label"><input type="radio" name="q22" value="B"> <span class="lang-id">B. Melakukan anonimisasi data (*Data Anonymization*) terlebih dahulu dengan menghapus atau menyamarkan nama klien, angka nominal uang, dan nama perusahaan menjadi inisial (misal: PT ABC, Klien X) sebelum dimasukkan ke AI.</span><span class="lang-en">B. Executing strict Data Anonymization by removing or masking sensitive names, financial figures, and brand identities with generic codes (e.g., Brand ABC, Client X) before hitting send.</span></label>
+                <label class="option-label"><input type="radio" name="q22" value="C"> <span class="lang-id">C. Mengetik instruksi prompt menggunakan huruf besar (Caps Lock) semuanya.</span><span class="lang-en">C. Typing out the total parameter instructions using uppercase (Caps Lock) characters uniformly.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="23">
+            <div class="question-text lang-id">23. Apa langkah paling aman yang disediakan teknologi jika perusahaan ingin mengintegrasikan kecerdasan AI ke database operasional internal tanpa ada risiko kebocoran data ke server cloud asing pihak ketiga di luar negeri?</div>
+            <div class="question-text lang-en">23. What is the most secure technology setup if an organization plans to link AI processing to internal operational databases without risking data leaks to external third-party cloud servers abroad?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q23" value="A"> <span class="lang-id">A. Menolak menggunakan teknologi AI sama sekali di seluruh lini bisnis kantor.</span><span class="lang-en">A. Banning the adoption of AI technologies uniformly across all operational corporate sectors.</span></label>
+                <label class="option-label"><input type="radio" name="q23" value="B"> <span class="lang-id">B. Melakukan *Self-Hosting* dengan memasang model open-source (seperti Llama 3 atau DeepSeek via Ollama) secara mandiri di komputer server fisik lokal internal dalam kantor yang bisa berjalan 100% offline.</span><span class="lang-en">B. Self-hosting open-source architectures (like Llama 3 or DeepSeek running via local Ollama daemons) independently on physical local in-house office servers that can run 100% offline.</span></label>
+                <label class="option-label"><input type="radio" name="q23" value="C"> <span class="lang-id">C. Membeli akun premium retail ChatGPT Plus untuk seluruh staf admin.</span><span class="lang-en">C. Buying standard consumer retail ChatGPT Plus premium accounts for the entire administrative staff network.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="24">
+            <div class="question-text lang-id">24. Manakah prinsip arsitektur sistem kontrol kualitas (QC) yang paling benar dalam menjaga reliabilitas bisnis perusahaan yang memanfaatkan kecerdasan buatan?</div>
+            <div class="question-text lang-en">24. Which system deployment principle is correct for preserving enterprise business reliability when implementing artificial intelligence engines?</div>
+            <div class="options-container">
+                <label class="option-label"><span>A. Autonomous Loop (Full AI Automation)</span></label>
+                <label class="option-label"><span>B. Human-in-the-Loop (HITL) Validation</span></label>
+                <label class="option-label"><span>C. Cloud-First Monolithic Processing</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="25">
+            <div class="question-text lang-id">25. Anda menemukan draf laporan penting yang dibuat oleh rekan kerja Anda sepenuhnya berisi kalimat hasil copypaste mentah dari AI tanpa disunting, dan ternyata di dalamnya ada poin analisis tren yang salah (*hallucinated data*). Tindakan etis apa yang Anda lakukan?</div>
+            <div class="question-text lang-en">25. You notice a critical report draft compiled by a colleague contains unedited copy-pasted AI strings featuring factually incorrect, hallucinated data points. What is the ethical course of action?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q25" value="A"> <span class="lang-id">A. Membiarkan saja laporan tersebut dikirim ke direksi karena itu bukan tanggung jawab Anda.</span><span class="lang-en">A. Ignoring the issue and letting the file route to executive tables as it falls outside your responsibility.</span></label>
+                <label class="option-label"><input type="radio" name="q25" value="B"> <span class="lang-id">B. Memberitahu rekan kerja tersebut secara baik-baik untuk memverifikasi ulang poin data tersebut dan mengingatkan pentingnya proses penyuntingan manusia (*human editing*) sebelum diserahkan ke manajemen.</span><span class="lang-en">B. Discreetly advising your colleague to re-verify those data indices and reminding them of the critical need for human review before submissions.</span></label>
+                <label class="option-label"><input type="radio" name="q25" value="C"> <span class="lang-id">C. Langsung melaporkan kesalahan tersebut ke CEO untuk menjatuhkan reputasi rekan kerja tersebut.</span><span class="lang-en">C. Escalating the flaw straight to the executive board to damage the colleague's professional record.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="26">
+            <div class="question-text lang-id">26. Saat menerima tautan link instalasi program AI baru dari situs internet yang tidak dikenal, langkah keamanan IT dasar apa yang wajib diambil karyawan?</div>
+            <div class="question-text lang-en">26. When receiving an installation link for a novel AI application from an unverified web source, which security step is mandatory for employees?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q26" value="A"> <span class="lang-id">A. Langsung klik instal di laptop kantor agar tidak ketinggalan tren teknologi.</span><span class="lang-en">A. Instantly executing the installation file on the corporate machine to keep pace with tech trends.</span></label>
+                <label class="option-label"><input type="radio" name="q26" value="B"> <span class="lang-id">B. Melaporkan dan berkoordinasi dengan tim IT Support / Keamanan Siber kantor untuk memverifikasi berkas di lingkungan terisolasi (*sandbox*) sebelum diinstal demi mencegah serangan malware/phishing.</span><span class="lang-en">B. Coordinating with the corporate IT Support / Cyber Security department to validate the package inside isolated sandbox layers to block malware/phishing vectors.</span></label>
+                <label class="option-label"><input type="radio" name="q26" value="C"> <span class="lang-id">C. Meminta rekan kerja lain menginstalnya terlebih dahulu di laptop mereka sendiri untuk uji coba.</span><span class="lang-en">C. Advising a coworker to execute the application on their assigned terminal first as a test.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="27">
+            <div class="question-text lang-id">27. Dari sudut pandang etika profesional dan hukum hak cipta korporat, dilarang keras bagi karyawan menggunakan generator gambar AI publik untuk membuat logo atau aset visual komersial utama perusahaan jika...</div>
+            <div class="question-text lang-en">27. From a professional ethics and corporate copyright legal perspective, it is strictly restricted for employees to utilize public image AI generators to produce core commercial brand visuals if...</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q27" value="A"> <span class="lang-id">A. Ukuran resolusi piksel gambar di bawah batas 1080p standar.</span><span class="lang-en">A. The absolute image canvas resolution is bounded below standard high-definition 1080p limits.</span></label>
+                <label class="option-label"><input type="radio" name="q27" value="B"> <span class="lang-id">B. Model AI tersebut melanggar hukum karena melatih datanya menggunakan karya seni seniman asli secara ilegal tanpa izin/lisensi, yang berisiko menyeret perusahaan ke masalah tuntutan hukum hak cipta di masa depan.</span><span class="lang-en">B. The AI baseline engine violates copyright laws by training over copyrighted intellectual properties without licenses, risking legal exposure for the corporation.</span></label>
+                <label class="option-label"><input type="radio" name="q27" value="C"> <span class="lang-id">C. Warna gambar didominasi oleh warna-warna gelap yang suram.</span><span class="lang-en">C. The aesthetic palette color design distribution is heavily skewed toward dark or gloomy tones.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="28">
+            <div class="question-text lang-id">28. Kebijakan tata kelola AI perusahaan yang bijak memandang perkakas Kecerdasan Buatan (ChatGPT/Claude/Copilot) sebagai...</div>
+            <div class="question-text lang-en">28. A sound corporate AI governance policy views Artificial Intelligence utilities (ChatGPT/Claude/Copilot) as...</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q28" value="A"> <span class="lang-id">A. Pengganti mutlak posisi tenaga kerja manusia seutuhnya agar perusahaan hemat biaya gaji.</span><span class="lang-en">A. Complete, absolute replacements for physical human employees to slice corporate payroll expenses.</span></label>
+                <label class="option-label"><input type="radio" name="q28" value="B"> <span class="lang-id">B. Mitra asisten komplementer (*Copilot*) untuk mendongkrak produktivitas, kreativitas, dan efisiensi waktu staf manusia, di mana tanggung jawab dan kendali akhir tetap berada di tangan karyawan manusia.</span><span class="lang-en">B. Complementary assistant co-pilots tasked with accelerating human productivity, time efficiency, and creativity, while core accountability remains anchored in human hands.</span></label>
+                <label class="option-label"><input type="radio" name="q28" value="C"> <span class="lang-id">C. Ancaman siber berbahaya yang wajib diblokir total aksesnya dari seluruh jaringan kantor.</span><span class="lang-en">C. Dangerous digital tracking malware vectors that must be blocked entirely across the workplace network.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="29">
+            <div class="question-text lang-id">29. Mengapa penting bagi manajemen perusahaan untuk menyusun Dokumen Kebijakan Penggunaan AI Resmi (*Official Corporate AI Policy*) yang disosialisasikan ke seluruh staf?</div>
+            <div class="question-text lang-en">29. Why is it vital for corporate management to formulate an Official Corporate AI Policy document and distribute it to all active employees?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q29" value="A"> <span class="lang-id">A. Hanya untuk sekadar memenuhi formalitas regulasi hukum dinas tenaga kerja.</span><span class="lang-en">A. Merely to fulfill compliance check formalities driven by labor regulatory boards.</span></label>
+                <label class="option-label"><input type="radio" name="q29" value="B"> <span class="lang-id">B. Memberikan kepastian panduan legal dan batasan batas aman bagi karyawan tentang alat AI apa saja yang boleh dipakai, data mana yang boleh dimasukkan, dan bagaimana cara menjaga kerahasiaan aset informasi perusahaan.</span><span class="lang-en">B. Providing clear operational frameworks defining authorized tools, input safety limits, and strict data sovereignty behaviors to insulate the corporation's intellectual assets.</span></label>
+                <label class="option-label"><input type="radio" name="q29" value="C"> <span class="lang-id">C. Agar karyawan takut menggunakan komputer kantor dan bekerja secara manual kembali.</span><span class="lang-en">C. To discourage employees from using computers, forcing them back to manual legacy routines.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="30">
+            <div class="question-text lang-id">30. Tindakan mana di bawah ini yang melanggar etika integritas profesional saat seorang karyawan menggunakan teks keluaran (*output*) dari AI untuk pengajuan proposal tender ke klien?</div>
+            <div class="question-text lang-en">30. Which action violates professional integrity when an employee utilizes AI output text strings to pitch an official project proposal to a client?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q30" value="A"> <span class="lang-id">A. Memakai AI untuk brainstorming mencari ide kerangka poin draf penawaran proposal bisnis.</span><span class="lang-en">A. Relying on AI text engines to brainstorm structural framework ideas for project penning phases.</span></label>
+                <label class="option-label"><input type="radio" name="q30" value="B"> <span class="lang-id">B. Melakukan copy-paste mentah tanpa melakukan kroscek validitas data legalitas, tanpa disunting bahasanya agar sesuai kenyataan operasional asli perusahaan, dan mengklaim 100% teks itu murni pemikiran analitis pribadinya sendiri.</span><span class="lang-en">B. Direct raw copy-pasting without cross-checking legal data validity, failing to edit strings to align with real corporate capability, and false-claiming the entire layout as 100% personal analytical thought.</span></label>
+                <label class="option-label"><input type="radio" name="q30" value="C"> <span class="lang-id">C. Meminta AI memperhalus tata bahasa penulisan draf proposal penawaran bahasa Inggris yang sudah kita susun sendiri.</span><span class="lang-en">C. Prompting the AI assistant to refine the spelling structure of an English proposal that we penned ourselves.</span></label>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <button type="button" class="btn-submit" onclick="evaluateCorporateLiteracy()"><span class="lang-id">Kirim Lembar Uji</span><span class="lang-en">Submit Ingestion Sheet</span></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let activeLanguage = 'id';
+
+    const literacyAnswerKeys = {
+        q1: "B", q2: "B", q3: "B", q4: "B", q5: "B",
+        q6: "B", q7: "B", q8: "A", q9: "B", q10: "B",
+        q11: "B", q12: "B", q13: "B", q14: "B", q15: "B",
+        q16: "B", q17: "B", q18: "B", q19: "B", q20: "B",
+        q21: "B", q22: "B", q23: "B", q24: "B", q25: "B",
+        q26: "B", q27: "B", q28: "B", q29: "B", q30: "B"
+    };
+
+    function toggleLanguage(lang) {
+        activeLanguage = lang;
+        const idElements = document.querySelectorAll('.lang-id');
+        const enElements = document.querySelectorAll('.lang-en');
+        
+        if (lang === 'id') {
+            idElements.forEach(el => el.style.display = 'block');
+            enElements.forEach(el => el.style.display = 'none');
+            document.getElementById('btn-id').classList.add('active');
+            document.getElementById('btn-en').classList.remove('active');
+        } else {
+            idElements.forEach(el => el.style.display = 'none');
+            enElements.forEach(el => el.style.display = 'block');
+            document.getElementById('btn-id').classList.remove('active');
+            document.getElementById('btn-en').classList.add('active');
+        }
+    }
+
+    function evaluateCorporateLiteracy() {
+        const nameVal = document.getElementById('p_name').value.trim();
+        const deptVal = document.getElementById('p_email').value.trim();
+        const phoneVal = document.getElementById('p_phone').value.trim();
+
+        if (!nameVal || !deptVal || !phoneVal) {
+            if (activeLanguage === 'id') {
+                alert("Mohon lengkapi Nama Lengkap, Divisi, dan Nomor Telepon Anda sebelum mengirimkan lembar uji.");
+            } else {
+                alert("Please fill in your Full Name, Division, and Phone Number before submitting the sheet.");
+            }
+            document.getElementById('info-box').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        let scoreTotal = 0;
+        let scoreP1 = 0; let scoreP2 = 0; let scoreP3 = 0;
+        const testForm = document.getElementById('quiz-form');
+        
+        document.querySelectorAll('.option-label').forEach(label => {
+            label.classList.remove('correct-answer', 'wrong-answer');
+        });
+
+        for (let i = 1; i <= 30; i++) {
+            const questionName = 'q' + i;
+            const chosen = testForm.elements[questionName].value;
+            const correctSolution = literacyAnswerKeys[questionName];
+            
+            const targetBlock = document.querySelector(`[data-qnum="${i}"]`);
+            const labels = targetBlock.querySelectorAll('.option-label');
+            
+            labels.forEach(label => {
+                const inputElement = label.querySelector('input');
+                if (inputElement.value === correctSolution) {
+                    label.classList.add('correct-answer');
+                }
+                if (chosen && chosen !== correctSolution && inputElement.value === chosen) {
+                    label.classList.add('wrong-answer');
+                }
+            });
+
+            if (chosen === correctSolution) {
+                scoreTotal++;
+                if (i <= 10) scoreP1++;
+                else if (i <= 20) scoreP2++;
+                else scoreP3++;
+            }
+        }
+
+        const pctP1 = Math.round((scoreP1 / 10) * 100);
+        const pctP2 = Math.round((scoreP2 / 10) * 100);
+        const pctP3 = Math.round((scoreP3 / 10) * 100);
+        const overallPct = Math.round((scoreTotal / 30) * 100);
+
+        document.getElementById('lbl-print-name').innerText = nameVal;
+        document.getElementById('lbl-print-email').innerText = deptVal;
+        document.getElementById('lbl-print-phone').innerText = phoneVal;
+        
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' };
+        document.getElementById('lbl-print-date').innerText = new Date().toLocaleDateString(activeLanguage === 'id' ? 'id-ID' : 'en-US', dateOptions);
+
+        document.getElementById('score-text').innerText = `${scoreTotal} / 30`;
+        document.getElementById('percentage-text').innerText = (activeLanguage === 'id' ? `Persentase Pemahaman: ` : `Total Literacy Rate: `) + `${overallPct}%`;
+        
+        document.getElementById('txt-ai').innerText = pctP1 + "%";
+        document.getElementById('bar-ai').style.width = pctP1 + "%";
+        document.getElementById('txt-install').innerText = pctP2 + "%";
+        document.getElementById('bar-install').style.width = pctP2 + "%";
+        document.getElementById('txt-github').innerText = pctP3 + "%";
+        document.getElementById('bar-github').style.width = pctP3 + "%";
+
+        const badgeArea = document.getElementById('badge-area');
+        const analysisText = document.getElementById('analysis-text');
+        const dashboard = document.getElementById('result-dashboard');
+        
+        dashboard.style.display = "block";
+        
+        if (scoreTotal > 25) {
+            badgeArea.innerHTML = activeLanguage === 'id' ? 
+                '<span class="status-badge status-highly-rec">LEVEL 3: POWER USER / CHAMPION</span>' : 
+                '<span class="status-badge status-highly-rec">LEVEL 3: POWER USER / CHAMPION</span>';
+            
+            analysisText.innerText = activeLanguage === 'id' ?
+                "Karyawan memiliki tingkat literasi AI yang sangat matang dan mahir secara taktis operasional serta paham mitigasi risiko data siber. Rencana Pelatihan Selanjutnya: Karyawan ini tidak butuh training dasar. Libatkan mereka langsung dalam kelompok kerja khusus internal ('AI Internal Champions') untuk memimpin proyek otomatisasi workflow kustom skala divisi atau latih mereka menggunakan n8n/Python tingkat lanjut." :
+                "The employee possesses highly mature AI literacy, operational tactical proficiency, and strong cyber risk mitigation awareness. Future Training Action Plan: This employee does not require basic literacy drills. Fast-track them into internal 'AI Working Groups' to spearhead visual modular canvas automated architectures (like n8n automation blocks).";
+        } else if (scoreTotal >= 15) {
+            badgeArea.innerHTML = activeLanguage === 'id' ? 
+                '<span class="status-badge status-consider">LEVEL 2: CASUAL USER / PENGGUNA AKTIF</span>' : 
+                '<span class="status-badge status-consider">LEVEL 2: CASUAL USER / ACTIVE USER</span>';
+            
+            analysisText.innerText = activeLanguage === 'id' ?
+                "Karyawan sudah rutin memakai ChatGPT/Claude untuk mempermudah draf teks tugas harian, namun kompetensinya belum optimal (sering terjebak format acak dan kurang paham regulasi proteksi kebocoran data siber). Rencana Pelatihan Selanjutnya: Berikan pelatihan terfokus tentang 'Prompt Engineering Tingkat Lanjut Korporat' (menulis penugasan instruksi sistem bertahap) serta edukasi mendalam mengenai aturan pembatasan privasi data sensitif kantor." :
+                "The employee utilizes ChatGPT/Claude routinely for basic textual drafting workloads, but clear skill gaps persist across structuring constraints or data governance behaviors. Future Training Action Plan: Enroll them into intermediate 'Corporate Prompt Engineering' deep dives focusing heavily on structural output templates and sensitive data masking.";
+        } else {
+            badgeArea.innerHTML = activeLanguage === 'id' ? 
+                '<span class="status-badge status-not-rec">LEVEL 1: SKEPTIS / PEMULA GA-TEK</span>' : 
+                '<span class="status-badge status-not-rec">LEVEL 1: AI NOVICE / SKEPTIC NOVICE</span>';
+            
+            analysisText.innerText = activeLanguage === 'id' ?
+                "Karyawan terdeteksi jarang atau belum pernah mengadopsi alat asisten AI secara benar dalam pekerjaan mereka, kemungkinan karena faktor resistensi perubahan atau bingung cara menggunakannya. Rencana Pelatihan Selanjutnya: Wajib dimasukkan ke dalam kelas 'Dasar Literasi AI & Pengenalan Aplikasi Kerja Digital' dari nol. Ajarkan teori dasar, demonstrasi cara login, menulis perintah sederhana, dan cara merangkum dokumen panjang." :
+                "The employee features minimal to zero proactive adoption of smart interactive co-pilots within their daily shift framework due to technology friction or resistance vectors. Future Training Action Plan: Target them into fundamental 'Office AI Literacy 101' bootcamps from scratch. Focus on hands-on login tutorials, and simple summarization prompts.";
+        }
+        
+        dashboard.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
