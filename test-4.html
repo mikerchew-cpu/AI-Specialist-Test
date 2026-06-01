@@ -171,6 +171,27 @@
             margin-bottom: 15px;
         }
 
+        .sample-toggle {
+            display: inline-block;
+            font-size: 13px;
+            color: var(--secondary-color);
+            cursor: pointer;
+            margin-bottom: 10px;
+            user-select: none;
+        }
+        .sample-toggle:hover { text-decoration: underline; }
+        .sample-answer {
+            display: none;
+            background-color: #fffbeb;
+            border: 1px solid #f6e05e;
+            border-left: 4px solid #d69e2e;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
         .feedback-box {
             display: none;
             background-color: #e8f8f5;
@@ -312,6 +333,13 @@
             </label>
             <textarea class="prompt-textarea" id="prompt-q1" placeholder="Masukkan draf prompt Anda... / Enter your prompt blueprint..."></textarea>
             
+            <div class="sample-toggle" onclick="toggleSample('sample-q1')">📖 Lihat Contoh Jawaban / View Sample Answer</div>
+            <div class="sample-answer" id="sample-q1">
+                <strong class="lang-id">Contoh Jawaban:</strong><strong class="lang-en">Sample Answer:</strong><br>
+                <span class="lang-id">"Bertindaklah sebagai Sekretaris Korporat Profesional. Rangkum teks transkrip rapat di bawah ini menjadi Memo Ringkas. Abaikan obrolan basa-basi. Format keluaran wajib berupa tabel dengan kolom: No, Nama Karyawan, Tugas yang Ditugaskan, dan Tenggat Waktu."</span>
+                <span class="lang-en">"Act as an Expert Corporate Secretary. Distill the attached unstructured notes into an Executive Memo. Filter out casual side talks. Format output into a table with columns: No, Owner Name, Assigned Action Item, and Expected Deadline."</span>
+            </div>
+            
             <div class="feedback-box" id="feed-q1">
                 <div class="feedback-title">💡 <span class="lang-id">Kerangka Struktur Jawaban Ideal:</span><span class="lang-en">Ideal Response Blueprint Framework:</span></div>
                 <div class="lang-id">Prompt Anda harus mengandung unsur: "Bertindaklah sebagai Sekretaris Korporat Profesional [Persona]. Rangkum teks transkrip rapat di bawah ini menjadi Memo Ringkas [Tugas]. Abaikan obrolan basa-basi [Batasan]. Format keluaran wajib berupa tabel yang berisi kolom: No, Nama Karyawan, Tugas yang Ditugaskan, dan Tenggat Waktu [Format Kendali]."</div>
@@ -337,6 +365,13 @@
                 <span class="lang-en">Write Your Better Prompt Here (Apply Local Isolation & Structured Format rules):</span>
             </label>
             <textarea class="prompt-textarea" id="prompt-q2" placeholder="Masukkan draf prompt Anda... / Enter your prompt blueprint..."></textarea>
+            
+            <div class="sample-toggle" onclick="toggleSample('sample-q2')">📖 Lihat Contoh Jawaban / View Sample Answer</div>
+            <div class="sample-answer" id="sample-q2">
+                <strong class="lang-id">Contoh Jawaban:</strong><strong class="lang-en">Sample Answer:</strong><br>
+                <span class="lang-id">"Bertindaklah sebagai Data Specialist QC. Analisis teks email keluhan di dalam tanda ###. Ekstrak informasi dalam format JSON dengan kunci: 'customer_name', 'sentiment_level', 'product_type'. Jangan berikan teks pembuka atau penutup, langsung keluarkan JSON."</span>
+                <span class="lang-en">"Act as a Data Quality Analyst. Evaluate the customer email wrapped between ###. Extract into strict JSON with keys: 'customer_name', 'sentiment_level', 'product_type'. Omit any conversational preamble."</span>
+            </div>
             
             <div class="feedback-box" id="feed-q2">
                 <div class="feedback-title">💡 <span class="lang-id">Kerangka Struktur Jawaban Ideal:</span><span class="lang-en">Ideal Response Blueprint Framework:</span></div>
@@ -364,6 +399,13 @@
             </label>
             <textarea class="prompt-textarea" id="prompt-q3" placeholder="Jelaskan taktik optimasi anggaran token Anda... / Outline your token allocation saving strategies..."></textarea>
             
+            <div class="sample-toggle" onclick="toggleSample('sample-q3')">📖 Lihat Contoh Jawaban / View Sample Answer</div>
+            <div class="sample-answer" id="sample-q3">
+                <strong class="lang-id">Contoh Jawaban:</strong><strong class="lang-en">Sample Answer:</strong><br>
+                <span class="lang-id">"1) Gunakan Claude Projects / Custom GPT untuk menyimpan file SOP 5 halaman sekali di system prompt. 2) Terapkan negative prompting agar output AI singkat dan padat, menghemat token keluaran."</span>
+                <span class="lang-en">"1) Deploy Claude Projects / Custom GPT to store the 5-page SOP once in the system prompt. 2) Apply negative constraints limiting output length to reduce token costs."</span>
+            </div>
+            
             <div class="feedback-box" id="feed-q3">
                 <div class="feedback-title">💡 <span class="lang-id">Kerangka Strategi Finansial Ideal:</span><span class="lang-en">Ideal Financial Strategy Blueprint:</span></div>
                 <div class="lang-id">Kandat harus menjawab dengan solusi fungsional taktis: 1) Memanfaatkan fitur **Claude Projects (Knowledge Base)** atau **Custom GPTs** untuk menaruh file SOP 5 halaman itu satu kali saja di tingkat sistem, sehingga karyawan cukup mengetik pertanyaan pendek tanpa melampirkan teks berulang-ulang. 2) Menggunakan instruksi batasan ketat (*Negative Prompting*) agar output jawaban AI pendek dan padat, menghemat token keluaran (*output token expenses*).</div>
@@ -378,6 +420,11 @@
 </div>
 
 <script>
+    function toggleSample(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
     function toggleLanguage(lang) {
         const idEls = document.querySelectorAll('.lang-id');
         const enEls = document.querySelectorAll('.lang-en');
