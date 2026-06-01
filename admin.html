@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — AI Competency Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #2d3748;
+            min-height: 100vh;
+        }
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            width: 380px;
+            text-align: center;
+        }
+        .login-box h1 { font-size: 22px; margin-bottom: 8px; color: #1a365d; }
+        .login-box p { font-size: 14px; color: #718096; margin-bottom: 25px; }
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: #1a365d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .login-box button:hover { background: #2b6cb0; }
+        .login-error { color: #e53e3e; font-size: 13px; margin-top: 10px; display: none; }
+
+        .admin-panel { display: none; }
+        .topbar {
+            background: #1a365d;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .topbar h2 { font-size: 18px; }
+        .topbar button {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .topbar button:hover { background: rgba(255,255,255,0.1); }
+        .tabs {
+            display: flex;
+            background: white;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 0 30px;
+        }
+        .tab {
+            padding: 14px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            color: #718096;
+            transition: all 0.2s;
+        }
+        .tab:hover { color: #2d3748; }
+        .tab.active { color: #1a365d; border-bottom-color: #1a365d; }
+        .content { padding: 30px; max-width: 1200px; margin: 0 auto; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            margin-bottom: 25px;
+        }
+        .card h3 { font-size: 16px; margin-bottom: 15px; color: #1a365d; }
+
+        .provider-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .provider-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+        }
+        .provider-item label {
+            font-weight: 600;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .provider-item input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .provider-item .saved-badge {
+            font-size: 12px;
+            color: #38a169;
+            display: none;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .toggle-row label { font-weight: 600; font-size: 14px; }
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: #cbd5e0;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-switch.on { background: #38a169; }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        .toggle-switch.on::after { transform: translateX(22px); }
+
+        .btn-save {
+            padding: 10px 28px;
+            background: #2b6cb0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-save:hover { background: #1a365d; }
+        .save-msg { color: #38a169; font-size: 13px; margin-top: 10px; display: none; }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .results-table th, .results-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .results-table th { background: #f7fafc; font-weight: 600; color: #4a5568; }
+        .results-table tr:hover td { background: #f7fafc; }
+        .badge-test {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+        }
+        .badge-t1 { background: #2b6cb0; }
+        .badge-t2 { background: #16a085; }
+        .badge-t3 { background: #805ad5; }
+        .badge-t4 { background: #e67e22; }
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #e53e3e;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-delete:hover { text-decoration: underline; }
+        .no-results { color: #a0aec0; font-size: 14px; text-align: center; padding: 40px; }
+
+        .pwd-section input {
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 300px;
+        }
+        .pwd-section button {
+            padding: 10px 20px;
+            background: #2b6cb0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .pwd-section button:hover { background: #1a365d; }
+        .pwd-msg { font-size: 13px; margin-top: 8px; }
+
+        @media (max-width: 768px) {
+            .provider-grid { grid-template-columns: 1fr; }
+            .results-table { font-size: 12px; }
+            .results-table th, .results-table td { padding: 6px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <h1>🔐 Admin Panel</h1>
+        <p>AI Competency Test — Result Management</p>
+        <input type="password" id="login-password" placeholder="Masukkan password admin" onkeydown="if(event.key==='Enter')adminLogin()">
+        <button onclick="adminLogin()">Login</button>
+        <div class="login-error" id="login-error">Password salah!</div>
+    </div>
+</div>
+
+<div class="admin-panel" id="adminPanel">
+    <div class="topbar">
+        <h2>⚙️ Admin Panel — AI Competency Test</h2>
+        <button onclick="adminLogout()">Logout</button>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="providers" onclick="switchTab('providers')">🤖 AI Providers</div>
+        <div class="tab" data-tab="results" onclick="switchTab('results')">📊 Test Results</div>
+        <div class="tab" data-tab="settings" onclick="switchTab('settings')">⚙️ Settings</div>
+    </div>
+
+    <div class="content">
+        <!-- AI PROVIDERS TAB -->
+        <div class="tab-content active" id="tab-providers">
+            <div class="card">
+                <h3>AI Provider API Keys</h3>
+                <p style="font-size:14px;color:#718096;margin-bottom:20px;">Konfigurasi API key untuk setiap penyedia AI. Keys tersimpan di browser admin. Jika toggle diaktifkan, responden tidak perlu memasukkan API key saat menggunakan fitur analisis AI.</p>
+
+                <div class="toggle-row">
+                    <label>Gunakan API keys dari Admin (responden tidak perlu input key)</label>
+                    <div class="toggle-switch" id="adminKeysToggle" onclick="toggleAdminKeys()"></div>
+                    <span id="toggleStatus" style="font-size:13px;color:#718096;">Nonaktif</span>
+                </div>
+
+                <div class="provider-grid">
+                    <div class="provider-item">
+                        <label>OpenAI</label>
+                        <input type="password" id="key-openai" placeholder="sk-..." oninput="document.getElementById('saved-openai').style.display='none'">
+                        <span class="saved-badge" id="saved-openai">✅ Tersimpan</span>
+                    </div>
+                    <div class="provider-item">
+                        <label>Claude (Anthropic)</label>
+                        <input type="password" id="key-claude" placeholder="sk-ant-..." oninput="document.getElementById('saved-claude').style.display='none'">
+                        <span class="saved-badge" id="saved-claude">✅ Tersimpan</span>
+                    </div>
+                    <div class="provider-item">
+                        <label>Gemini</label>
+                        <input type="password" id="key-gemini" placeholder="AIza..." oninput="document.getElementById('saved-gemini').style.display='none'">
+                        <span class="saved-badge" id="saved-gemini">✅ Tersimpan</span>
+                    </div>
+                    <div class="provider-item">
+                        <label>DeepSeek</label>
+                        <input type="password" id="key-deepseek" placeholder="sk-..." oninput="document.getElementById('saved-deepseek').style.display='none'">
+                        <span class="saved-badge" id="saved-deepseek">✅ Tersimpan</span>
+                    </div>
+                </div>
+
+                <button class="btn-save" onclick="saveProviderKeys()" style="margin-top:20px;">Simpan Semua API Keys</button>
+                <div class="save-msg" id="providerSaveMsg">✅ API Keys berhasil disimpan!</div>
+            </div>
+        </div>
+
+        <!-- TEST RESULTS TAB -->
+        <div class="tab-content" id="tab-results">
+            <div class="card">
+                <h3>📋 Test Results</h3>
+                <div id="resultsContainer">
+                    <div class="no-results">Belum ada hasil tes yang tersimpan.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div class="tab-content" id="tab-settings">
+            <div class="card">
+                <h3>Ubah Password Admin</h3>
+                <div class="pwd-section">
+                    <input type="password" id="new-password" placeholder="Password baru">
+                    <button onclick="changePassword()">Simpan Password</button>
+                    <div class="pwd-msg" id="pwd-msg"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Data Management</h3>
+                <button class="btn-save" onclick="clearAllResults()" style="background:#e53e3e;">Hapus Semua Hasil Tes</button>
+                <button class="btn-save" onclick="exportResults()" style="background:#38a169;margin-left:10px;">Export Results (JSON)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ADMIN_PWD_KEY = 'admin_password';
+    const DEFAULT_PWD = 'admin123';
+
+    function getPassword() { return localStorage.getItem(ADMIN_PWD_KEY) || DEFAULT_PWD; }
+
+    function adminLogin() {
+        const pwd = document.getElementById('login-password').value;
+        if (pwd === getPassword()) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAdminData();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+        }
+    }
+
+    function adminLogout() {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('login-password').value = '';
+        document.getElementById('login-error').style.display = 'none';
+    }
+
+    function switchTab(name) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('active', t.id === 'tab-' + name));
+    }
+
+    function loadAdminData() {
+        loadProviderKeys();
+        loadResults();
+        loadToggleState();
+    }
+
+    function loadProviderKeys() {
+        const providers = ['openai', 'claude', 'gemini', 'deepseek'];
+        providers.forEach(p => {
+            const val = localStorage.getItem('admin_ai_key_' + p);
+            if (val) {
+                document.getElementById('key-' + p).value = val;
+                document.getElementById('saved-' + p).style.display = 'inline';
+            }
+        });
+    }
+
+    function saveProviderKeys() {
+        const providers = ['openai', 'claude', 'gemini', 'deepseek'];
+        providers.forEach(p => {
+            const val = document.getElementById('key-' + p).value.trim();
+            if (val) {
+                localStorage.setItem('admin_ai_key_' + p, val);
+                document.getElementById('saved-' + p).style.display = 'inline';
+            }
+        });
+        document.getElementById('providerSaveMsg').style.display = 'block';
+        setTimeout(() => document.getElementById('providerSaveMsg').style.display = 'none', 3000);
+    }
+
+    function toggleAdminKeys() {
+        const t = document.getElementById('adminKeysToggle');
+        const current = localStorage.getItem('admin_ai_use_keys') === 'true';
+        const next = !current;
+        localStorage.setItem('admin_ai_use_keys', next ? 'true' : 'false');
+        updateToggleUI(next);
+    }
+
+    function loadToggleState() {
+        const enabled = localStorage.getItem('admin_ai_use_keys') === 'true';
+        updateToggleUI(enabled);
+    }
+
+    function updateToggleUI(enabled) {
+        const t = document.getElementById('adminKeysToggle');
+        t.classList.toggle('on', enabled);
+        document.getElementById('toggleStatus').textContent = enabled ? 'Aktif' : 'Nonaktif';
+    }
+
+    function loadResults() {
+        const container = document.getElementById('resultsContainer');
+        const raw = localStorage.getItem('test_results');
+        if (!raw) {
+            container.innerHTML = '<div class="no-results">Belum ada hasil tes yang tersimpan.</div>';
+            return;
+        }
+        const results = JSON.parse(raw);
+        if (!results.length) {
+            container.innerHTML = '<div class="no-results">Belum ada hasil tes yang tersimpan.</div>';
+            return;
+        }
+
+        let html = `<table class="results-table">
+            <thead><tr>
+                <th>Tanggal</th>
+                <th>Test</th>
+                <th>Nama</th>
+                <th>Divisi</th>
+                <th>Skor</th>
+                <th>Detail</th>
+                <th>Hapus</th>
+            </tr></thead><tbody>`;
+
+        results.forEach((r, idx) => {
+            const badgeClass = 'badge-t' + (r.testId || '1');
+            html += `<tr>
+                <td>${r.date || '-'}</td>
+                <td><span class="badge-test ${badgeClass}">${r.testName || 'Test'}</span></td>
+                <td>${r.participant || '-'}</td>
+                <td>${r.dept || '-'}</td>
+                <td><strong>${r.score || '-'}</strong></td>
+                <td><button class="btn-save" style="padding:4px 12px;font-size:12px;" onclick="viewDetail(${idx})">Lihat</button></td>
+                <td><button class="btn-delete" onclick="deleteResult(${idx})">✕</button></td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        html += `<p style="margin-top:15px;font-size:13px;color:#718096;">Total: ${results.length} hasil tes</p>`;
+        container.innerHTML = html;
+    }
+
+    function viewDetail(idx) {
+        const raw = localStorage.getItem('test_results');
+        if (!raw) return;
+        const results = JSON.parse(raw);
+        const r = results[idx];
+        const detail = [
+            '=== DETAIL HASIL TES ===',
+            'Test: ' + (r.testName || '-'),
+            'Nama: ' + (r.participant || '-'),
+            'Divisi: ' + (r.dept || '-'),
+            'Telepon: ' + (r.phone || '-'),
+            'Tanggal: ' + (r.date || '-'),
+            'Skor: ' + (r.score || '-'),
+            '',
+            '--- Jawaban ---',
+            r.answers || '(tidak tersedia)'
+        ].join('\n');
+        alert(detail);
+    }
+
+    function deleteResult(idx) {
+        if (!confirm('Hapus hasil tes ini?')) return;
+        const raw = localStorage.getItem('test_results');
+        if (!raw) return;
+        const results = JSON.parse(raw);
+        results.splice(idx, 1);
+        localStorage.setItem('test_results', JSON.stringify(results));
+        loadResults();
+    }
+
+    function clearAllResults() {
+        if (!confirm('Hapus SEMUA hasil tes? Tindakan ini tidak dapat dibatalkan.')) return;
+        localStorage.removeItem('test_results');
+        loadResults();
+    }
+
+    function exportResults() {
+        const raw = localStorage.getItem('test_results');
+        if (!raw) { alert('Tidak ada data untuk diexport.'); return; }
+        const blob = new Blob([raw], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'test-results-export.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function changePassword() {
+        const newPwd = document.getElementById('new-password').value.trim();
+        const msg = document.getElementById('pwd-msg');
+        if (!newPwd || newPwd.length < 4) {
+            msg.textContent = 'Password minimal 4 karakter.';
+            msg.style.color = '#e53e3e';
+            return;
+        }
+        localStorage.setItem(ADMIN_PWD_KEY, newPwd);
+        document.getElementById('new-password').value = '';
+        msg.textContent = '✅ Password berhasil diubah!';
+        msg.style.color = '#38a169';
+        setTimeout(() => msg.textContent = '', 3000);
+    }
+</script>
+
+</body>
+</html>

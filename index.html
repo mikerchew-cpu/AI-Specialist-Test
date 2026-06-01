@@ -321,6 +321,7 @@
 
     <div class="footer-note lang-id">Pilih tes sesuai peran yang dilamar. Hasil akan ditampilkan setelah pengiriman jawaban.</div>
     <div class="footer-note lang-en">Choose the test matching the applied role. Results are shown after submission.</div>
+    <div style="margin-top:15px;font-size:12px;"><a href="admin.html" style="color:#a0aec0;text-decoration:none;">⚙️ Admin</a></div>
 
     <div class="ai-section">
         <h2 class="lang-id" style="font-size:20px;color:var(--primary);margin-bottom:8px;">🤖 Analisis Jawaban dengan AI</h2>
@@ -357,8 +358,24 @@
     let selectedProvider = localStorage.getItem('ai_provider') || 'openai';
 
     document.addEventListener('DOMContentLoaded', function() {
-        const savedKey = localStorage.getItem('ai_api_key');
-        if (savedKey) document.getElementById('api-key-input').value = savedKey;
+        const useAdminKeys = localStorage.getItem('admin_ai_use_keys') === 'true';
+        if (useAdminKeys) {
+            const providers = ['openai', 'claude', 'gemini', 'deepseek'];
+            providers.forEach(p => {
+                const key = localStorage.getItem('admin_ai_key_' + p);
+                if (key && !document.getElementById('api-key-input').value) {
+                    document.getElementById('api-key-input').value = key;
+                }
+            });
+            if (providers.some(p => localStorage.getItem('admin_ai_key_' + p))) {
+                document.querySelector('.api-input-row').style.display = 'none';
+                const p = document.querySelector('.ai-section p');
+                if (p) p.textContent = '🔑 API key dari admin digunakan secara otomatis.';
+            }
+        } else {
+            const savedKey = localStorage.getItem('ai_api_key');
+            if (savedKey) document.getElementById('api-key-input').value = savedKey;
+        }
         document.querySelectorAll('.provider-btn').forEach(b => {
             b.classList.toggle('active', b.dataset.provider === selectedProvider);
         });
@@ -379,8 +396,13 @@
     }
 
     async function analyzeWithAI() {
-        const apiKey = document.getElementById('api-key-input').value.trim();
-        if (apiKey) localStorage.setItem('ai_api_key', apiKey);
+        let apiKey = document.getElementById('api-key-input').value.trim();
+        if (!apiKey) {
+            const adminKey = localStorage.getItem('admin_ai_key_' + selectedProvider);
+            if (adminKey) apiKey = adminKey;
+        } else if (apiKey) {
+            localStorage.setItem('ai_api_key', apiKey);
+        }
         const answers = document.getElementById('ai-answers-input').value.trim();
         const statusEl = document.getElementById('ai-status');
         const resultEl = document.getElementById('ai-result');
