@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uji Kompetensi AI Operasional / Operational AI Competency Test</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #16a085;
+            --success-color: #27ae60;
+            --fail-color: #c0392b;
+            --background-color: #f4f6f7;
+            --text-color: #34495e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            gap: 5px;
+            background-color: #edf2f7;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+        }
+
+        .lang-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px double #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        .meta-info {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .participant-box {
+            background-color: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        .participant-box h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        .form-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .form-control {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-control label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-control input {
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .section-title {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 8px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #edf2f7;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #edf2f7;
+        }
+
+        .option-label input {
+            margin-right: 12px;
+            margin-top: 5px;
+        }
+
+        .correct-answer {
+            background-color: #d4efdf !important;
+            border-color: #27ae60 !important;
+            font-weight: bold;
+        }
+
+        .wrong-answer {
+            background-color: #fadbd8 !important;
+            border-color: #c0392b !important;
+        }
+
+        .action-area {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn-submit, .btn-print {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-print {
+            background-color: var(--success-color);
+            margin-top: 20px;
+        }
+
+        #result-dashboard {
+            display: none;
+            margin-top: 40px;
+            padding: 35px;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .result-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .score-big {
+            font-size: 64px;
+            font-weight: bold;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            font-weight: bold;
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .status-highly-rec { background-color: var(--success-color); }
+        .status-consider { background-color: #f39c12; }
+        .status-not-rec { background-color: var(--fail-color); }
+
+        .analysis-section {
+            margin-top: 30px;
+            text-align: left;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 25px;
+        }
+
+        .skill-container { margin-bottom: 18px; }
+        .skill-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress-bar-bg {
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            height: 15px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+        .fill-ai { background-color: #3498db; }
+        .fill-install { background-color: #9b59b6; }
+        .fill-github { background-color: #e67e22; }
+
+        .print-meta {
+            display: none;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2d3748;
+            padding-bottom: 15px;
+        }
+
+        .lang-en { display: none; }
+
+        @media print {
+            body { background-color: #ffffff; color: #000000; font-size: 12pt; }
+            .container { box-shadow: none; padding: 0; margin: 0; max-width: 100%; }
+            #quiz-form, .header, .participant-box, .btn-print, .lang-switcher { display: none !important; }
+            #result-dashboard { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+            .print-meta { display: block !important; }
+            .score-big { color: #000000 !important; font-size: 40pt; }
+            .status-badge { border: 2px solid #000000; color: #000000 !important; background-color: transparent !important; }
+            .progress-bar-bg { border: 1px solid #000000; background-color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="lang-switcher no-print">
+        <button class="lang-btn active" id="btn-id" onclick="toggleLanguage('id')">ID</button>
+        <button class="lang-btn" id="btn-en" onclick="toggleLanguage('en')">EN</button>
+    </div>
+
+    <div class="header">
+        <h1 class="lang-id">Uji Kompetensi AI Tingkat Menengah (Operational Specialist)</h1>
+        <h1 class="lang-en">AI Competency Test: Mid-Tier Operational Specialist</h1>
+        
+        <div class="meta-info lang-id">Waktu: 60 Menit | Sifat: Pilihan Ganda (30 Pertanyaan) | Fokus: Aplikasi AI, Instalasi Lokal & Otomatisasi Low-Code</div>
+        <div class="meta-info lang-en">Time: 60 Minutes | Type: Multiple Choice (30 Questions) | Focus: AI Tools, Local Installation & Low-Code Automation</div>
+    </div>
+
+    <!-- PARTICIPANT INFORMATION -->
+    <div class="participant-box" id="info-box">
+        <h3 class="lang-id">Formulir Data Diri Peserta</h3>
+        <h3 class="lang-en">Participant Personal Details Form</h3>
+        <div class="form-group">
+            <div class="form-control">
+                <label class="lang-id">Nama Lengkap <span style="color:red">*</span></label>
+                <label class="lang-en">Full Name <span style="color:red">*</span></label>
+                <input type="text" id="p_name" placeholder="Nama / Name" required>
+            </div>
+            <div class="form-control">
+                <label class="lang-id">Alamat Email <span style="color:red">*</span></label>
+                <label class="lang-en">Email Address <span style="color:red">*</span></label>
+                <input type="email" id="p_email" placeholder="email@company.com" required>
+            </div>
+            <div class="form-control">
+                <label class="lang-id">Nomor Telepon / WA <span style="color:red">*</span></label>
+                <label class="lang-en">Phone / WhatsApp Number <span style="color:red">*</span></label>
+                <input type="tel" id="p_phone" placeholder="0812xxxxxxxx" required>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPORT CARD DASHBOARD -->
+    <div id="result-dashboard">
+        <div class="print-meta">
+            <h2 class="lang-id" style="margin: 0 0 10px 0; text-transform: uppercase;">KARTU HASIL ASESMEN AI INTERNAL</h2>
+            <h2 class="lang-en" style="margin: 0 0 10px 0; text-transform: uppercase;">INTERNAL AI ASSESSMENT REPORT CARD</h2>
+            <p><strong class="lang-id">Nama:</strong><strong class="lang-en">Name:</strong> <span id="lbl-print-name">-</span></p>
+            <p><strong class="lang-id">Email:</strong><strong class="lang-en">Email:</strong> <span id="lbl-print-email">-</span></p>
+            <p><strong class="lang-id">Telepon:</strong><strong class="lang-en">Phone:</strong> <span id="lbl-print-phone">-</span></p>
+            <p><strong class="lang-id">Tanggal:</strong><strong class="lang-en">Date:</strong> <span id="lbl-print-date">-</span></p>
+        </div>
+
+        <h2 class="lang-id" style="text-align: center; color: var(--primary-color); margin-top: 0;">HASIL EVALUASI OPERASIONAL AI</h2>
+        <h2 class="lang-en" style="text-align: center; color: var(--primary-color); margin-top: 0;">AI OPERATIONAL EVALUATION SCORE</h2>
+        
+        <div class="result-grid">
+            <div class="score-big" id="score-text">0 / 30</div>
+            <div id="percentage-text" style="font-size: 20px; font-weight: 600;">(0%)</div>
+            <div id="badge-area"></div>
+        </div>
+
+        <div class="analysis-section">
+            <h3 class="lang-id">Analisis Pemetaan Keahlian (Skill Profiling):</h3>
+            <h3 class="lang-en">Skill Mapping Analysis (Skill Profiling):</h3>
+            
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span class="lang-id">Penggunaan AI Premium & Prompt Engineering (Soal 1-10)</span>
+                    <span class="lang-en">Premium AI Usage & Prompt Engineering (Q1-10)</span>
+                    <span id="txt-ai">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-ai" class="progress-bar-fill fill-ai"></div></div>
+            </div>
+
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span class="lang-id">Instalasi & Manajemen AI Lokal (Ollama) [Soal 11-20]</span>
+                    <span class="lang-en">Local AI Installation & Management (Ollama) [Q11-20]</span>
+                    <span id="txt-install">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-install" class="progress-bar-fill fill-install"></div></div>
+            </div>
+
+            <div class="skill-container">
+                <div class="skill-name">
+                    <span class="lang-id">Pemanfaatan GitHub & Otomatisasi Low-Code [Soal 21-30]</span>
+                    <span class="lang-en">GitHub Utilization & Low-Code Automation [Q21-30]</span>
+                    <span id="txt-github">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div id="bar-github" class="progress-bar-fill fill-github"></div></div>
+            </div>
+
+            <h3 style="margin-top: 30px; color: #4a5568; border-bottom: 1px solid #edf2f7; padding-bottom: 5px;"><span class="lang-id">Kesimpulan HRD:</span><span class="lang-en">HRD Conclusion:</span></h3>
+            <p id="analysis-text" style="font-size: 15px; font-weight: 500; color: #2d3748; line-height: 1.7; text-align: justify;"></p>
+            
+            <div style="text-align: center;">
+                <button type="button" class="btn-print" onclick="window.print()"><span class="lang-id">Cetak / Simpan ke PDF</span><span class="lang-en">Print / Save to PDF</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORM QUESTIONS -->
+    <form id="quiz-form">
+        
+        <!-- SECTION 1 -->
+        <div class="section-title">
+            <span class="lang-id">BAGIAN 1: AI PREMIUM (CLAUDE/CHATGPT) & PROMPT ENGINEERING</span>
+            <span class="lang-en">PART 1: PREMIUM AI (CLAUDE/CHATGPT) & PROMPT ENGINEERING</span>
+        </div>
+
+        <div class="question-block" data-qnum="1">
+            <div class="question-text lang-id">1. Fitur "Projects" di Claude Pro paling cocok digunakan untuk kebutuhan kantor yang mana?</div>
+            <div class="question-text lang-en">1. What is the most appropriate office use case for the "Projects" feature in Claude Pro?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q1" value="A"> <span class="lang-id">A. Membuat gambar presentasi resolusi tinggi otomatis.</span><span class="lang-en">A. Automatically generating high-resolution presentation images.</span></label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> <span class="lang-id">B. Membuat ruang kerja terisolasi yang diisi dokumen internal kantor sebagai basis pengetahuan obrolan.</span><span class="lang-en">B. Creating an isolated workspace loaded with internal office documents as a chat knowledge base.</span></label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> <span class="lang-id">C. Melacak jam kerja dan kehadiran karyawan admin secara online.</span><span class="lang-en">C. Tracking the working hours and attendance of admin employees online.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="2">
+            <div class="question-text lang-id">2. Teknik penulisan prompt dengan memberikan beberapa contoh output yang benar di dalam instruksi sebelum meminta AI memproses data baru disebut...</div>
+            <div class="question-text lang-en">2. The prompting technique of providing a few correct output examples within the instructions before asking the AI to process new data is called...</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q2" value="A"> <span>A. Zero-Shot Prompting</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> <span>B. Few-Shot Prompting</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> <span>C. Role Prompting</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="3">
+            <div class="question-text lang-id">3. Jika Anda ingin hasil analisis dokumen di ChatGPT atau Claude selalu konsisten dan tidak berubah-ubah formatnya, apa instruksi terbaik yang harus ditambahkan?</div>
+            <div class="question-text lang-en">3. If you want the document analysis results in ChatGPT or Claude to always be consistent and not change in format, what is the best instruction to add?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q3" value="A"> <span class="lang-id">A. "Berikan jawaban terbaik dan lakukan dengan sangat cepat."</span><span class="lang-en">A. "Provide the best answer and do it very quickly."</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> <span class="lang-id">B. Tentukan format keluaran secara kaku, contoh: "Output wajib berupa JSON atau gunakan 3 poin bullet-point ini."</span><span class="lang-en">B. Define a rigid output structure, e.g., "The output must strictly be in JSON or use these 3 bullet points."</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> <span class="lang-id">C. "Jelaskan dengan sedetail mungkin tanpa melewatkan satu kata pun."</span><span class="lang-en">C. "Explain in as much detail as possible without skipping a single word."</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="4">
+            <div class="question-text lang-id">4. Apa yang dimaksud dengan "Context Window" atau Jendela Konteks pada ChatGPT dan Claude?</div>
+            <div class="question-text lang-en">4. What is meant by "Context Window" in ChatGPT and Claude?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q4" value="A"> <span class="lang-id">A. Ukuran jendela browser tempat pengguna mengetik instruksi prompt.</span><span class="lang-en">A. The size of the browser window where users type prompt instructions.</span></label>
+                <label class="option-label"><input type="radio" name="q4" value="B"> <span class="lang-id">B. Batas maksimal jumlah teks dokumen (input & output) yang dapat dipahami dan diingat oleh AI dalam satu sesi obrolan.</span><span class="lang-en">B. The maximum text limit (input & output tokens) that the AI can read and remember within a single chat session.</span></label>
+                <label class="option-label"><input type="radio" name="q4" value="C"> <span class="lang-id">C. Durasi waktu tunggu respons AI sebelum koneksi dinyatakan terputus.</span><span class="lang-en">C. The waiting time duration for the AI's response before the connection times out.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="5">
+            <div class="question-text lang-id">5. Fitur "Artifacts" di Claude sangat berguna ketika karyawan kantor meminta AI untuk...</div>
+            <div class="question-text lang-en">5. The "Artifacts" feature in Claude is particularly useful when office employees ask the AI to...</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q5" value="A"> <span class="lang-id">A. Menerjemahkan file suara rekaman rapat secara langsung.</span><span class="lang-en">A. Translate a voice recording of a meeting directly.</span></label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> <span class="lang-id">B. Membuat draf kode web, teks dokumen panjang, atau visual terpisah yang bisa langsung dilihat hasilnya secara real-time di jendela sebelah kanan.</span><span class="lang-en">B. Generate web code drafts, long document texts, or separate visuals that can be previewed in real-time in a dedicated right-hand window.</span></label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> <span class="lang-id">C. Mengirim email otomatis ke daftar kontak pelanggan.</span><span class="lang-en">C. Send automated emails to a customer contact list.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="6">
+            <div class="question-text lang-id">6. Apa fungsi utama dari pengaktifan opsi "Chat History & Training" di akun ChatGPT Plus kerja karyawan dimatikan (*Disabled*)?</div>
+            <div class="question-text lang-en">6. What is the primary purpose of turning off (Disabling) the "Chat History & Training" option on employees' work ChatGPT Plus accounts?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q6" value="A"> <span class="lang-id">A. Menghemat kuota pemakaian internet kantor secara signifikan.</span><span class="lang-en">A. Significantly saving the office internet bandwidth usage.</span></label>
+                <label class="option-label"><input type="radio" name="q6" value="B"> <span class="lang-id">B. Menjamin data rahasia atau SOP kantor yang diunggah ke ChatGPT tidak disimpan dan tidak dijadikan bahan pelatihan model masa depan oleh OpenAI.</span><span class="lang-en">B. Ensuring confidential office data or SOPs uploaded to ChatGPT are not stored or used for future model training by OpenAI.</span></label>
+                <label class="option-label"><input type="radio" name="q6" value="C"> <span class="lang-id">C. Mengubah gaya tulisan AI menjadi lebih formal dan kaku secara baku.</span><span class="lang-en">C. Changing the AI's writing style to be automatically more formal and rigid.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="7">
+            <div class="question-text lang-id">7. Fitur "Custom GPTs" di ChatGPT Plus memungkinkan seorang implementator AI kantor untuk...</div>
+            <div class="question-text lang-en">7. The "Custom GPTs" feature in ChatGPT Plus allows an office AI implementer to...</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q7" value="A"> <span class="lang-id">A. Membeli lisensi software microsoft office gratis untuk semua komputer.</span><span class="lang-en">A. Purchase free Microsoft Office software licenses for all computers.</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> <span class="lang-id">B. Membuat versi kustom ChatGPT yang sudah dikunci dengan instruksi, file pengetahuan kantor, dan keahlian khusus tertentu untuk dibagikan ke tim internal.</span><span class="lang-en">B. Build a custom version of ChatGPT locked with specific instructions, office knowledge files, and specialized skills to be shared with the internal team.</span></label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> <span class="lang-id">C. Memperbaiki kerusakan sistem Windows dari jarak jauh.</span><span class="lang-en">C. Repair broken Windows systems remotely.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="8">
+            <div class="question-text lang-id">8. Saat menggunakan ChatGPT untuk memeriksa kualitas laporan, apa kegunaan utama dari teknik prompt "Chain of Thought" (Rangkaian Pemikiran)?</div>
+            <div class="question-text lang-en">8. When using ChatGPT to check report quality, what is the primary benefit of the "Chain of Thought" prompting technique?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q8" value="A"> <span class="lang-id">A. Membuat output draf laporan menjadi sangat pendek dan ringkas.</span><span class="lang-en">A. Forcing the report draft output to be very short and concise.</span></label>
+                <label class="option-label"><input type="radio" name="q8" value="B"> <span class="lang-id">B. Memerintahkan AI untuk berpikir secara bertahap langkah-demi-langkah sebelum memberikan kesimpulan akhir, sehingga akurasi analisis logika menjadi jauh lebih tinggi.</span><span class="lang-en">B. Instructing the AI to reason step-by-step before giving a final conclusion, making the logical analysis accuracy much higher.</span></label>
+                <label class="option-label"><input type="radio" name="q8" value="C"> <span class="lang-id">C. Mengubah bahasa laporan dari bahasa Inggris ke Indonesia secara otomatis.</span><span class="lang-en">C. Translating the report language from English to Indonesian automatically.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="9">
+            <div class="question-text lang-id">9. Manakah cara paling efisien bagi staf administrasi untuk menguji efektivitas sebuah prompt baru sebelum disebarkan ke divisi lain?</div>
+            <div class="question-text lang-en">9. What is the most efficient way for administrative staff to test the effectiveness of a new prompt before rolling it out to other divisions?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q9" value="A"> <span class="lang-id">A. Langsung memakainya pada dokumen asli perusahaan tanpa dicoba terlebih dahulu.</span><span class="lang-en">A. Deploying it directly on original company documents without initial trials.</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="B"> <span class="lang-id">B. Mengujinya menggunakan beberapa skenario variasi data uji dummy (data tiruan) untuk melihat apakah AI memberikan respons yang konsisten dan akurat.</span><span class="lang-en">B. Testing it using multiple scenarios of dummy text data to check if the AI gives consistent and accurate responses.</span></label>
+                <label class="option-label"><input type="radio" name="q9" value="C"> <span class="lang-id">C. Meminta programmer coding menulis script Python baru untuk melakukan validasi prompt.</span><span class="lang-en">C. Asking a programmer to write a new Python script to validate the prompt.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="10">
+            <div class="question-text lang-id">10. Jika Anda mengunggah file gambar nota pembelian yang buram ke ChatGPT dan meminta AI mengekstrak teks total harganya, teknologi dasar AI apa yang sedang bekerja membaca gambar tersebut?</div>
+            <div class="question-text lang-en">10. If you upload a blurry image of a purchase receipt to ChatGPT and ask it to extract the total price text, which foundational AI capability is active?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q10" value="A"> <span>A. Text-to-Speech Processing</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> <span>B. Vision Capability (Multimodal OCR)</span></label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> <span>C. Semantic Coding Extension</span></label>
+            </div>
+        </div>
+
+
+        <!-- SECTION 2 -->
+        <div class="section-title">
+            <span class="lang-id">BAGIAN 2: INSTALASI & MANAJEMEN AI LOKAL (OLLAMA / OFFLINE)</span>
+            <span class="lang-en">PART 2: LOCAL AI INSTALLATION & MANAGEMENT (OLLAMA / OFFLINE)</span>
+        </div>
+
+        <div class="question-block" data-qnum="11">
+            <div class="question-text lang-id">11. Mengapa manajemen perusahaan tertarik memasang AI lokal menggunakan Ollama di server kantor sendiri dibandingkan memakai chat cloud publik?</div>
+            <div class="question-text lang-en">11. Why would management be interested in deploying local AI using Ollama on office servers instead of public cloud chats?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q11" value="A"> <span class="lang-id">A. Karena AI lokal otomatis terhubung ke database google secara real-time.</span><span class="lang-en">A. Because local AI automatically links to Google databases in real-time.</span></label>
+                <label class="option-label"><input type="radio" name="q11" value="B"> <span class="lang-id">B. Data rahasia dokumen kantor dijamin 100% aman di jaringan lokal, tidak ada data terkirim ke internet, dan penggunaan model AI murni gratis tanpa biaya API.</span><span class="lang-en">B. Confidential office data is 100% secure within the local network, no data is sent to the internet, and model usage is entirely free without API costs.</span></label>
+                <label class="option-label"><input type="radio" name="q11" value="C"> <span class="lang-id">C. Kecepatan merespons pertanyaan dari AI lokal pasti mengalahkan server ChatGPT cloud premium.</span><span class="lang-en">C. Local AI response speed is guaranteed to outperform premium cloud ChatGPT servers.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="12">
+            <div class="question-text lang-id">12. Setelah mengunduh aplikasi utama Ollama, bagaimana cara operasional yang paling standar untuk mengunduh model AI seperti Llama 3 atau Deepseek-R1 ke dalam sistem komputer?</div>
+            <div class="question-text lang-en">12. After downloading the Ollama application, what is the standard operational method to fetch AI models like Llama 3 or Deepseek-R1 onto the machine?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q12" value="A"> <span class="lang-id">A. Membuka folder Windows Explorer dan melakukan copy-paste file dari flashdisk.</span><span class="lang-en">A. Opening Windows Explorer and copy-pasting files from a flash drive.</span></label>
+                <label class="option-label"><input type="radio" name="q12" value="B"> <span class="lang-id">B. Membuka Terminal / Command Prompt dan mengetik perintah teks seperti `ollama run llama3`.</span><span class="lang-en">B. Opening the Terminal / Command Prompt and typing a text command such as `ollama run llama3`.</span></label>
+                <label class="option-label"><input type="radio" name="q12" value="C"> <span class="lang-id">C. Mengklik kanan pada desktop dan memilih menu "Update AI Model".</span><span class="lang-en">C. Right-clicking the desktop and selecting the "Update AI Model" option.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="13">
+            <div class="question-text lang-id">13. Karyawan administrasi kesulitan memakai Ollama karena tidak ada tombol tampilan visual (hanya berupa baris kode hitam terminal). Aplikasi tambahan gratis mana yang harus Anda instal agar mereka mendapat tampilan chat web mirip ChatGPT?</div>
+            <div class="question-text lang-en">13. Admin staff find Ollama hard to use because it lacks a graphical interface. Which free tool should you install to provide them with a modern chat UI like ChatGPT?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q13" value="A"> <span>A. Open WebUI (atau AnythingLLM)</span></label>
+                <label class="option-label"><input type="radio" name="q13" value="B"> <span>B. Microsoft Visual Studio Code</span></label>
+                <label class="option-label"><input type="radio" name="q13" value="C"> <span>C. WinRAR Archive Extractor</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="14">
+            <div class="question-text lang-id">14. Saat memilih spesifikasi komputer kantor untuk menjalankan model AI lokal dengan lancar tanpa macet, komponen hardware mana yang paling wajib diperhatikan kapasitas memori (VRAM)-nya?</div>
+            <div class="question-text lang-en">14. When selecting office computer hardware configurations to run local AI models smoothly, which component's memory capacity (VRAM) is the most critical factor?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q14" value="A"> <span class="lang-id">A. Kartu Grafis / VGA (GPU) Dedikasi</span><span class="lang-en">A. Dedicated Graphics Card / VGA (GPU)</span></label>
+                <label class="option-label"><input type="radio" name="q14" value="B"> <span class="lang-id">B. Kapasitas Harddisk HDD</span><span class="lang-en">B. Harddisk Storage HDD Capacity</span></label>
+                <label class="option-label"><input type="radio" name="q14" value="C"> <span class="lang-id">C. Casing CPU Terbuka</span><span class="lang-en">C. Open CPU Air Cooling Chassis</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="15">
+            <div class="question-text lang-id">15. Di dalam aplikasi Open WebUI yang terhubung ke Ollama, bagaimana seorang spesialis AI kantor memasukkan dokumen peraturan internal agar bisa dibaca oleh seluruh staf?</div>
+            <div class="question-text lang-en">15. Inside the Open WebUI application connected to Ollama, how does an office AI specialist upload internal regulation files so all staff can access them?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q15" value="A"> <span class="lang-id">A. Mengetik ulang seluruh isi dokumen di kolom chat satu per satu setiap pagi.</span><span class="lang-en">A. Manually typing out the document contents in the chat bar one by one every morning.</span></label>
+                <label class="option-label"><input type="radio" name="q15" value="B"> <span class="lang-id">B. Mengunggahnya ke menu "Documents" / "Knowledge" di dasbor admin Open WebUI agar sistem melakukan pembacaan otomatis (*Knowledge Base*).</span><span class="lang-en">B. Uploading them to the "Documents" / "Knowledge" menu in the Open WebUI admin dashboard for automatic database integration (Knowledge Base).</span></label>
+                <label class="option-label"><input type="radio" name="q15" value="C"> <span class="lang-id">C. Mengirimkan file tersebut lewat WhatsApp ke nomor masing-masing karyawan.</span><span class="lang-en">C. Dispatching the file through WhatsApp to every employee's personal mobile.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="16">
+            <div class="question-text lang-id">16. Apa arti dari angka parameter di belakang nama model AI lokal, contohnya: `llama3:8b` atau `mistral:7b`?</div>
+            <div class="question-text lang-en">16. What does the parameter notation suffix behind local AI model names signify, for example: `llama3:8b` or `mistral:7b`?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q16" value="A"> <span class="lang-id">A. Kecepatan download file model dalam satuan Megabytes per detik.</span><span class="lang-en">A. The file download speed rating measured in Megabytes per second.</span></label>
+                <label class="option-label"><input type="radio" name="q16" value="B"> <span class="lang-id">B. Jumlah parameter bobot kecerdasan model (8 Miliar / 7 Miliar), di mana semakin besar angkanya membutuhkan spesifikasi hardware komputer yang semakin tinggi pula.</span><span class="lang-en">B. The scale of neural intelligence weight parameters (8 Billion / 7 Billion), where higher numbers require exponentially more powerful computer hardware.</span></label>
+                <label class="option-label"><input type="radio" name="q16" value="C"> <span class="lang-id">C. Batas durasi pemakaian AI dalam satuan jam kerja kantor.</span><span class="lang-en">C. The absolute lifetime runtime limit of the AI measured in shift hours.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="17">
+            <div class="question-text lang-id">17. Jika Anda ingin membagikan akses AI lokal di komputer server kantor agar bisa dibuka oleh laptop karyawan lain yang tersambung di Wi-Fi kantor yang sama, pengaturan dasar apa yang harus dimodifikasi?</div>
+            <div class="question-text lang-en">17. If you want to share local AI access hosted on the office server so other employee laptops on the same office Wi-Fi can access it, what basic configuration change is needed?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q17" value="A"> <span class="lang-id">A. Membeli kabel internet LAN baru sepanjang 50 meter.</span><span class="lang-en">A. Purchasing a brand new 50-meter long physical LAN networking cable.</span></label>
+                <label class="option-label"><input type="radio" name="q17" value="B"> <span class="lang-id">B. Mengubah konfigurasi variabel lingkungan IP Host Ollama (`OLLAMA_HOST`) dari `127.0.0.1` (lokal sendiri) menjadi `0.0.0.0` (akses jaringan terbuka).</span><span class="lang-en">B. Modifying the Ollama IP Host environment variable (`OLLAMA_HOST`) from `127.0.0.1` (localhost) to `0.0.0.0` (open network access).</span></label>
+                <label class="option-label"><input type="radio" name="q17" value="C"> <span class="lang-id">C. Mematikan password Wi-Fi kantor agar semua orang bisa masuk tanpa batas.</span><span class="lang-en">C. Disabling the master router Wi-Fi security keys completely.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="18">
+            <div class="question-text lang-id">18. Apa langkah penanganan pertama yang tepat jika komputer staf admin tiba-tiba hang/beku saat mencoba menjalankan model AI lokal berukuran besar?</div>
+            <div class="question-text lang-en">18. What is the correct initial troubleshooting step if an admin staff's computer suddenly freezes when trying to launch a large local AI model?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q18" value="A"> <span class="lang-id">A. Membakar seluruh komponen komputer karena dianggap terkena virus berbahaya.</span><span class="lang-en">A. Scrapping the hardware architecture completely suspecting virus infection loops.</span></label>
+                <label class="option-label"><input type="radio" name="q18" value="B"> <span class="lang-id">B. Menghentikan proses model lewat Task Manager, lalu menghapus model tersebut dan menggantinya dengan varian model parameter yang lebih kecil (misal pindah dari 14B ke 7B atau 1.5B).</span><span class="lang-en">B. Terminating the process via Task Manager, purging the file, and replacing it with a smaller model parameter variant (e.g., migrating from 14B down to 7B or 1.5B).</span></label>
+                <label class="option-label"><input type="radio" name="q18" value="C"> <span class="lang-id">C. Membiarkan komputer membeku selama 24 jam penuh tanpa menyentuh tombol power.</span><span class="lang-en">C. Keeping the workstation frozen for 24 continuous hours without cycling the power node.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="19">
+            <div class="question-text lang-id">19. Model AI lokal "Deepseek-R1" memiliki keunggulan khusus yang sangat dicari untuk tugas analisis QC internal perusahaan, yaitu kemampuan dalam hal...</div>
+            <div class="question-text lang-en">19. The local AI model "Deepseek-R1" features a specialized capability highly sought after for internal corporate quality control analysis, which is...</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q19" value="A"> <span class="lang-id">A. Membuat video animasi marketing otomatis dari teks singkat.</span><span class="lang-en">A. Building automated corporate marketing visual assets out of text strings.</span></label>
+                <label class="option-label"><input type="radio" name="q19" value="B"> <span class="lang-id">B. Fitur penalaran mendalam (*Reasoning/CoT*) bawaan yang memaparkan proses logika berpikirnya secara transparan sebelum menampilkan kesimpulan jawaban.</span><span class="lang-en">B. Built-in deep reasoning capability (CoT) that transparently logs its logical thinking process before yielding the final answer output.</span></label>
+                <label class="option-label"><input type="radio" name="q19" value="C"> <span class="lang-id">C. Otomatis membersihkan virus yang ada di dalam file kiriman karyawan.</span><span class="lang-en">C. Automatically cleaning local desktop malware vectors embedded in uploaded emails.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="20">
+            <div class="question-text lang-id">20. Apakah sistem AI lokal (Ollama & Open WebUI) tetap dapat berfungsi memproses draf dokumen kantor jika kabel internet utama kantor terputus total (*Offline*)?</div>
+            <div class="question-text lang-en">20. Can local AI systems (Ollama & Open WebUI) continue to process office document drafts if the master office internet fiber gateway drops completely (Offline)?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q20" value="A"> <span class="lang-id">A. Tidak bisa, seluruh sistem kecerdasan buatan wajib tersambung ke satelit pusat cloud.</span><span class="lang-en">A. No, all AI clusters are strictly dependent on constant live tracking connections to cloud hubs.</span></label>
+                <label class="option-label"><input type="radio" name="q20" value="B"> <span class="lang-id">B. Ya, tetap berfungsi 100% normal karena seluruh database kecerdasan model sudah tersimpan di hard drive server lokal komputer kantor.</span><span class="lang-en">B. Yes, it remains 100% operational because the model weights database is hosted locally inside the company's internal server hard drives.</span></label>
+                <label class="option-label"><input type="radio" name="q20" value="C"> <span class="lang-id">C. Hanya fungsi unggah gambar saja yang mati, sisanya lancar.</span><span class="lang-en">C. Only the multi-modal photo array uploading drops, while text inputs remain functional.</span></label>
+            </div>
+        </div>
+
+
+        <!-- SECTION 3 -->
+        <div class="section-title">
+            <span class="lang-id">BAGIAN 3: PEMANFAATAN GITHUB & OTOMATISASI WORKFLOW LOW-CODE</span>
+            <span class="lang-en">PART 3: GITHUB UTILIZATION & LOW-CODE AUTOMATION WORKFLOWS</span>
+        </div>
+
+        <div class="question-block" data-qnum="21">
+            <div class="question-text lang-id">21. Di situs GitHub, di bagian manakah menu paling aman dan cepat untuk mengunduh aplikasi otomasi AI siap pakai berbentuk file installer otomatis (seperti format `.exe` untuk Windows atau `.dmg` untuk Mac)?</div>
+            <div class="question-text lang-en">21. Inside a GitHub software repository page, which targeted sub-menu panel is correct for downloading ready-to-run installation executable files (like `.exe` or `.dmg`)?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q21" value="A"> <span>"Pull Requests" tab</span></label>
+                <label class="option-label"><input type="radio" name="q21" value="B"> <span>"Releases" section (berada di menu sebelah kanan halaman)</span><span class="lang-en">"Releases" section (located on the right sidebar index panel)</span></label>
+                <label class="option-label"><input type="radio" name="q21" value="C"> <span>"Insights" master panel</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="22">
+            <div class="question-text lang-id">22. Dokumen panduan teks yang WAJIB dibuka dan dibaca pertama kali saat Anda mengunduh perkakas AI dari GitHub agar tahu cara pemakaian dan spesifikasinya disebut...</div>
+            <div class="question-text lang-en">22. Which primary documentation layout file must be opened first when cloning automation tools from GitHub to master configuration rules?</div>
+            <div class="options-container">
+                <label class="option-label"><span>index.html</span></label>
+                <label class="option-label"><span>README.md</span></label>
+                <label class="option-label"><span>config.json</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="23">
+            <div class="question-text lang-id">23. Anda menemukan sebuah script AI otomasi di GitHub yang sangat bagus untuk merangkum video, namun tidak memiliki installer jadi. Langkah baris kode terminal apa yang paling standar digunakan untuk menyalin repositori itu ke komputer Anda?</div>
+            <div class="question-text lang-en">23. You discover a brilliant script repository on GitHub that lacks pre-built installation files. What standard terminal command clones that repository into your desktop iron environment?</div>
+            <div class="options-container">
+                <label class="option-label"><span>A. git clone [URL_REPOSITORI]</span></label>
+                <label class="option-label"><span>B. copy repository [URL_REPOSITORI]</span></label>
+                <label class="option-label"><span>C. download-all-code --link=[URL_REPOSITORI]</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="24">
+            <div class="question-text lang-id">24. Jika Anda ingin menghubungkan n8n (visual workflow canvas) dengan akun OpenAI perusahaan, kredensial teks rahasia apa yang wajib dimasukkan sebagai jembatan otorisasi?</div>
+            <div class="question-text lang-en">24. To authorize a bridge linking an n8n visual automation workflow to the corporate OpenAI cloud platform, which secure credential token key is required?</div>
+            <div class="options-container">
+                <label class="option-label"><span>A. HTML Master Tag</span></label>
+                <label class="option-label"><span>B. OpenAI API Key</span></label>
+                <label class="option-label"><span>C. Webhook Listener URL</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="25">
+            <div class="question-text lang-id">25. Manajemen kantor penempatan Jakarta tidak ingin membayar biaya langganan bulanan platform otomasi cloud seperti Zapier yang mahal. Solusi platform alternatif open-source mana yang bisa Anda instal gratis di server kantor sendiri?</div>
+            <div class="question-text lang-en">25. Management refuses to incur continuous monthly SaaS cloud billing fees from Zapier. Which alternative open-source pipeline framework can you host locally for free?</div>
+            <div class="options-container">
+                <label class="option-label"><span>A. n8n (self-hosted open-source version)</span></label>
+                <label class="option-label"><span>B. Google AppSheet Premium Account</span></label>
+                <label class="option-label"><span>C. Adobe Workfront Enterprise Studio</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="26">
+            <div class="question-text lang-id">26. Apa fungsi utama dari "Webhook" di dalam pengaturan sistem otomatisasi pemrosesan dokumen kantor?</div>
+            <div class="question-text lang-en">26. What is the primary function of a "Webhook" configuration link within an office document automation pipeline trigger?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q26" value="A"> <span class="lang-id">A. Berfungsi menyimpan draf file teks ke dalam harddisk cadangan otomatis.</span><span class="lang-en">A. To partition temporary data logs inside isolated storage hard drives.</span></label>
+                <label class="option-label"><input type="radio" name="q26" value="B"> <span class="lang-id">B. Berfungsi sebagai URL pemicu instan yang menerima kiriman notifikasi data secara real-time dari aplikasi luar begitu suatu peristiwa terjadi (misal: saat ada email masuk baru).</span><span class="lang-en">B. To act as a live listener URL that receives push data notifications instantly from external software triggers (e.g., when a new email lands).</span></label>
+                <label class="option-label"><input type="radio" name="q26" value="C"> <span class="lang-id">C. Berfungsi membatasi jumlah halaman dokumen yang diproses AI kantor.</span><span class="lang-en">C. To establish processing page limit restrictions over processed documents.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="27">
+            <div class="question-text lang-id">27. Anda ingin memotong biaya token API bulanan untuk sistem rangkuman teks. Dokumen yang masuk sering kali berulang-ulang isinya. Sistem siap pakai apa yang bisa Anda aktifkan untuk menyimpan jawaban pertanyaan yang mirip di memori lokal?</div>
+            <div class="question-text lang-en">27. To prune recurring monthly API token expenses on report scanning tools where document patterns repeat constantly, which system partition cache maps similar inputs locally?</div>
+            <div class="options-container">
+                <label class="option-label"><span>A. Multi-layer Data Firewall</span></label>
+                <label class="option-label"><span>B. Semantic Caching Node</span></label>
+                <label class="option-label"><span>C. Network Bridge Router Switch</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="28">
+            <div class="question-text lang-id">28. Sistem AI kantor mendadak memunculkan pesan error teks berbunyi "429 Too Many Requests" saat staf memproses dokumen QC secara massal. Apa arti operasional dari error tersebut?</div>
+            <div class="question-text lang-en">28. An integrated system dashboard drops a text error reading "429 Too Many Requests" while processing bulk documents. What does this indicate?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q28" value="A"> <span class="lang-id">A. Kunci token API Key perusahaan salah ketik atau kedaluwarsa.</span><span class="lang-en">A. The enterprise authentication key is typed incorrectly or has expired.</span></label>
+                <label class="option-label"><input type="radio" name="q28" value="B"> <span class="lang-id">B. Kantor melampaui batas batas kecepatan pengiriman data (Rate Limits) yang ditentukan penyedia API dalam satu menit, sehingga kiriman harus diberi jeda waktu istirahat.</span><span class="lang-en">B. The workplace framework has breached the allocated API usage speed limits (Rate Limits) per minute; requests require a retry cooling interval.</span></label>
+                <label class="option-label"><input type="radio" name="q28" value="C"> <span class="lang-id">C. Format file dokumen yang diunggah staf rusak dan tidak bisa terbaca.</span><span class="lang-en">C. The physical upload document file type is broken and completely corrupt.</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="29">
+            <div class="question-text lang-id">29. Dalam menyusun draf laporan mingguan otomatis menggunakan AI di Google Sheets / Excel Online, formula ekstensi mana yang biasanya digunakan untuk memanggil perintah instruksi prompt langsung dari dalam baris sel tabel?</div>
+            <div class="question-text lang-en">29. When building spreadsheet document automation triggers inside Google Sheets grids, which structural extension formula executes custom prompt commands directly from a table cell?</div>
+            <div class="options-container">
+                <label class="option-label"><span>A. =GPT_PROMPT() or =AI_ASK()</span></label>
+                <label class="option-label"><span>B. =SUM_IF_TOTAL_DATA()</span></label>
+                <label class="option-label"><span>C. =VLOOKUP_EXCEL_SHEET()</span></label>
+            </div>
+        </div>
+
+        <div class="question-block" data-qnum="30">
+            <div class="question-text lang-id">30. Apa esensi utama dari mendesain alur kerja otomasi dengan prinsip "Human-in-the-Loop" (Manusia dalam Alur Kontrol) pada sistem administrasi kantor berbasis kecerdasan buatan?</div>
+            <div class="question-text lang-en">30. What is the core essence of engineering an automated workflow following the "Human-in-the-Loop" blueprint across a corporate administrative task track?</div>
+            <div class="options-container">
+                <label class="option-label"><input type="radio" name="q30" value="A"> <span class="lang-id">A. Mengurangi jam kerja karyawan manusia menjadi 0 jam per minggu.</span><span class="lang-en">A. Compressing physical shift hours for human actors down to zero hours flat per week.</span></label>
+                <label class="option-label"><input type="radio" name="q30" value="B"> <span class="lang-id">B. Memposisikan AI sebagai pemroses massal berkecepatan tinggi di awal, namun menyertakan gerbang peninjauan akhir oleh staf manusia sebelum keputusan/laporan penting disahkan demi menjaga akurasi mutlak bisnis.</span><span class="lang-en">B. Positioning the AI stack as a high-speed initial bulk processor, while maintaining a final verification checkpoint by human staff before reports are finalized to protect business integrity.</span></label>
+                <label class="option-label"><input type="radio" name="q30" value="C"> <span class="lang-id">C. Melarang pemakaian program otomasi jika belum disetujui seluruh jajaran direksi.</span><span class="lang-en">C. Restricting the activation of software nodes until total executive board alignments occur.</span></label>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <button type="button" class="btn-submit" onclick="evaluate30QuestionsQuiz()"><span class="lang-id">Kirim Jawaban Resmi</span><span class="lang-en">Submit Official Answers</span></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let currentLanguageState = 'id';
+
+    const officialAnswerKeys = {
+        q1: "B", q2: "B", q3: "B", q4: "B", q5: "B",
+        q6: "B", q7: "A", q8: "B", q9: "B", q10: "B",
+        q11: "B", q12: "B", q13: "A", q14: "A", q15: "B",
+        q16: "B", q17: "B", q18: "B", q19: "B", q20: "B",
+        q21: "B", q22: "B", q23: "A", q24: "B", q25: "A",
+        q26: "B", q27: "B", q28: "B", q29: "A", q30: "B"
+    };
+
+    function toggleLanguage(lang) {
+        currentLanguageState = lang;
+        const idElements = document.querySelectorAll('.lang-id');
+        const enElements = document.querySelectorAll('.lang-en');
+        
+        if (lang === 'id') {
+            idElements.forEach(el => el.style.display = 'block');
+            enElements.forEach(el => el.style.display = 'none');
+            document.getElementById('btn-id').classList.add('active');
+            document.getElementById('btn-en').classList.remove('active');
+        } else {
+            idElements.forEach(el => el.style.display = 'none');
+            enElements.forEach(el => el.style.display = 'block');
+            document.getElementById('btn-id').classList.remove('active');
+            document.getElementById('btn-en').classList.add('active');
+        }
+    }
+
+    function evaluate30QuestionsQuiz() {
+        const nameVal = document.getElementById('p_name').value.trim();
+        const emailVal = document.getElementById('p_email').value.trim();
+        const phoneVal = document.getElementById('p_phone').value.trim();
+
+        if (!nameVal || !emailVal || !phoneVal) {
+            if (currentLanguageState === 'id') {
+                alert("Mohon lengkapi Nama, Email, dan Nomor Telepon Anda terlebih dahulu sebelum mengirim jawaban.");
+            } else {
+                alert("Please fill in your Full Name, Email, and Phone Number before submitting your answers.");
+            }
+            document.getElementById('info-box').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        let totalCorrect = 0;
+        let scoreAI = 0; let scoreInstall = 0; let scoreGithub = 0;
+        const mainForm = document.getElementById('quiz-form');
+        
+        document.querySelectorAll('.option-label').forEach(label => {
+            label.classList.remove('correct-answer', 'wrong-answer');
+        });
+
+        for (let i = 1; i <= 30; i++) {
+            const questionName = 'q' + i;
+            const chosen = mainForm.elements[questionName].value;
+            const correctSolution = officialAnswerKeys[questionName];
+            
+            const targetBlock = document.querySelector(`[data-qnum="${i}"]`);
+            const labels = targetBlock.querySelectorAll('.option-label');
+            
+            labels.forEach(label => {
+                const inputElement = label.querySelector('input');
+                if (inputElement.value === correctSolution) {
+                    label.classList.add('correct-answer');
+                }
+                if (chosen && chosen !== correctSolution && inputElement.value === chosen) {
+                    label.classList.add('wrong-answer');
+                }
+            });
+
+            if (chosen === correctSolution) {
+                totalCorrect++;
+                if (i <= 10) scoreAI++;
+                else if (i <= 20) scoreInstall++;
+                else scoreGithub++;
+            }
+        }
+
+        const pctAI = Math.round((scoreAI / 10) * 100);
+        const pctInstall = Math.round((scoreInstall / 10) * 100);
+        const pctGithub = Math.round((scoreGithub / 10) * 100);
+        const overallPct = Math.round((totalCorrect / 30) * 100);
+
+        document.getElementById('lbl-print-name').innerText = nameVal;
+        document.getElementById('lbl-print-email').innerText = emailVal;
+        document.getElementById('lbl-print-phone').innerText = phoneVal;
+        
+        const timestampOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' };
+        document.getElementById('lbl-print-date').innerText = new Date().toLocaleDateString(currentLanguageState === 'id' ? 'id-ID' : 'en-US', timestampOptions);
+
+        document.getElementById('score-text').innerText = `${totalCorrect} / 30`;
+        document.getElementById('percentage-text').innerText = (currentLanguageState === 'id' ? `Persentase Keberhasilan: ` : `Success Passing Rate: `) + `${overallPct}%`;
+        
+        document.getElementById('txt-ai').innerText = pctAI + "%";
+        document.getElementById('bar-ai').style.width = pctAI + "%";
+        document.getElementById('txt-install').innerText = pctInstall + "%";
+        document.getElementById('bar-install').style.width = pctInstall + "%";
+        document.getElementById('txt-github').innerText = pctGithub + "%";
+        document.getElementById('bar-github').style.width = pctGithub + "%";
+
+        const badgeArea = document.getElementById('badge-area');
+        const analysisText = document.getElementById('analysis-text');
+        const dashboard = document.getElementById('result-dashboard');
+        
+        dashboard.style.display = "block";
+        
+        if (totalCorrect > 25) {
+            badgeArea.innerHTML = currentLanguageState === 'id' ? 
+                '<span class="status-badge status-highly-rec">Sangat Direkomendasikan</span>' : 
+                '<span class="status-badge status-highly-rec">Highly Recommended</span>';
+            
+            analysisText.innerText = currentLanguageState === 'id' ?
+                "Kandidat menunjukkan penguasaan alat praktis AI yang luar biasa untuk level non-programmer. Mereka sangat memahami fitur-fitur Claude Projects, instalasi Ollama lokal offline, serta navigasi GitHub siap pakai. Sangat siap mengedukasi tim administrasi internal perusahaan Anda di Jakarta." :
+                "The candidate demonstrates superb practical AI tools mastery for a non-programmer tier. They deeply comprehend Claude Projects logic, offline local Ollama installations, and navigating ready-to-use GitHub release binaries. Excellent fit to support and upscale your administrative workflows in Jakarta.";
+        } else if (totalCorrect >= 18) {
+            badgeArea.innerHTML = currentLanguageState === 'id' ? 
+                '<span class="status-badge status-consider">Pertimbangkan dengan Catatan</span>' : 
+                '<span class="status-badge status-consider">Consider with Prerequisites</span>';
+            
+            analysisText.innerText = currentLanguageState === 'id' ?
+                "Kandidat memahami dasar-dasar alat AI populer, namun memiliki celah pengetahuan dalam pengoperasian teknis (seperti command terminal Ollama atau struktur repositori GitHub). Layak dipertimbangkan jika kandidat diarahkan untuk fokus pada penulisan instruksi prompt tingkat lanjut (Prompt Engineering) daripada pengelolaan infrastruktur lokal." :
+                "The candidate understands popular AI tools well, but features knowledge gaps across technical execution steps (like Ollama prompt commands or GitHub repository paths). Worth considering if targeted specifically toward Prompt Engineering and staff training rather than maintaining heavy local deployments.";
+        } else {
+            badgeArea.innerHTML = currentLanguageState === 'id' ? 
+                '<span class="status-badge status-not-rec">Tidak Direkomendasikan</span>' : 
+                '<span class="status-badge status-not-rec">Not Recommended</span>';
+            
+            analysisText.innerText = currentLanguageState === 'id' ?
+                "Kandidat tidak memenuhi kriteria minimum untuk peran implementator operasional AI perusahaan. Pengetahuan alat masih sangat mendasar dan belum memiliki pemahaman logis terkait otomatisasi mandiri atau pengelolaan data aman secara lokal." :
+                "The candidate falls below standard expectations for an operational AI deployment champion. Their tool comprehension remains at a basic casual tier and lacks actionable insights regarding workflow automation or secure local data hosting protocols.";
+        }
+        
+        dashboard.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
