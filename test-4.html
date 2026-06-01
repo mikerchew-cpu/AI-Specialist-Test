@@ -298,7 +298,8 @@
         @media print {
             body { background-color: #ffffff; color: #000000; font-size: 12pt; }
             .container { box-shadow: none; padding: 0; margin: 0; max-width: 100%; }
-            #exercise-form, .header, .participant-box, .lang-switcher, .btn-action, .ai-section { display: none !important; }
+            #exercise-form, .header, .participant-box, .lang-switcher, .btn-action, .ai-section .provider-btns, .ai-section .api-input-row, .ai-section .btn-analyze { display: none !important; }
+            .ai-section { display: block !important; border-top: none !important; margin-top: 20px !important; padding-top: 10px !important; }
             #completion-dashboard { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
             .print-meta { display: block !important; }
             .feedback-box { display: block !important; background-color: transparent !important; border: 1px solid #000000 !important; page-break-inside: avoid; }
@@ -754,6 +755,10 @@
             score: 'Submitted (12 tasks)',
             answers: answersText
         });
+
+        // auto-run AI analysis
+        document.querySelector('.ai-section').scrollIntoView({ behavior: 'smooth' });
+        analyzeWithAI();
     }
 
     function saveTestResult(data) {
