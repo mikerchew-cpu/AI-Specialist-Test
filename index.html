@@ -158,87 +158,6 @@
             font-size: 13px;
             color: #a0aec0;
         }
-        .ai-section {
-            margin-top: 45px;
-            border-top: 3px double #e2e8f0;
-            padding-top: 30px;
-            text-align: left;
-        }
-        .provider-btns {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        .provider-btn {
-            padding: 10px 18px;
-            font-size: 13px;
-            font-weight: bold;
-            border: 2px solid #cbd5e0;
-            background: #fff;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-        .provider-btn:hover { border-color: var(--secondary); }
-        .provider-btn.active { border-color: var(--secondary); background: #ebf8ff; }
-        .api-input-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        .api-input-row input {
-            flex: 1;
-            min-width: 250px;
-            padding: 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .ai-textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 14px;
-            resize: vertical;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-        }
-        .btn-analyze {
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px 28px;
-            font-size: 15px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .btn-analyze:hover { background-color: #2f855a; }
-        .btn-analyze:disabled { background-color: #a0aec0; cursor: not-allowed; }
-        .ai-result-box {
-            display: none;
-            background-color: #f0f4ff;
-            border: 1px solid #b3c9ff;
-            border-left: 4px solid #4263eb;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 14px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-        .ai-status {
-            font-size: 13px;
-            color: #718096;
-            margin-bottom: 10px;
-        }
         @media (max-width: 640px) {
             .test-grid { grid-template-columns: 1fr; }
             .portal { padding: 30px 20px; }
@@ -323,140 +242,16 @@
     <div class="footer-note lang-en">Choose the test matching the applied role. Results are shown after submission.</div>
     <div style="margin-top:15px;font-size:12px;"><a href="admin.html" style="color:#a0aec0;text-decoration:none;">⚙️ Admin</a></div>
 
-    <div class="ai-section">
-        <h2 class="lang-id" style="font-size:20px;color:var(--primary);margin-bottom:8px;">🤖 Analisis Jawaban dengan AI</h2>
-        <h2 class="lang-en" style="font-size:20px;color:var(--primary);margin-bottom:8px;">🤖 Analyze Answers with AI</h2>
-        <p class="lang-id" style="font-size:14px;color:#718096;margin-bottom:15px;">Pilih penyedia AI, masukkan API key, dan tempel jawaban Anda dari tes mana pun untuk mendapatkan komentar, skor, dan rekomendasi perbaikan.</p>
-        <p class="lang-en" style="font-size:14px;color:#718096;margin-bottom:15px;">Select an AI provider, enter your API key, and paste your answers from any test to get comments, scores, and improvement recommendations.</p>
-
-        <div class="provider-btns">
-            <button class="provider-btn active" data-provider="openai" onclick="selectProvider('openai')">OpenAI</button>
-            <button class="provider-btn" data-provider="claude" onclick="selectProvider('claude')">Claude</button>
-            <button class="provider-btn" data-provider="gemini" onclick="selectProvider('gemini')">Gemini</button>
-            <button class="provider-btn" data-provider="deepseek" onclick="selectProvider('deepseek')">DeepSeek</button>
-        </div>
-
-        <div class="api-input-row">
-            <input type="password" id="api-key-input" placeholder="API Key">
-            <button class="btn-analyze" id="btn-analyze" onclick="analyzeWithAI()">
-                <span class="lang-id">Analisis →</span>
-                <span class="lang-en">Analyze →</span>
-            </button>
-        </div>
-
-        <label class="instruction-label lang-id" style="display:block;margin-bottom:6px;">Tempel jawaban Anda dari tes yang sudah dikerjakan:</label>
-        <label class="instruction-label lang-en" style="display:block;margin-bottom:6px;">Paste your answers from the test you took:</label>
-        <textarea class="ai-textarea" id="ai-answers-input" placeholder="Contoh: Test 1 - IT Specialist&#10;1. A&#10;2. C&#10;3. B&#10;..."></textarea>
-
-        <div class="ai-status" id="ai-status"></div>
-        <div class="ai-result-box" id="ai-result"></div>
-    </div>
 </div>
 
 <script>
     let lang = 'id';
-    let selectedProvider = localStorage.getItem('ai_provider') || 'openai';
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const useAdminKeys = localStorage.getItem('admin_ai_use_keys') === 'true';
-        if (useAdminKeys) {
-            const providers = ['openai', 'claude', 'gemini', 'deepseek'];
-            providers.forEach(p => {
-                const key = localStorage.getItem('admin_ai_key_' + p);
-                if (key && !document.getElementById('api-key-input').value) {
-                    document.getElementById('api-key-input').value = key;
-                }
-            });
-            if (providers.some(p => localStorage.getItem('admin_ai_key_' + p))) {
-                document.querySelector('.api-input-row').style.display = 'none';
-                const p = document.querySelector('.ai-section p');
-                if (p) p.textContent = '🔑 API key dari admin digunakan secara otomatis.';
-            }
-        } else {
-            const savedKey = localStorage.getItem('ai_api_key');
-            if (savedKey) document.getElementById('api-key-input').value = savedKey;
-        }
-        document.querySelectorAll('.provider-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.provider === selectedProvider);
-        });
-    });
-
     function setLang(l) {
         lang = l;
         document.querySelectorAll('.lang-id').forEach(el => el.style.display = l === 'id' ? 'block' : 'none');
         document.querySelectorAll('.lang-en').forEach(el => el.style.display = l === 'en' ? 'block' : 'none');
         document.getElementById('btn-id').classList.toggle('active', l === 'id');
         document.getElementById('btn-en').classList.toggle('active', l === 'en');
-    }
-
-    function selectProvider(name) {
-        selectedProvider = name;
-        localStorage.setItem('ai_provider', name);
-        document.querySelectorAll('.provider-btn').forEach(b => b.classList.toggle('active', b.dataset.provider === name));
-    }
-
-    async function analyzeWithAI() {
-        let apiKey = document.getElementById('api-key-input').value.trim();
-        if (!apiKey) {
-            const adminKey = localStorage.getItem('admin_ai_key_' + selectedProvider);
-            if (adminKey) apiKey = adminKey;
-        } else if (apiKey) {
-            localStorage.setItem('ai_api_key', apiKey);
-        }
-        const answers = document.getElementById('ai-answers-input').value.trim();
-        const statusEl = document.getElementById('ai-status');
-        const resultEl = document.getElementById('ai-result');
-
-        if (!apiKey) { alert('Please enter your API key.'); return; }
-        if (!answers) { alert('Please paste your answers first.'); return; }
-
-        const lang = document.getElementById('btn-id').classList.contains('active') ? 'id' : 'en';
-        const systemMsg = lang === 'id'
-            ? 'Anda adalah pelatih AI korporat yang ahli mengevaluasi hasil tes kompetensi AI. Analisis jawaban yang diberikan dan berikan: 1) Komentar untuk setiap jawaban, 2) Skor per bagian, 3) Skor total, 4) Rekomendasi perbaikan. Gunakan bahasa Indonesia.'
-            : 'You are an expert corporate AI competency test evaluator. Analyze the answers provided and give: 1) Comments on each answer, 2) Section scores, 3) Total score, 4) Improvement recommendations. Use English.';
-
-        const userPrompt = lang === 'id'
-            ? `Berikut adalah jawaban tes kompetensi AI:\n\n${answers}\n\nTolong berikan analisis lengkap.`
-            : `Here are the AI competency test answers:\n\n${answers}\n\nPlease provide a full analysis.`;
-
-        const btn = document.getElementById('btn-analyze');
-        btn.disabled = true;
-        statusEl.textContent = lang === 'id' ? '⏳ Menganalisis...' : '⏳ Analyzing...';
-        resultEl.style.display = 'none';
-
-        try {
-            let data;
-            if (selectedProvider === 'openai') data = await callAPI('https://api.openai.com/v1/chat/completions', { 'Authorization': 'Bearer ' + apiKey }, { model: 'gpt-4o-mini', messages: [{ role: 'system', content: systemMsg }, { role: 'user', content: userPrompt }], max_tokens: 2000 });
-            else if (selectedProvider === 'claude') data = await callAPI('https://api.anthropic.com/v1/messages', { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' }, { model: 'claude-3-5-sonnet-20241022', max_tokens: 2000, system: systemMsg, messages: [{ role: 'user', content: userPrompt }] });
-            else if (selectedProvider === 'gemini') data = await callGemini(apiKey, systemMsg, userPrompt);
-            else if (selectedProvider === 'deepseek') data = await callAPI('https://api.deepseek.com/v1/chat/completions', { 'Authorization': 'Bearer ' + apiKey }, { model: 'deepseek-chat', messages: [{ role: 'system', content: systemMsg }, { role: 'user', content: userPrompt }], max_tokens: 2000 });
-            resultEl.textContent = data;
-            resultEl.style.display = 'block';
-            statusEl.textContent = '';
-        } catch (err) {
-            statusEl.textContent = (lang === 'id' ? '❌ Gagal: ' : '❌ Failed: ') + err.message;
-        } finally {
-            btn.disabled = false;
-        }
-    }
-
-    async function callAPI(url, headers, body) {
-        const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body) });
-        if (!r.ok) { const e = await r.json(); throw new Error(e.error?.message || r.statusText); }
-        const j = await r.json();
-        if (j.choices) return j.choices[0].message.content;
-        if (j.content) return j.content[0].text;
-        return JSON.stringify(j);
-    }
-
-    async function callGemini(key, system, user) {
-        const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + key, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: system + '\n\n' + user }] }], generationConfig: { maxOutputTokens: 2000 } })
-        });
-        if (!r.ok) { const e = await r.json(); throw new Error(e.error?.message || r.statusText); }
-        const j = await r.json();
-        return j.candidates[0].content.parts[0].text;
     }
 </script>
 
