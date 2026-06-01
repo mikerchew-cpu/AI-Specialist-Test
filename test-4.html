@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Prompt Engineering Kantor / Office Prompt Engineering Exercise</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #2980b9;
+            --success-color: #27ae60;
+            --background-color: #f4f6f7;
+            --text-color: #34495e;
+            --card-border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            gap: 5px;
+            background-color: #edf2f7;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+        }
+
+        .lang-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px double #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        .meta-info {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .participant-box {
+            background-color: #ebf5fb;
+            border: 1px solid #a9ccee;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        .participant-box h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        .form-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .form-control {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-control label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-control input {
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .section-title {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 8px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .exercise-card {
+            background-color: #fff;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .scenario-box {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .bad-example {
+            color: #c0392b;
+            font-size: 13px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .instruction-label {
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .prompt-textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        .feedback-box {
+            display: none;
+            background-color: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            color: var(--success-color);
+            margin-bottom: 5px;
+        }
+
+        .action-area {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn-action {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-action:hover { background-color: var(--primary-color); }
+
+        #completion-dashboard {
+            display: none;
+            margin-top: 40px;
+            padding: 35px;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .print-meta {
+            display: none;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2d3748;
+            padding-bottom: 15px;
+            text-align: left;
+        }
+
+        .lang-en { display: none; }
+
+        @media print {
+            body { background-color: #ffffff; color: #000000; font-size: 12pt; }
+            .container { box-shadow: none; padding: 0; margin: 0; max-width: 100%; }
+            #exercise-form, .header, .participant-box, .lang-switcher, .btn-action { display: none !important; }
+            #completion-dashboard { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+            .print-meta { display: block !important; }
+            .feedback-box { display: block !important; background-color: transparent !important; border: 1px solid #000000 !important; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="lang-switcher no-print">
+        <button class="lang-btn active" id="btn-id" onclick="toggleLanguage('id')">ID</button>
+        <button class="lang-btn" id="btn-en" onclick="toggleLanguage('en')">EN</button>
+    </div>
+
+    <div class="header">
+        <h1 class="lang-id">Latihan Interaktif: Menulis Prompt AI Terbaik</h1>
+        <h1 class="lang-en">Interactive Exercise: Master Corporate AI Prompting</h1>
+        
+        <div class="meta-info lang-id">Tujuan: Melatih staf menulis instruksi terstruktur menggunakan prinsip Persona, Tugas, Konteks, dan Format Kendali.</div>
+        <div class="meta-info lang-en">Objective: Train staff to construct structured prompts using Persona, Task, Context, and Output Formatting principles.</div>
+    </div>
+
+    <div class="participant-box" id="info-box">
+        <h3 class="lang-id">Data Diri Peserta Latihan</h3>
+        <h3 class="lang-en">Participant Training Information</h3>
+        <div class="form-group">
+            <div class="form-control">
+                <label class="lang-id">Nama Lengkap <span style="color:red">*</span></label>
+                <label class="lang-en">Full Name <span style="color:red">*</span></label>
+                <input type="text" id="p_name" placeholder="Nama / Name" required>
+            </div>
+            <div class="form-control">
+                <label class="lang-id">Divisi / Departemen <span style="color:red">*</span></label>
+                <label class="lang-en">Division / Department <span style="color:red">*</span></label>
+                <input type="text" id="p_dept" placeholder="Contoh: Admin / HR / QC" required>
+            </div>
+            <div class="form-control">
+                <label class="lang-id">Nomor Telepon <span style="color:red">*</span></label>
+                <label class="lang-en">Phone Number <span style="color:red">*</span></label>
+                <input type="tel" id="p_phone" placeholder="0812xxxxxxxx" required>
+            </div>
+        </div>
+    </div>
+
+    <div id="completion-dashboard">
+        <div class="print-meta">
+            <h2 class="lang-id" style="margin: 0 0 10px 0;">BERKAS LOG EVALUASI PROMPT KANTOR</h2>
+            <h2 class="lang-en" style="margin: 0 0 10px 0;">OFFICIAL OFFICE PROMPT EVALUATION LOGS</h2>
+            <p><strong class="lang-id">Nama:</strong><strong class="lang-en">Name:</strong> <span id="lbl-name">-</span></p>
+            <p><strong class="lang-id">Divisi:</strong><strong class="lang-en">Department:</strong> <span id="lbl-dept">-</span></p>
+            <p><strong class="lang-id">Telepon:</strong><strong class="lang-en">Phone:</strong> <span id="lbl-print-phone">-</span></p>
+            <p><strong class="lang-id">Tanggal Selesai:</strong><strong class="lang-en">Completion Date:</strong> <span id="lbl-date">-</span></p>
+        </div>
+        <h2 style="color: var(--success-color);" class="lang-id">🎉 LATIHAN SELESAI DISUBMIT!</h2>
+        <h2 style="color: var(--success-color);" class="lang-en">🎉 EXERCISE SUCCESSFULLY SUBMITTED!</h2>
+        <p class="lang-id">Draf jawaban Anda telah tersimpan di sistem. Sila cetak lembar ini menjadi PDF untuk diserahkan ke peninjau portal.</p>
+        <p class="lang-en">Your prompt entries are logged. Please print this page to PDF to submit your execution summaries to the review board.</p>
+        <button type="button" class="btn-action" onclick="window.print()" style="background-color: var(--success-color); margin-top:10px;"><span class="lang-id">Cetak Berkas PDF</span><span class="lang-en">Print to PDF Document</span></button>
+    </div>
+
+    <form id="exercise-form">
+        
+        <div class="section-title">
+            <span class="lang-id">TUGAS 1: MERANGKUM TRANSKRIP RAPAT YANG BERANTAKAN</span>
+            <span class="lang-en">TASK 1: SUMMARIZING MESSY MEETING MINUTES</span>
+        </div>
+        <div class="exercise-card">
+            <div class="scenario-box">
+                <strong class="lang-id">Skenario Kantor:</strong><strong class="lang-en">Office Scenario:</strong><br>
+                <span class="lang-id">Anda memiliki teks catatan rapat internal sepanjang 3 halaman yang kalimatnya berantakan, lompat-lompat, dan dipenuhi obrolan kosong. Manajer Anda meminta ringkasan eksekutif instan yang fokus pada <strong>Action Items</strong> (Siapa harus melakukan apa, dan apa tenggat waktunya).</span>
+                <span class="lang-en">You hold a 3-page unedited transcript of internal meeting notes that is highly unstructured and scattered. Your manager orders an instant executive summary focusing strictly on <strong>Action Items</strong> (Who must do what, and the specific deadlines).</span>
+            </div>
+            <div class="bad-example">
+                ❌ <strong class="lang-id">Contoh Prompt Buruk (Boros & Tidak Jelas):</strong><strong class="lang-en">Bad Prompt Example (Wasteful & Vague):</strong> "Rangkum teks ini ya." / "Summarize this text."
+            </div>
+            <label class="instruction-label">
+                <span class="lang-id">Tulis Prompt Terbaik Anda di Sini (Gunakan panduan Persona + Aturan Batasan Format):</span>
+                <span class="lang-en">Write Your Better Prompt Here (Apply Persona + Explicit Output Constraint rules):</span>
+            </label>
+            <textarea class="prompt-textarea" id="prompt-q1" placeholder="Masukkan draf prompt Anda... / Enter your prompt blueprint..."></textarea>
+            
+            <div class="feedback-box" id="feed-q1">
+                <div class="feedback-title">💡 <span class="lang-id">Kerangka Struktur Jawaban Ideal:</span><span class="lang-en">Ideal Response Blueprint Framework:</span></div>
+                <div class="lang-id">Prompt Anda harus mengandung unsur: "Bertindaklah sebagai Sekretaris Korporat Profesional [Persona]. Rangkum teks transkrip rapat di bawah ini menjadi Memo Ringkas [Tugas]. Abaikan obrolan basa-basi [Batasan]. Format keluaran wajib berupa tabel yang berisi kolom: No, Nama Karyawan, Tugas yang Ditugaskan, dan Tenggat Waktu [Format Kendali]."</div>
+                <div class="lang-en">Your prompt block should incorporate elements of: "Act as an Expert Corporate Secretary [Persona]. Distill the attached unstructured notes into an Executive Memo [Task]. Filter out casual side talks [Negative Constraint]. Format output into a markdown table with columns: No, Owner Name, Assigned Action Item, and Expected Deadline [Output Format Customization]."</div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <span class="lang-id">TUGAS 2: MENYARING DATA DATA KELUHAN PELANGGAN SECARA TERSTRUKTUR</span>
+            <span class="lang-en">TASK 2: FILTERING CUSTOMER COMPLAINT DATA INTO STRUCTURED FORMATS</span>
+        </div>
+        <div class="exercise-card">
+            <div class="scenario-box">
+                <strong class="lang-id">Skenario Kantor:</strong><strong class="lang-en">Office Scenario:</strong><br>
+                <span class="lang-id">Divisi operasional menerima puluhan email keluhan pelanggan setiap hari. Anda ditugaskan meminta AI menyaring email-email tersebut secara massal guna mendeteksi email mana yang bernada <strong>Marah (Urgent)</strong> dan apa jenis produk yang dikeluhkan, agar bisa langsung dimasukkan ke database Excel kantor.</span>
+                <span class="lang-en">The operations team receives dozens of raw consumer grievance emails daily. You are tasked with instructing an AI to batch-scan these entries to extract <strong>Sentiment Tier (Urgent/Normal)</strong> and the specific <strong>Product Category</strong> involved for Microsoft Excel ingestion logs.</span>
+            </div>
+            <div class="bad-example">
+                ❌ <strong class="lang-id">Contoh Prompt Buruk:</strong><strong class="lang-en">Bad Prompt Example:</strong> "Tolong baca email komplain keluhan keluhan ini dan kelompokkan." / "Please read these customer issues and categorize them."
+            </div>
+            <label class="instruction-label">
+                <span class="lang-id">Tulis Prompt Terbaik Anda di Sini (Gunakan panduan Caching Lokal & Output Terstruktur):</span>
+                <span class="lang-en">Write Your Better Prompt Here (Apply Local Isolation & Structured Format rules):</span>
+            </label>
+            <textarea class="prompt-textarea" id="prompt-q2" placeholder="Masukkan draf prompt Anda... / Enter your prompt blueprint..."></textarea>
+            
+            <div class="feedback-box" id="feed-q2">
+                <div class="feedback-title">💡 <span class="lang-id">Kerangka Struktur Jawaban Ideal:</span><span class="lang-en">Ideal Response Blueprint Framework:</span></div>
+                <div class="lang-id">Prompt Anda harus mengandung unsur pembatas data yang jelas: "Bertindaklah sebagai Data Specialist QC. Analisis teks email keluhan di dalam tanda pagar tiga (###). Ekstrak informasi penting dalam format JSON terstruktur yang berisi variabel kunci: 'customer_name', 'sentiment_level', dan 'product_type'. Jangan berikan teks pembuka atau penutup, langsung keluarkan format JSON objek saja."</div>
+                <div class="lang-en">Your prompt string should encompass strict delimiter isolation properties: "Act as a Data Quality Analyst. Evaluate the customer email input wrapped between triple hashtags (###). Extract indices into a rigid structured JSON array template containing keys: 'customer_name', 'sentiment_level', and 'product_type'. Omit any conversational preambles or chat explanations."</div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <span class="lang-id">TUGAS 3: REKAYASA PROMPT HEMAT BIAYA (TOKEN MANAGEMENT)</span>
+            <span class="lang-en">TASK 3: ECONOMICAL PROMPT ENGINEERING (TOKEN BURN MITIGATION)</span>
+        </div>
+        <div class="exercise-card">
+            <div class="scenario-box">
+                <strong class="lang-id">Skenario Kantor:</strong><strong class="lang-en">Office Scenario:</strong><br>
+                <span class="lang-id">Perusahaan melanggan API berbayar (seperti OpenAI/Claude) di mana setiap kata yang dikirim dihitung biayanya (token cost). Staf admin sering melakukan kesalahan dengan menyalin ulang (*copy-paste*) instruksi panduan SOP kantor sepanjang 5 halaman berulang-ulang di setiap baris pertanyaan chat baru, membuat tagihan bulanan kantor jebol.</span>
+                <span class="lang-en">The company pays on-demand usage metrics for model API integrations where every word wire-transmitted levies variable expenses. Admin staff continuously copy-paste full 5-page internal SOP documents over and over inside every single new chat box line question, driving massive corporate billing leaks.</span>
+            </div>
+            <div class="bad-example">
+                ❌ <strong class="lang-id">Contoh Prompt Buruk:</strong><strong class="lang-en">Bad Prompt Example:</strong> [Menempel isi 5 halaman SOP dokumen penuh] + "Berdasarkan teks di atas, apakah cuti melahirkan dibayar?" / [Pastes full 5-page context sheet] + "Based on text above, is maternity leave fully compensated?"
+            </div>
+            <label class="instruction-label">
+                <span class="lang-id">Bagaimana cara Anda memodifikasi taktik penulisan instruksi atau memanfaatkan fitur AI siap pakai agar staf TIDAK perlu menempel isi dokumen 5 halaman itu berulang kali? Jelaskan strategi prompt hemat Anda:</span>
+                <span class="lang-en">How would you restructure the prompt architecture or deploy standard ready-to-use AI feature arrays so staff do NOT have to anchor heavy payload sheets repetitively? Explain your cost-mitigation strategy:</span>
+            </label>
+            <textarea class="prompt-textarea" id="prompt-q3" placeholder="Jelaskan taktik optimasi anggaran token Anda... / Outline your token allocation saving strategies..."></textarea>
+            
+            <div class="feedback-box" id="feed-q3">
+                <div class="feedback-title">💡 <span class="lang-id">Kerangka Strategi Finansial Ideal:</span><span class="lang-en">Ideal Financial Strategy Blueprint:</span></div>
+                <div class="lang-id">Kandat harus menjawab dengan solusi fungsional taktis: 1) Memanfaatkan fitur **Claude Projects (Knowledge Base)** atau **Custom GPTs** untuk menaruh file SOP 5 halaman itu satu kali saja di tingkat sistem, sehingga karyawan cukup mengetik pertanyaan pendek tanpa melampirkan teks berulang-ulang. 2) Menggunakan instruksi batasan ketat (*Negative Prompting*) agar output jawaban AI pendek dan padat, menghemat token keluaran (*output token expenses*).</div>
+                <div class="lang-en">The employee should answer with operational workflow tweaks: 1) Deploying the **Claude Projects (Knowledge Base)** or **Custom GPTs** configurations to store the 5-page master asset exactly once inside system layers, permitting staff to submit light textual queries without attaching context blocks repeatedly. 2) Locking strict *Negative Constraints* limiting output string lengths to prune down output token tracking bills.</div>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <button type="button" class="btn-action" onclick="submitOfficeExercise()"><span class="lang-id">Kirim & Evaluasi Jawaban</span><span class="lang-en">Submit Answers</span></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleLanguage(lang) {
+        const idEls = document.querySelectorAll('.lang-id');
+        const enEls = document.querySelectorAll('.lang-en');
+        
+        if (lang === 'id') {
+            idEls.forEach(el => el.style.display = 'block');
+            enEls.forEach(el => el.style.display = 'none');
+            document.getElementById('btn-id').classList.add('active');
+            document.getElementById('btn-en').classList.remove('active');
+        } else {
+            idEls.forEach(el => el.style.display = 'none');
+            enEls.forEach(el => el.style.display = 'block');
+            document.getElementById('btn-id').classList.remove('active');
+            document.getElementById('btn-en').classList.add('active');
+        }
+    }
+
+    function submitOfficeExercise() {
+        const nameInput = document.getElementById('p_name').value.trim();
+        const deptInput = document.getElementById('p_dept').value.trim();
+        const phoneInput = document.getElementById('p_phone').value.trim();
+
+        const q1Text = document.getElementById('prompt-q1').value.trim();
+        const q2Text = document.getElementById('prompt-q2').value.trim();
+        const q3Text = document.getElementById('prompt-q3').value.trim();
+
+        if (!nameInput || !deptInput || !phoneInput || !q1Text || !q2Text || !q3Text) {
+            alert("Mohon lengkapi seluruh Data Diri dan jawab semua 3 studi kasus latihan terlebih dahulu.");
+            return;
+        }
+
+        document.getElementById('lbl-name').innerText = nameInput;
+        document.getElementById('lbl-dept').innerText = deptInput;
+        document.getElementById('lbl-print-phone').innerText = phoneInput;
+        document.getElementById('lbl-date').innerText = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit'
+        });
+
+        document.getElementById('feed-q1').style.display = 'block';
+        document.getElementById('feed-q2').style.display = 'block';
+        document.getElementById('feed-q3').style.display = 'block';
+        
+        const dashboard = document.getElementById('completion-dashboard');
+        dashboard.style.display = 'block';
+        
+        dashboard.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
