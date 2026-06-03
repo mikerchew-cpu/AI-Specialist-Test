@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Gems — Test 6</title>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #38a169; --bg: #f7fafc; --text: #2d3748; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 30px 20px; }
+        .container { max-width: 850px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); position: relative; }
+        .lang-switcher { position: fixed; top: 20px; right: 30px; display: flex; gap: 5px; background: #edf2f7; padding: 4px; border-radius: 6px; border: 1px solid #cbd5e0; z-index: 100; }
+        .lang-btn { padding: 6px 14px; font-size: 13px; font-weight: bold; border: none; background: none; cursor: pointer; border-radius: 4px; }
+        .lang-btn.active { background: var(--primary); color: white; }
+        .lang-en { display: none; }
+        .company-name { font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: var(--primary); text-align: center; margin-bottom: 5px; }
+        h1 { text-align: center; color: var(--primary); font-size: 20px; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #718096; font-size: 14px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; }
+        .participant-box { background: #ebf5fb; border: 1px solid #a9ccee; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
+        .participant-box h3 { color: var(--secondary); margin-bottom: 12px; font-size: 15px; }
+        .form-group { display: flex; gap: 15px; flex-wrap: wrap; }
+        .form-group input { flex: 1; min-width: 180px; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; }
+        .section-title { background: var(--primary); color: white; padding: 10px 16px; font-size: 15px; font-weight: bold; border-radius: 6px; margin: 25px 0 15px 0; }
+        .question-block { border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px 20px; margin-bottom: 12px; }
+        .question-text { font-size: 14px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
+        .options-container { display: flex; flex-direction: column; gap: 5px; }
+        .option-label { display: flex; align-items: flex-start; gap: 8px; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; border: 1px solid transparent; transition: all 0.2s; }
+        .option-label:hover { background: #f7fafc; border-color: #cbd5e0; }
+        .option-label input[type="radio"] { margin-top: 2px; }
+        .option-label.correct-answer { background: #d4efdf !important; border-color: #27ae60 !important; }
+        .option-label.wrong-answer { background: #fadbd8 !important; border-color: #e74c3c !important; }
+        .result-dashboard { display: none; margin-top: 30px; padding: 30px; border-radius: 12px; border: 2px solid #e2e8f0; text-align: center; }
+        .score-big { font-size: 36px; font-weight: 800; color: var(--primary); }
+        .badge-area { margin: 15px 0; font-size: 16px; font-weight: bold; }
+        .status-highly-rec { color: #27ae60; }
+        .status-consider { color: #f39c12; }
+        .status-not-rec { color: #e74c3c; }
+        .print-meta { display: none; text-align: left; margin-bottom: 15px; border-bottom: 2px solid #2d3748; padding-bottom: 12px; font-size: 14px; }
+        .btn-submit { background: var(--secondary); color: white; border: none; padding: 14px 40px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 25px; }
+        .btn-submit:hover { background: var(--primary); }
+        .btn-print { background: var(--accent); color: white; border: none; padding: 10px 28px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; }
+        .btn-print:hover { background: #2f855a; }
+        @media (max-width: 640px) { .container { padding: 20px; } .form-group input { min-width: 100%; } }
+        @media print { .lang-switcher, .btn-submit, .participant-box { display: none !important; } .result-dashboard { display: block !important; border: none !important; } .print-meta { display: block !important; } .option-label.correct-answer, .option-label.wrong-answer { border: 2px solid #000 !important; } }
+    </style>
+</head>
+<body>
+<div class="lang-switcher">
+    <button class="lang-btn active" id="btn-id" onclick="setLang('id')">ID</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+<div class="container">
+    <div class="company-name lang-id">VANGUARD MINING GROUP</div>
+    <div class="company-name lang-en">VANGUARD MINING GROUP</div>
+    <h1 class="lang-id">TES 6: PEMBUATAN & OPTIMALISASI GEMINI GEMS</h1>
+    <h1 class="lang-en">TEST 6: GEMINI GEMS CREATION & OPTIMIZATION</h1>
+    <div class="subtitle lang-id">15 soal pilihan ganda</div>
+    <div class="subtitle lang-en">15 multiple-choice questions</div>
+
+    <div class="participant-box" id="info-box">
+        <h3 class="lang-id">Data Diri Peserta</h3>
+        <h3 class="lang-en">Participant Information</h3>
+        <div class="form-group">
+            <input type="text" id="p_name" placeholder="Nama / Name">
+            <input type="text" id="p_dept" placeholder="Divisi / Department">
+            <input type="text" id="p_phone" placeholder="Telepon / Phone">
+        </div>
+    </div>
+
+    <div class="result-dashboard" id="result-dashboard">
+        <div class="print-meta" id="print-meta">
+            <p><strong class="lang-id">Nama:</strong><strong class="lang-en">Name:</strong> <span id="lbl-name">-</span></p>
+            <p><strong class="lang-id">Divisi:</strong><strong class="lang-en">Dept:</strong> <span id="lbl-dept">-</span></p>
+            <p><strong class="lang-id">Telepon:</strong><strong class="lang-en">Phone:</strong> <span id="lbl-phone">-</span></p>
+            <p><strong class="lang-id">Tanggal:</strong><strong class="lang-en">Date:</strong> <span id="lbl-date">-</span></p>
+        </div>
+        <div class="score-big" id="score-text">0 / 15</div>
+        <div id="badge-area" class="badge-area"></div>
+        <p id="analysis-text" style="font-size:14px;color:#718096;margin:15px 0;"></p>
+        <button class="btn-print" onclick="window.print()"><span class="lang-id">Cetak ke PDF</span><span class="lang-en">Print to PDF</span></button>
+    </div>
+
+    <form id="quiz-form">
+        <div class="section-title"><span class="lang-id">PEMBUATAN & OPTIMALISASI GEMINI GEMS</span><span class="lang-en">GEMINI GEMS CREATION & OPTIMIZATION</span></div>
+
+        <div class="question-block" data-qnum="1"><div class="question-text"><span class="lang-id">1. Apakah yang dimaksud dengan Google Gemini "Gem"?</span><span class="lang-en">1. What is a Google Gemini "Gem"?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q1" value="A"> <span class="lang-id">A. Mata uang digital premium untuk membeli penyimpanan.</span><span class="lang-en">A. A premium digital currency used to buy storage.</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="B"> <span class="lang-id">B. Versi Gemini yang dikustomisasi dengan perintah dan basis pengetahuan tertentu.</span><span class="lang-en">B. A customized, reusable version of Gemini programmed with specific instructions and knowledge bases.</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="C"> <span class="lang-id">C. Ekstensi browser yang memblokir iklan.</span><span class="lang-en">C. A browser extension that blocks advertisements.</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="D"> <span class="lang-id">D. Perangkat fisik yang terhubung melalui USB.</span><span class="lang-en">D. A physical device connected via USB.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="2"><div class="question-text"><span class="lang-id">2. Ke bagian manakah Anda pergi di antarmuka Gemini untuk membuat pakar kustom baru?</span><span class="lang-en">2. Where do you go in the Gemini interface to create a new custom expert?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q2" value="A"> <span class="lang-id">A. Pengaturan Riwayat</span><span class="lang-en">A. History Settings</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="B"> <span class="lang-id">B. Panel menu samping di bawah pilihan "Gems"</span><span class="lang-en">B. The side menu panel under "Gems"</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="C"> <span class="lang-id">C. Penagihan Akun</span><span class="lang-en">C. Account Billing</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="D"> <span class="lang-id">D. Pengaturan Google Search</span><span class="lang-en">D. Google Search settings</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="3"><div class="question-text"><span class="lang-id">3. Saat menulis perintah inti untuk sebuah Gem, bagian manakah yang menguraikan batasan dasarnya?</span><span class="lang-en">3. When writing the core instructions for a Gem, what section outlines its foundational boundaries?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q3" value="A"> <span class="lang-id">A. Model harga</span><span class="lang-en">A. The pricing model</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="B"> <span class="lang-id">B. Profil lokasi pengguna</span><span class="lang-en">B. The user's location profile</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="C"> <span class="lang-id">C. Perintah sistem yang menentukan peran, aturan, dan batasan ruang lingkup</span><span class="lang-en">C. System instructions specifying role, rules, and scope limitations</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="D"> <span class="lang-id">D. Kolom tanda tangan email</span><span class="lang-en">D. The email signature field</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="4"><div class="question-text"><span class="lang-id">4. Bagaimana Anda bisa memberi Gem kustom akses ke materi referensi internal perusahaan?</span><span class="lang-en">4. How can you give a custom Gem access to internal company reference materials?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q4" value="A"> <span class="lang-id">A. Mengirimkannya via email ke dukungan Google.</span><span class="lang-en">A. By emailing it to Google support.</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="B"> <span class="lang-id">B. Mengunggah file teks atau menautkan file dari Google Drive di bawah bagian "Knowledge".</span><span class="lang-en">B. By uploading text files or linking files from Google Drive under the "Knowledge" section.</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="C"> <span class="lang-id">C. Mengubah kata sandi komputer Anda.</span><span class="lang-en">C. By changing your computer's password.</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="D"> <span class="lang-id">D. Anda tidak dapat menambahkan dokumen eksternal ke Gem.</span><span class="lang-en">D. You cannot add external documents to a Gem.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="5"><div class="question-text"><span class="lang-id">5. Apakah manfaat utama berbagai Gem dengan anggota tim departemen Anda?</span><span class="lang-en">5. What is a major benefit of sharing a Gem with your department team?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q5" value="A"> <span class="lang-id">A. Menghapus email lama secara otomatis.</span><span class="lang-en">A. It deletes old emails automatically.</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="B"> <span class="lang-id">B. Memastikan semua orang menggunakan parameter, gaya, dan standar data yang konsisten.</span><span class="lang-en">B. It ensures everyone uses consistent parameters, styles, and data baselines.</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="C"> <span class="lang-id">C. Mempercepat router internet kantor.</span><span class="lang-en">C. It speeds up the office internet router.</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="D"> <span class="lang-id">D. Melacak kehadiran karyawan.</span><span class="lang-en">D. It tracks employee attendance.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="6"><div class="question-text"><span class="lang-id">6. Jika Anda mengubah dokumen asli di Google Drive yang tertaut ke Knowledge Gem Anda, apa yang terjadi?</span><span class="lang-en">6. If you modify an original Google Drive document linked to your Gem's Knowledge, what happens?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q6" value="A"> <span class="lang-id">A. Gem akan rusak secara permanen.</span><span class="lang-en">A. The Gem will break permanently.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="B"> <span class="lang-id">B. Gemini menggunakan versi terbaru file, mencerminkan pembaruan di interaksi Gem.</span><span class="lang-en">B. Gemini uses the most recent version of the file, reflecting updates in your Gem interactions.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="C"> <span class="lang-id">C. Anda harus menghapus Gem dan membuatnya kembali.</span><span class="lang-en">C. You must delete the Gem and recreate it from scratch.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="D"> <span class="lang-id">D. File berubah menjadi format baca-saja.</span><span class="lang-en">D. The file turns into read-only format.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="7"><div class="question-text"><span class="lang-id">7. Jenis tugas manakah yang paling baik ditangani dengan membuat Gem permanen?</span><span class="lang-en">7. What type of task is best handled by creating a permanent Gem?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q7" value="A"> <span class="lang-id">A. Memeriksa prakiraan cuaca hari ini.</span><span class="lang-en">A. Checking today's weather forecast.</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="B"> <span class="lang-id">B. Menjalankan laporan rekonsiliasi inventaris mingguan yang memerlukan struktur dan nada yang sama setiap Jumat.</span><span class="lang-en">B. Running a weekly inventory reconciliation report requiring the exact same structure and tone every Friday.</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="C"> <span class="lang-id">C. Mencari definisi cepat akronim online.</span><span class="lang-en">C. Searching for a quick definition of an online acronym.</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="D"> <span class="lang-id">D. Meminta rekomendasi tujuan liburan umum.</span><span class="lang-en">D. Asking for a general holiday destination recommendation.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="8"><div class="question-text"><span class="lang-id">8. Pengaturan administratif mana yang mengontrol apakah karyawan dapat mendistribusikan Gem perusahaan secara eksternal?</span><span class="lang-en">8. Which admin setting controls whether employees can distribute corporate Gems externally?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q8" value="A"> <span class="lang-id">A. Google Workspace Admin Console di bawah pengaturan Generative AI / Gemini app</span><span class="lang-en">A. Google Workspace Admin Console under Generative AI / Gemini app settings</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="B"> <span class="lang-id">B. Riwayat browser Chrome pribadi</span><span class="lang-en">B. Personal Chrome browser history</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="C"> <span class="lang-id">C. Pengelola Perangkat Windows</span><span class="lang-en">C. Device Manager</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="D"> <span class="lang-id">D. Perangkat lunak Firewall Jaringan</span><span class="lang-en">D. Network Firewall software</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="9"><div class="question-text"><span class="lang-id">9. Apakah Gem dapat digunakan langsung dalam aliran data perusahaan multi-langkah otomatis?</span><span class="lang-en">9. Can a Gem be used directly within automated multi-step corporate data flows?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q9" value="A"> <span class="lang-id">A. Tidak, Gem benar-benar terisolasi.</span><span class="lang-en">A. No, Gems are completely isolated.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="B"> <span class="lang-id">B. Ya, melalui langkah "Ask a Gem" untuk mengotomatiskan pembuatan draf dokumen.</span><span class="lang-en">B. Yes, via steps like "Ask a Gem" to automate document drafting.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="C"> <span class="lang-id">C. Hanya jika pengguna menggunakan ponsel.</span><span class="lang-en">C. Only if the user is using a mobile phone.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="D"> <span class="lang-id">D. Gem hanya berfungsi sebagai wallpaper desktop dekoratif.</span><span class="lang-en">D. Gems only function as decorative desktop wallpapers.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="10"><div class="question-text"><span class="lang-id">10. Saat merancang Gem untuk departemen pengadaan Indonesia, bagaimana menentukan aturan pemformatan mata uang?</span><span class="lang-en">10. When designing a Gem for Indonesian procurement, how should you specify currency formatting?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q10" value="A"> <span class="lang-id">A. Biarkan kosong agar AI yang memilih.</span><span class="lang-en">A. Leave it blank so the AI chooses.</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="B"> <span class="lang-id">B. Tulis perintah eksplisit: "Selalu format angka sebagai Rupiah menggunakan IDR atau Rp."</span><span class="lang-en">B. Write explicit instructions: "Always format numbers as Rupiah using IDR prefix or Rp symbol."</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="C"> <span class="lang-id">C. Beri tahu AI untuk menggunakan simbol internasional acak.</span><span class="lang-en">C. Tell the AI to use random international symbols.</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="D"> <span class="lang-id">D. Unggah gambar koin Rupiah Indonesia.</span><span class="lang-en">D. Upload a picture of an Indonesian coin.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="11"><div class="question-text"><span class="lang-id">11. Fitur apa yang memungkinkan Anda menguji respons Gem kustom sebelum menyebarkannya?</span><span class="lang-en">11. What feature lets you test your customized Gem's responses before deploying it?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q11" value="A"> <span class="lang-id">A. Opsi Hapus Sandbox</span><span class="lang-en">A. The Sandbox Delete option</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="B"> <span class="lang-id">B. Kotak teks Pratinjau (Preview) interaktif di sisi kanan antarmuka pembuatan</span><span class="lang-en">B. The interactive Preview text box on the right side of the creation interface</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="C"> <span class="lang-id">C. Tautan verifikasi email</span><span class="lang-en">C. The email verification link</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="D"> <span class="lang-id">D. Mencetak cetak biru kode</span><span class="lang-en">D. Printing out the code blueprint</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="12"><div class="question-text"><span class="lang-id">12. Untuk mengatur Gem perusahaan yang sering digunakan di bagian atas daftar menu, gunakan fungsi:</span><span class="lang-en">12. To organize your most frequently used Gems at the top of your menu, use:</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q12" value="A"> <span class="lang-id">A. Hapus</span><span class="lang-en">A. Delete</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="B"> <span class="lang-id">B. Blokir</span><span class="lang-en">B. Block</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="C"> <span class="lang-id">C. Sematkan (Pin)</span><span class="lang-en">C. Pin</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="D"> <span class="lang-id">D. Arsipkan</span><span class="lang-en">D. Archive</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="13"><div class="question-text"><span class="lang-id">13. Apa yang terjadi jika Anda menambahkan dokumen dengan jam operasional usang ke Knowledge Gem?</span><span class="lang-en">13. What happens if you add an outdated document into a Gem's knowledge base?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q13" value="A"> <span class="lang-id">A. AI memperbarui teks secara otomatis via satelit.</span><span class="lang-en">A. The AI automatically updates the text via satellite.</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="B"> <span class="lang-id">B. Gem akan mengandalkan data usang dan berpotensi menghasilkan jawaban tidak akurat.</span><span class="lang-en">B. The Gem will rely on that outdated data and potentially generate inaccurate answers.</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="C"> <span class="lang-id">C. Dokumen berubah menjadi file audio.</span><span class="lang-en">C. The document turns into an audio file.</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="D"> <span class="lang-id">D. Akun Anda langsung ditangguhkan.</span><span class="lang-en">D. Your account gets suspended immediately.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="14"><div class="question-text"><span class="lang-id">14. Format mana yang TIDAK didukung sebagai file Knowledge di Gemini Gems?</span><span class="lang-en">14. Which format is NOT supported as a Knowledge file in Gemini Gems?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q14" value="A"> <span class="lang-id">A. File teks biasa (.txt)</span><span class="lang-en">A. Raw text files (.txt)</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="B"> <span class="lang-id">B. Dokumen PDF (.pdf)</span><span class="lang-en">B. PDF documents (.pdf)</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="C"> <span class="lang-id">C. Google Docs</span><span class="lang-en">C. Google Docs</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="D"> <span class="lang-id">D. File program .exe</span><span class="lang-en">D. Executable .exe files</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="15"><div class="question-text"><span class="lang-id">15. Judul praktis terbaik untuk Gem yang meninjau kepatuhan pajak perusahaan Indonesia?</span><span class="lang-en">15. Best practical title for a Gem built to review Indonesian corporate tax compliance?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q15" value="A"> <span class="lang-id">A. "Asisten Acak Saya v2"</span><span class="lang-en">A. "My Random Assistant v2"</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="B"> <span class="lang-id">B. "Reviewer_Kepatuhan_Pajak_Korporat"</span><span class="lang-en">B. "Reviewer_Kepatuhan_Pajak_Korporat"</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="C"> <span class="lang-id">C. "Dokumen Tanpa Judul"</span><span class="lang-en">C. "Untitled Document"</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="D"> <span class="lang-id">D. "Pajak_Semuanya_AI"</span><span class="lang-en">D. "Tax_Everything_AI"</span></label>
+        </div></div>
+
+        <div style="text-align:center;margin-top:25px;">
+            <button type="button" class="btn-submit" onclick="evaluate()"><span class="lang-id">Kirim Jawaban</span><span class="lang-en">Submit Answers</span></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const answerKeys = { q1:"B", q2:"B", q3:"C", q4:"B", q5:"B", q6:"B", q7:"B", q8:"A", q9:"B", q10:"B", q11:"B", q12:"C", q13:"B", q14:"D", q15:"B" };
+
+    function setLang(l) {
+        document.querySelectorAll('.lang-id').forEach(e => e.style.display = l === 'id' ? 'block' : 'none');
+        document.querySelectorAll('.lang-en').forEach(e => e.style.display = l === 'en' ? 'block' : 'none');
+        document.getElementById('btn-id').classList.toggle('active', l === 'id');
+        document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    }
+
+    function evaluate() {
+        const name = document.getElementById('p_name').value.trim();
+        const dept = document.getElementById('p_dept').value.trim();
+        const phone = document.getElementById('p_phone').value.trim();
+        if (!name || !dept || !phone) { alert("Please fill in all participant fields."); return; }
+
+        let total = 0;
+        const form = document.getElementById('quiz-form');
+        document.querySelectorAll('.option-label').forEach(l => l.classList.remove('correct-answer', 'wrong-answer'));
+
+        for (let i = 1; i <= 15; i++) {
+            const key = 'q' + i;
+            const selected = form.elements[key]?.value;
+            const correct = answerKeys[key];
+            const block = document.querySelector(`[data-qnum="${i}"]`);
+            if (!block) continue;
+            block.querySelectorAll('.option-label').forEach(label => {
+                const input = label.querySelector('input');
+                if (input.value === correct) label.classList.add('correct-answer');
+                if (selected && selected !== correct && input.value === selected) label.classList.add('wrong-answer');
+            });
+            if (selected === correct) total++;
+        }
+
+        const pct = Math.round((total / 15) * 100);
+        document.getElementById('score-text').innerText = total + ' / 15';
+        document.getElementById('lbl-name').innerText = name;
+        document.getElementById('lbl-dept').innerText = dept;
+        document.getElementById('lbl-phone').innerText = phone;
+        document.getElementById('lbl-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+
+        const lang = document.getElementById('btn-id').classList.contains('active') ? 'id' : 'en';
+        const badge = document.getElementById('badge-area');
+        const analysis = document.getElementById('analysis-text');
+
+        if (total >= 13) {
+            badge.innerHTML = '<span class="status-highly-rec">' + (lang === 'id' ? 'Sangat Direkomendasikan' : 'Highly Recommended') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Penguasaan Gemini Gems tingkat lanjut.' : 'Advanced Gemini Gems mastery.';
+        } else if (total >= 9) {
+            badge.innerHTML = '<span class="status-consider">' + (lang === 'id' ? 'Pertimbangkan dengan Catatan' : 'Consider with Prerequisites') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Pengetahuan Gemini Gems cukup baik.' : 'Good Gemini Gems knowledge.';
+        } else {
+            badge.innerHTML = '<span class="status-not-rec">' + (lang === 'id' ? 'Perlu Pelatihan Dasar' : 'Needs Basic Training') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Rekomendasi mengikuti pelatihan Gemini Gems dasar.' : 'Recommended to complete basic Gemini Gems training.';
+        }
+
+        document.getElementById('result-dashboard').style.display = 'block';
+        document.getElementById('result-dashboard').scrollIntoView({ behavior: 'smooth' });
+
+        const raw = localStorage.getItem('test_results');
+        const list = raw ? JSON.parse(raw) : [];
+        list.push({ testId:'6', testName:'Gemini Gems Creation & Optimization', participant:name, dept:dept, phone:phone, score: total + ' / 15 (' + pct + '%)', answers:collectAnswers(form), date: new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' }) });
+        localStorage.setItem('test_results', JSON.stringify(list));
+    }
+
+    function collectAnswers(form) {
+        let lines = [];
+        for (let i = 1; i <= 15; i++) lines.push(i + '. ' + (form.elements['q' + i]?.value || '-'));
+        return lines.join('\n');
+    }
+</script>
+</body>
+</html>

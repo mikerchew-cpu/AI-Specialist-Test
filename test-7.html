@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Skills & SKILL.md — Test 7</title>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #38a169; --bg: #f7fafc; --text: #2d3748; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 30px 20px; }
+        .container { max-width: 850px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); position: relative; }
+        .lang-switcher { position: fixed; top: 20px; right: 30px; display: flex; gap: 5px; background: #edf2f7; padding: 4px; border-radius: 6px; border: 1px solid #cbd5e0; z-index: 100; }
+        .lang-btn { padding: 6px 14px; font-size: 13px; font-weight: bold; border: none; background: none; cursor: pointer; border-radius: 4px; }
+        .lang-btn.active { background: var(--primary); color: white; }
+        .lang-en { display: none; }
+        .company-name { font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: var(--primary); text-align: center; margin-bottom: 5px; }
+        h1 { text-align: center; color: var(--primary); font-size: 20px; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #718096; font-size: 14px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; }
+        .participant-box { background: #ebf5fb; border: 1px solid #a9ccee; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
+        .participant-box h3 { color: var(--secondary); margin-bottom: 12px; font-size: 15px; }
+        .form-group { display: flex; gap: 15px; flex-wrap: wrap; }
+        .form-group input { flex: 1; min-width: 180px; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; }
+        .section-title { background: var(--primary); color: white; padding: 10px 16px; font-size: 15px; font-weight: bold; border-radius: 6px; margin: 25px 0 15px 0; }
+        .question-block { border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px 20px; margin-bottom: 12px; }
+        .question-text { font-size: 14px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
+        .options-container { display: flex; flex-direction: column; gap: 5px; }
+        .option-label { display: flex; align-items: flex-start; gap: 8px; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; border: 1px solid transparent; transition: all 0.2s; }
+        .option-label:hover { background: #f7fafc; border-color: #cbd5e0; }
+        .option-label input[type="radio"] { margin-top: 2px; }
+        .option-label.correct-answer { background: #d4efdf !important; border-color: #27ae60 !important; }
+        .option-label.wrong-answer { background: #fadbd8 !important; border-color: #e74c3c !important; }
+        .result-dashboard { display: none; margin-top: 30px; padding: 30px; border-radius: 12px; border: 2px solid #e2e8f0; text-align: center; }
+        .score-big { font-size: 36px; font-weight: 800; color: var(--primary); }
+        .badge-area { margin: 15px 0; font-size: 16px; font-weight: bold; }
+        .status-highly-rec { color: #27ae60; }
+        .status-consider { color: #f39c12; }
+        .status-not-rec { color: #e74c3c; }
+        .print-meta { display: none; text-align: left; margin-bottom: 15px; border-bottom: 2px solid #2d3748; padding-bottom: 12px; font-size: 14px; }
+        .btn-submit { background: var(--secondary); color: white; border: none; padding: 14px 40px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 25px; }
+        .btn-submit:hover { background: var(--primary); }
+        .btn-print { background: var(--accent); color: white; border: none; padding: 10px 28px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; }
+        .btn-print:hover { background: #2f855a; }
+        @media (max-width: 640px) { .container { padding: 20px; } .form-group input { min-width: 100%; } }
+        @media print { .lang-switcher, .btn-submit, .participant-box { display: none !important; } .result-dashboard { display: block !important; border: none !important; } .print-meta { display: block !important; } .option-label.correct-answer, .option-label.wrong-answer { border: 2px solid #000 !important; } }
+    </style>
+</head>
+<body>
+<div class="lang-switcher">
+    <button class="lang-btn active" id="btn-id" onclick="setLang('id')">ID</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+<div class="container">
+    <div class="company-name lang-id">VANGUARD MINING GROUP</div>
+    <div class="company-name lang-en">VANGUARD MINING GROUP</div>
+    <h1 class="lang-id">TES 7: AGENT SKILLS & MANAJEMEN SKILL.md</h1>
+    <h1 class="lang-en">TEST 7: AGENT SKILLS WORKFLOW & SKILL.md MANAGEMENT</h1>
+    <div class="subtitle lang-id">15 soal pilihan ganda</div>
+    <div class="subtitle lang-en">15 multiple-choice questions</div>
+
+    <div class="participant-box" id="info-box">
+        <h3 class="lang-id">Data Diri Peserta</h3>
+        <h3 class="lang-en">Participant Information</h3>
+        <div class="form-group">
+            <input type="text" id="p_name" placeholder="Nama / Name">
+            <input type="text" id="p_dept" placeholder="Divisi / Department">
+            <input type="text" id="p_phone" placeholder="Telepon / Phone">
+        </div>
+    </div>
+
+    <div class="result-dashboard" id="result-dashboard">
+        <div class="print-meta" id="print-meta">
+            <p><strong class="lang-id">Nama:</strong><strong class="lang-en">Name:</strong> <span id="lbl-name">-</span></p>
+            <p><strong class="lang-id">Divisi:</strong><strong class="lang-en">Dept:</strong> <span id="lbl-dept">-</span></p>
+            <p><strong class="lang-id">Telepon:</strong><strong class="lang-en">Phone:</strong> <span id="lbl-phone">-</span></p>
+            <p><strong class="lang-id">Tanggal:</strong><strong class="lang-en">Date:</strong> <span id="lbl-date">-</span></p>
+        </div>
+        <div class="score-big" id="score-text">0 / 15</div>
+        <div id="badge-area" class="badge-area"></div>
+        <p id="analysis-text" style="font-size:14px;color:#718096;margin:15px 0;"></p>
+        <button class="btn-print" onclick="window.print()"><span class="lang-id">Cetak ke PDF</span><span class="lang-en">Print to PDF</span></button>
+    </div>
+
+    <form id="quiz-form">
+        <div class="section-title"><span class="lang-id">AGENT SKILLS & MANAJEMEN SKILL.md</span><span class="lang-en">AGENT SKILLS WORKFLOW & SKILL.md MANAGEMENT</span></div>
+
+        <div class="question-block" data-qnum="1"><div class="question-text"><span class="lang-id">1. Apakah yang dimaksud dengan "Agent Skill" dalam ekosistem AI tingkat lanjut?</span><span class="lang-en">1. What is an "Agent Skill" in advanced AI ecosystems?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q1" value="A"> <span class="lang-id">A. Lencana tes sertifikasi untuk pekerja manusia.</span><span class="lang-en">A. A certification test badge for human workers.</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="B"> <span class="lang-id">B. Direktori mandiri yang mengemas alur kerja prosedural menjadi kemampuan yang dapat ditemukan untuk agen AI.</span><span class="lang-en">B. A self-contained directory packaging specific procedural workflows into a discoverable capability for AI agents.</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="C"> <span class="lang-id">C. Kartu grafis akselerasi perangkat keras.</span><span class="lang-en">C. A hardware acceleration graphics card.</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="D"> <span class="lang-id">D. Daftar putar game online perusahaan.</span><span class="lang-en">D. An online corporate game playlist.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="2"><div class="question-text"><span class="lang-id">2. Apakah nama file persis yang diperlukan untuk perintah pengaturan inti sebuah Agent Skill?</span><span class="lang-en">2. What is the exact filename required for an Agent Skill's core setup instructions?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q2" value="A"> <span class="lang-id">A. README.txt</span><span class="lang-en">A. README.txt</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="B"> <span class="lang-id">B. RUN_PROGRAM.exe</span><span class="lang-en">B. RUN_PROGRAM.exe</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="C"> <span class="lang-id">C. SKILL.md</span><span class="lang-en">C. SKILL.md</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="D"> <span class="lang-id">D. CONFIG.json</span><span class="lang-en">D. CONFIG.json</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="3"><div class="question-text"><span class="lang-id">3. Manfaat desain apa yang mencegah Agent Skill membebani memori AI di awal sesi?</span><span class="lang-en">3. What design benefit prevents an Agent Skill from overloading AI memory at session start?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q3" value="A"> <span class="lang-id">A. Hibernasi sistem</span><span class="lang-en">A. System hibernation</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="B"> <span class="lang-id">B. Pengungkapan progresif (lazy-loading hanya ketika deskripsi cocok dengan tugas)</span><span class="lang-en">B. Progressive disclosure (lazy-loading only when the skill description matches the task)</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="C"> <span class="lang-id">C. Kompresi teks otomatis</span><span class="lang-en">C. Automatic text compression</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="D"> <span class="lang-id">D. Menurunkan kecerahan layar</span><span class="lang-en">D. Lowering screen brightness</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="4"><div class="question-text"><span class="lang-id">4. Di manakah keahlian lokal dalam cakupan proyek disimpan di ruang kerja repositori?</span><span class="lang-en">4. Where are project-scoped local skills saved within a repository workspace?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q4" value="A"> <span class="lang-id">A. Di folder root sistem C:/Windows</span><span class="lang-en">A. In the system root C:/Windows folder</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="B"> <span class="lang-id">B. Di folder direktori .gemini/skills/ atau .agents/skills/</span><span class="lang-en">B. In the .gemini/skills/ or .agents/skills/ directory folder</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="C"> <span class="lang-id">C. Di hard drive cadangan eksternal</span><span class="lang-en">C. On an external backup hard drive</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="D"> <span class="lang-id">D. Di folder penanda tautan browser internet</span><span class="lang-en">D. In the internet browser bookmark folder</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="5"><div class="question-text"><span class="lang-id">5. Blok metadata apa yang harus ada di bagian atas file SKILL.md yang valid?</span><span class="lang-en">5. What metadata blocks must be at the top of a valid SKILL.md?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q5" value="A"> <span class="lang-id">A. Nomor pokok wajib pajak perusahaan</span><span class="lang-en">A. Corporate tax identification numbers</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="B"> <span class="lang-id">B. Atribut Nama (Name) dan Deskripsi (Description)</span><span class="lang-en">B. Name and Description attributes</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="C"> <span class="lang-id">C. Daftar gaji karyawan</span><span class="lang-en">C. Employee salary list</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="D"> <span class="lang-id">D. Alamat IP Jaringan</span><span class="lang-en">D. Network IP addresses</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="6"><div class="question-text"><span class="lang-id">6. Bagaimana AI mengonfirmasi akan menjalankan perintah latar belakang dari sebuah skill?</span><span class="lang-en">6. How does AI confirm it will run a background command sequence from a skill?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q6" value="A"> <span class="lang-id">A. Dengan mengeluarkan (log out) pengguna.</span><span class="lang-en">A. By logging out the user.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="B"> <span class="lang-id">B. Menampilkan konfirmasi eksplisit dengan tujuan skill dan izin jalur direktori.</span><span class="lang-en">B. By displaying an explicit confirmation prompt detailing the skill's purpose and directory path clearance.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="C"> <span class="lang-id">C. Dengan memancarkan lampu merah di layar.</span><span class="lang-en">C. By flashing a red light on screen.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="D"> <span class="lang-id">D. Tidak pernah meminta konfirmasi.</span><span class="lang-en">D. It never requests confirmation.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="7"><div class="question-text"><span class="lang-id">7. Perintah slash apa yang menampilkan semua skill aktif yang tersedia?</span><span class="lang-en">7. Which slash command displays all discovered active skills currently available?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q7" value="A"> <span class="lang-id">A. /exit</span><span class="lang-en">A. /exit</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="B"> <span class="lang-id">B. /delete:all</span><span class="lang-en">B. /delete:all</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="C"> <span class="lang-id">C. /skills list</span><span class="lang-en">C. /skills list</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="D"> <span class="lang-id">D. /help:me</span><span class="lang-en">D. /help:me</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="8"><div class="question-text"><span class="lang-id">8. Utilitas bawaan apa yang membantu membuat draf struktur boilerplate skill baru secara otomatis?</span><span class="lang-en">8. What built-in utility helps draft a new skill's boilerplate structure automatically?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q8" value="A"> <span class="lang-id">A. Alat meta-skill skill-creator</span><span class="lang-en">A. The skill-creator meta-skill tool</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="B"> <span class="lang-id">B. Disk Defragmenter</span><span class="lang-en">B. Disk Defragmenter</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="C"> <span class="lang-id">C. Microsoft Paint</span><span class="lang-en">C. Microsoft Paint</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="D"> <span class="lang-id">D. System Recovery</span><span class="lang-en">D. System Recovery</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="9"><div class="question-text"><span class="lang-id">9. Apa yang terjadi jika dua skill dengan nama identik dalam ruang kerja yang sama?</span><span class="lang-en">9. What happens if two skills with identical names exist in the same workspace?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q9" value="A"> <span class="lang-id">A. Komputer akan meledak.</span><span class="lang-en">A. The computer will explode.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="B"> <span class="lang-id">B. Antarmuka menyelesaikan berdasarkan prioritas jalur atau memicu error konflik penamaan.</span><span class="lang-en">B. The interface resolves them based on path precedence or triggers a naming conflict error.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="C"> <span class="lang-id">C. Kedua skill bergabung menjadi satu dokumen teks.</span><span class="lang-en">C. Both skills combine into a single text document.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="D"> <span class="lang-id">D. Internet langsung terputus.</span><span class="lang-en">D. The internet disconnects immediately.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="10"><div class="question-text"><span class="lang-id">10. Mengapa menyatukan formulir templat dalam direktori Agent Skill sangat membantu?</span><span class="lang-en">10. Why is bundling template forms within an Agent Skill directory helpful?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q10" value="A"> <span class="lang-id">A. Mengurangi ruang penyimpanan di server perusahaan.</span><span class="lang-en">A. It reduces file storage space on company servers.</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="B"> <span class="lang-id">B. Memastikan agen AI memiliki akses lokal ke semua sumber daya struktural untuk dokumen konsisten.</span><span class="lang-en">B. It ensures the AI agent has direct local access to all structural resources for consistent documents.</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="C"> <span class="lang-id">C. Menyembunyikan file dari alat peninjau administratif.</span><span class="lang-en">C. It hides files from administrative viewing tools.</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="D"> <span class="lang-id">D. Memformat konfigurasi tema desktop.</span><span class="lang-en">D. It formats your desktop theme configuration.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="11"><div class="question-text"><span class="lang-id">11. Saat memperbarui skill karena AI salah menafsirkan langkah penagihan Indonesia, Anda harus:</span><span class="lang-en">11. When updating a skill because the AI misinterprets an Indonesian billing step, you should:</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q11" value="A"> <span class="lang-id">A. Berhenti menggunakan AI sepenuhnya.</span><span class="lang-en">A. Stop using AI completely.</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="B"> <span class="lang-id">B. Buka file SKILL.md lokal dan tambahkan batasan eksplisit atau langkah logis yang benar.</span><span class="lang-en">B. Open the local SKILL.md file and append explicit constraints detailing the correct workflow.</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="C"> <span class="lang-id">C. Instal ulang sistem operasi Anda.</span><span class="lang-en">C. Reinstall your operating system.</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="D"> <span class="lang-id">D. Tulis surat pengaduan ke penyedia jaringan.</span><span class="lang-en">D. Write a complaint letter to your network provider.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="12"><div class="question-text"><span class="lang-id">12. Opsi perintah apa yang membatasi Agent Skill hanya di folder proyek tertentu?</span><span class="lang-en">12. What command restricts an Agent Skill to a specific project folder only?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q12" value="A"> <span class="lang-id">A. --global</span><span class="lang-en">A. --global</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="B"> <span class="lang-id">B. --scope workspace</span><span class="lang-en">B. --scope workspace</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="C"> <span class="lang-id">C. --all-users</span><span class="lang-en">C. --all-users</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="D"> <span class="lang-id">D. --delete-local</span><span class="lang-en">D. --delete-local</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="13"><div class="question-text"><span class="lang-id">13. Bahasa markup apa yang digunakan di file SKILL.md standar?</span><span class="lang-en">13. What markup language is used in a standard SKILL.md file?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q13" value="A"> <span class="lang-id">A. HTML</span><span class="lang-en">A. HTML</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="B"> <span class="lang-id">B. C++</span><span class="lang-en">B. C++</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="C"> <span class="lang-id">C. Markdown</span><span class="lang-en">C. Markdown</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="D"> <span class="lang-id">D. Binary Code</span><span class="lang-en">D. Binary Code</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="14"><div class="question-text"><span class="lang-id">14. Perintah terminal untuk menyegarkan indeks penemuan skill baru?</span><span class="lang-en">14. What terminal command force-refreshes the discovery indices of newly added skills?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q14" value="A"> <span class="lang-id">A. /skills reload atau /skills refresh</span><span class="lang-en">A. /skills reload or /skills refresh</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="B"> <span class="lang-id">B. /exit_session</span><span class="lang-en">B. /exit_session</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="C"> <span class="lang-id">C. /clear_history</span><span class="lang-en">C. /clear_history</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="D"> <span class="lang-id">D. /shutdown</span><span class="lang-en">D. /shutdown</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="15"><div class="question-text"><span class="lang-id">15. Kemampuan alat apa yang memungkinkan Agent Skill menjalankan pemeriksaan diagnostik?</span><span class="lang-en">15. What tool allows an Agent Skill to run precise diagnostic testing checks?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q15" value="A"> <span class="lang-id">A. Penyuntikan skrip validasi kustom dalam profil aset direktori skill.</span><span class="lang-en">A. The injection of custom validation script execution setups within the skill directory asset profiles.</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="B"> <span class="lang-id">B. Mengubah parameter resolusi layar.</span><span class="lang-en">B. Changing the screen resolution parameters.</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="C"> <span class="lang-id">C. Menghapus riwayat log sistem.</span><span class="lang-en">C. Deleting system log histories.</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="D"> <span class="lang-id">D. Memutuskan kabel koneksi jaringan lokal.</span><span class="lang-en">D. Disconnecting the local network patch cables.</span></label>
+        </div></div>
+
+        <div style="text-align:center;margin-top:25px;">
+            <button type="button" class="btn-submit" onclick="evaluate()"><span class="lang-id">Kirim Jawaban</span><span class="lang-en">Submit Answers</span></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const answerKeys = { q1:"B", q2:"C", q3:"B", q4:"B", q5:"B", q6:"B", q7:"C", q8:"A", q9:"B", q10:"B", q11:"B", q12:"B", q13:"C", q14:"A", q15:"A" };
+
+    function setLang(l) {
+        document.querySelectorAll('.lang-id').forEach(e => e.style.display = l === 'id' ? 'block' : 'none');
+        document.querySelectorAll('.lang-en').forEach(e => e.style.display = l === 'en' ? 'block' : 'none');
+        document.getElementById('btn-id').classList.toggle('active', l === 'id');
+        document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    }
+
+    function evaluate() {
+        const name = document.getElementById('p_name').value.trim();
+        const dept = document.getElementById('p_dept').value.trim();
+        const phone = document.getElementById('p_phone').value.trim();
+        if (!name || !dept || !phone) { alert("Please fill in all participant fields."); return; }
+
+        let total = 0;
+        const form = document.getElementById('quiz-form');
+        document.querySelectorAll('.option-label').forEach(l => l.classList.remove('correct-answer', 'wrong-answer'));
+
+        for (let i = 1; i <= 15; i++) {
+            const key = 'q' + i;
+            const selected = form.elements[key]?.value;
+            const correct = answerKeys[key];
+            const block = document.querySelector(`[data-qnum="${i}"]`);
+            if (!block) continue;
+            block.querySelectorAll('.option-label').forEach(label => {
+                const input = label.querySelector('input');
+                if (input.value === correct) label.classList.add('correct-answer');
+                if (selected && selected !== correct && input.value === selected) label.classList.add('wrong-answer');
+            });
+            if (selected === correct) total++;
+        }
+
+        const pct = Math.round((total / 15) * 100);
+        document.getElementById('score-text').innerText = total + ' / 15';
+        document.getElementById('lbl-name').innerText = name;
+        document.getElementById('lbl-dept').innerText = dept;
+        document.getElementById('lbl-phone').innerText = phone;
+        document.getElementById('lbl-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+
+        const lang = document.getElementById('btn-id').classList.contains('active') ? 'id' : 'en';
+        const badge = document.getElementById('badge-area');
+        const analysis = document.getElementById('analysis-text');
+
+        if (total >= 13) {
+            badge.innerHTML = '<span class="status-highly-rec">' + (lang === 'id' ? 'Sangat Direkomendasikan' : 'Highly Recommended') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Penguasaan Agent Skills tingkat lanjut.' : 'Advanced Agent Skills mastery.';
+        } else if (total >= 9) {
+            badge.innerHTML = '<span class="status-consider">' + (lang === 'id' ? 'Pertimbangkan dengan Catatan' : 'Consider with Prerequisites') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Pengetahuan Agent Skills cukup baik.' : 'Good Agent Skills knowledge.';
+        } else {
+            badge.innerHTML = '<span class="status-not-rec">' + (lang === 'id' ? 'Perlu Pelatihan Dasar' : 'Needs Basic Training') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Rekomendasi mengikuti pelatihan Agent Skills dasar.' : 'Recommended to complete basic Agent Skills training.';
+        }
+
+        document.getElementById('result-dashboard').style.display = 'block';
+        document.getElementById('result-dashboard').scrollIntoView({ behavior: 'smooth' });
+
+        const raw = localStorage.getItem('test_results');
+        const list = raw ? JSON.parse(raw) : [];
+        list.push({ testId:'7', testName:'Agent Skills Workflow & SKILL.md', participant:name, dept:dept, phone:phone, score: total + ' / 15 (' + pct + '%)', answers:collectAnswers(form), date: new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' }) });
+        localStorage.setItem('test_results', JSON.stringify(list));
+    }
+
+    function collectAnswers(form) {
+        let lines = [];
+        for (let i = 1; i <= 15; i++) lines.push(i + '. ' + (form.elements['q' + i]?.value || '-'));
+        return lines.join('\n');
+    }
+</script>
+</body>
+</html>
