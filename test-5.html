@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Training Module — 3 Tests</title>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #38a169; --bg: #f7fafc; --text: #2d3748; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; padding: 30px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); position: relative; }
+        .lang-switcher {
+            position: fixed; top: 20px; right: 30px;
+            display: flex; gap: 5px; background: #edf2f7; padding: 4px;
+            border-radius: 6px; border: 1px solid #cbd5e0; z-index: 100;
+        }
+        .lang-btn { padding: 6px 14px; font-size: 13px; font-weight: bold; border: none; background: none; cursor: pointer; border-radius: 4px; }
+        .lang-btn.active { background: var(--primary); color: white; }
+        .lang-en { display: none; }
+        .company-name { font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: var(--primary); text-align: center; margin-bottom: 5px; }
+        h1 { text-align: center; color: var(--primary); font-size: 20px; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #718096; font-size: 14px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; }
+        .participant-box { background: #ebf5fb; border: 1px solid #a9ccee; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
+        .participant-box h3 { color: var(--secondary); margin-bottom: 12px; font-size: 15px; }
+        .form-group { display: flex; gap: 15px; flex-wrap: wrap; }
+        .form-group input { flex: 1; min-width: 180px; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; }
+        .section-title { background: var(--primary); color: white; padding: 10px 16px; font-size: 15px; font-weight: bold; border-radius: 6px; margin: 30px 0 15px 0; }
+        .question-block { border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px 20px; margin-bottom: 15px; }
+        .question-text { font-size: 14px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
+        .options-container { display: flex; flex-direction: column; gap: 6px; }
+        .option-label { display: flex; align-items: flex-start; gap: 8px; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; border: 1px solid transparent; transition: all 0.2s; }
+        .option-label:hover { background: #f7fafc; border-color: #cbd5e0; }
+        .option-label input[type="radio"] { margin-top: 2px; }
+        .option-label.correct-answer { background: #d4efdf !important; border-color: #27ae60 !important; }
+        .option-label.wrong-answer { background: #fadbd8 !important; border-color: #e74c3c !important; }
+        .result-dashboard { display: none; margin-top: 30px; padding: 30px; border-radius: 12px; border: 2px solid #e2e8f0; text-align: center; }
+        .score-big { font-size: 36px; font-weight: 800; color: var(--primary); }
+        .badge-area { margin: 15px 0; font-size: 16px; font-weight: bold; }
+        .status-highly-rec { color: #27ae60; }
+        .status-consider { color: #f39c12; }
+        .status-not-rec { color: #e74c3c; }
+        .print-meta { display: none; text-align: left; margin-bottom: 15px; border-bottom: 2px solid #2d3748; padding-bottom: 12px; font-size: 14px; }
+        .btn-submit { background: var(--secondary); color: white; border: none; padding: 14px 40px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 25px; }
+        .btn-submit:hover { background: var(--primary); }
+        .btn-print { background: var(--accent); color: white; border: none; padding: 10px 28px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; }
+        .btn-print:hover { background: #2f855a; }
+        .progress-section { display: flex; justify-content: space-around; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+        .progress-card { flex: 1; min-width: 120px; text-align: center; }
+        .progress-card .label { font-size: 13px; color: #718096; margin-bottom: 5px; }
+        .progress-card .bar-bg { height: 10px; background: #edf2f7; border-radius: 5px; overflow: hidden; }
+        .progress-card .bar-fill { height: 100%; background: var(--secondary); border-radius: 5px; width: 0%; transition: width 0.5s; }
+        .progress-card .num { font-size: 18px; font-weight: bold; margin-top: 5px; }
+        @media (max-width: 640px) { .container { padding: 20px; } .form-group input { min-width: 100%; } }
+        @media print { .lang-switcher, .btn-submit, .participant-box, .header { display: none !important; } .result-dashboard { display: block !important; border: none !important; } .print-meta { display: block !important; } .option-label.correct-answer, .option-label.wrong-answer { border: 2px solid #000 !important; } }
+    </style>
+</head>
+<body>
+
+<div class="lang-switcher">
+    <button class="lang-btn active" id="btn-id" onclick="setLang('id')">ID</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<div class="container">
+    <div class="company-name lang-id">VANGUARD MINING GROUP</div>
+    <div class="company-name lang-en">VANGUARD MINING GROUP</div>
+    <h1 class="lang-id">MODUL PELATIHAN AI KOMPREHENSIF</h1>
+    <h1 class="lang-en">COMPREHENSIVE AI TRAINING MODULE</h1>
+    <div class="subtitle lang-id">3 Tes — Fundamental AI, Gemini Gems, & Agent Skills (SKILL.md)</div>
+    <div class="subtitle lang-en">3 Tests — AI Fundamentals, Gemini Gems, & Agent Skills (SKILL.md)</div>
+
+    <div class="participant-box" id="info-box">
+        <h3 class="lang-id">Data Diri Peserta</h3>
+        <h3 class="lang-en">Participant Information</h3>
+        <div class="form-group">
+            <input type="text" id="p_name" placeholder="Nama / Name">
+            <input type="text" id="p_dept" placeholder="Divisi / Department">
+            <input type="text" id="p_phone" placeholder="Telepon / Phone">
+        </div>
+    </div>
+
+    <div class="result-dashboard" id="result-dashboard">
+        <div class="print-meta" id="print-meta">
+            <p><strong class="lang-id">Nama:</strong><strong class="lang-en">Name:</strong> <span id="lbl-name">-</span></p>
+            <p><strong class="lang-id">Divisi:</strong><strong class="lang-en">Dept:</strong> <span id="lbl-dept">-</span></p>
+            <p><strong class="lang-id">Telepon:</strong><strong class="lang-en">Phone:</strong> <span id="lbl-phone">-</span></p>
+            <p><strong class="lang-id">Tanggal:</strong><strong class="lang-en">Date:</strong> <span id="lbl-date">-</span></p>
+        </div>
+        <div class="score-big" id="score-text">0 / 45</div>
+        <div id="badge-area" class="badge-area"></div>
+        <div class="progress-section" id="progress-section"></div>
+        <p id="analysis-text" style="font-size:14px;color:#718096;margin:15px 0;"></p>
+        <button class="btn-print" onclick="window.print()"><span class="lang-id">Cetak ke PDF</span><span class="lang-en">Print to PDF</span></button>
+    </div>
+
+    <form id="quiz-form">
+
+        <!-- ===== TEST 1: AI FUNDAMENTALS ===== -->
+        <div class="section-title"><span class="lang-id">TES 1: FUNDAMENTAL AI & REKAYASA PERINTAH</span><span class="lang-en">TEST 1: AI FUNDAMENTALS & PROMPT ENGINEERING</span></div>
+
+        <div class="question-block" data-qnum="1"><div class="question-text"><span class="lang-id">1. Apakah metode utama yang digunakan oleh LLM (seperti Gemini) untuk menghasilkan jawaban?</span><span class="lang-en">1. What is the primary method an LLM (like Gemini) uses to generate answers?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q1" value="A"> <span class="lang-id">A. Hanya pencarian internet waktu nyata</span><span class="lang-en">A. Real-time internet search only</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="B"> <span class="lang-id">B. Memprediksi kata berikutnya yang paling mungkin berdasarkan pola</span><span class="lang-en">B. Predicting the next most probable word based on patterns</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="C"> <span class="lang-id">C. Mengakses operator manusia</span><span class="lang-en">C. Accessing a human operator</span></label>
+            <label class="option-label"><input type="radio" name="q1" value="D"> <span class="lang-id">D. Menyalin teks langsung dari ensiklopedia statis</span><span class="lang-en">D. Copying text directly from static encyclopedias</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="2"><div class="question-text"><span class="lang-id">2. Manakah dari perintah berikut yang akan memberikan ringkasan bisnis paling akurat dan berguna?</span><span class="lang-en">2. Which of the following prompts will give the most accurate and useful business summary?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q2" value="A"> <span class="lang-id">A. "Ringkas laporan ini."</span><span class="lang-en">A. "Summarize this report."</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="B"> <span class="lang-id">B. "Baca ini dan beri tahu saya pendapatmu."</span><span class="lang-en">B. "Read this and tell me what you think."</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="C"> <span class="lang-id">C. "Ringkas laporan keuangan 10 halaman ini menjadi 5 poin utama yang berfokus pada biaya operasional."</span><span class="lang-en">C. "Summarize this 10-page financial report into 5 key bullet points focusing on operational costs."</span></label>
+            <label class="option-label"><input type="radio" name="q2" value="D"> <span class="lang-id">D. "Buat laporan ini lebih pendek."</span><span class="lang-en">D. "Make this report shorter."</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="3"><div class="question-text"><span class="lang-id">3. Jika AI memberikan hasil yang terlihat sangat nyata tetapi secara faktual salah, ini disebut:</span><span class="lang-en">3. If an AI gives an output that looks completely real but is factually incorrect, this is called:</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q3" value="A"> <span class="lang-id">A. Buffering sistem</span><span class="lang-en">A. System buffering</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="B"> <span class="lang-id">B. Lag digital</span><span class="lang-en">B. Digital lag</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="C"> <span class="lang-id">C. Halusinasi</span><span class="lang-en">C. Hallucination</span></label>
+            <label class="option-label"><input type="radio" name="q3" value="D"> <span class="lang-id">D. Kesalahan kode</span><span class="lang-en">D. Code error</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="4"><div class="question-text"><span class="lang-id">4. Saat menempelkan rantai email yang panjang ke AI untuk mendapatkan poin tindakan, apakah praktik terbaiknya?</span><span class="lang-en">4. When pasting a long email chain into AI to get action items, what is the best practice?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q4" value="A"> <span class="lang-id">A. Jangan berikan konteks dan berharap AI mengerti.</span><span class="lang-en">A. Provide no context and hope it understands.</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="B"> <span class="lang-id">B. Pisahkan perintah dari rantai email dengan jelas menggunakan pembatas seperti tanda kutip tiga (""") atau label.</span><span class="lang-en">B. Clearly separate the instructions from the email chain using delimiters like triple quotes (""") or labels.</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="C"> <span class="lang-id">C. Terjemahkan seluruh email ke bahasa Inggris secara manual terlebih dahulu.</span><span class="lang-en">C. Translate the entire email to English first manually.</span></label>
+            <label class="option-label"><input type="radio" name="q4" value="D"> <span class="lang-id">D. Kirim setiap baris email satu per satu dalam pesan terpisah.</span><span class="lang-en">D. Send each email line by line in separate messages.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="5"><div class="question-text"><span class="lang-id">5. Apakah model AI standar yang baru diaktifkan dapat mengakses basis data pribadi perusahaan Anda secara otomatis?</span><span class="lang-en">5. Can an out-of-the-box standard AI model access your private company database automatically?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q5" value="A"> <span class="lang-id">A. Ya, AI memindai semua yang ada di komputer Anda.</span><span class="lang-en">A. Yes, it scans everything on your computer.</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="B"> <span class="lang-id">B. Ya, jika Anda terhubung ke Wi-Fi.</span><span class="lang-en">B. Yes, if you are connected to Wi-Fi.</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="C"> <span class="lang-id">C. Tidak, AI hanya memiliki akses ke informasi yang disediakan dalam data pelatihannya atau konteks obrolan saat itu.</span><span class="lang-en">C. No, it only has access to the information provided in its training data or the immediate chat context.</span></label>
+            <label class="option-label"><input type="radio" name="q5" value="D"> <span class="lang-id">D. Hanya selama jam kerja perusahaan.</span><span class="lang-en">D. Only during corporate working hours.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="6"><div class="question-text"><span class="lang-id">6. Apa yang dimaksud dengan "Role Prompting"?</span><span class="lang-en">6. What does "Role Prompting" mean?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q6" value="A"> <span class="lang-id">A. Memaksa AI menggunakan suara audio.</span><span class="lang-en">A. Forcing the AI to use an audio voice.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="B"> <span class="lang-id">B. Menetapkan persona atau profesi tertentu kepada AI (misalnya, "Bertindaklah sebagai akuntan senior") sebelum mengajukan pertanyaan.</span><span class="lang-en">B. Assigning a specific persona or profession to the AI (e.g., "Act as a senior accountant") before asking a question.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="C"> <span class="lang-id">C. Memberi nama pengguna (username) untuk AI.</span><span class="lang-en">C. Giving the AI a username.</span></label>
+            <label class="option-label"><input type="radio" name="q6" value="D"> <span class="lang-id">D. Membatasi AI untuk menjawab dalam satu kata saja.</span><span class="lang-en">D. Limiting the AI to answer in only one word.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="7"><div class="question-text"><span class="lang-id">7. Jika Anda tidak puas dengan hasil awal dari respons AI, Anda harus:</span><span class="lang-en">7. If you are unsatisfied with the initial output of an AI response, you should:</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q7" value="A"> <span class="lang-id">A. Menghapus akun.</span><span class="lang-en">A. Delete the account.</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="B"> <span class="lang-id">B. Ajukan pertanyaan yang sama persis lagi tanpa mengubah apa pun.</span><span class="lang-en">B. Ask the exact same question again without changing anything.</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="C"> <span class="lang-id">C. Berikan umpan balik yang konstruktif atau perjelas parameter perintah Anda di kotak teks berikutnya.</span><span class="lang-en">C. Provide constructive feedback or refine your prompt parameters in the follow-up text box.</span></label>
+            <label class="option-label"><input type="radio" name="q7" value="D"> <span class="lang-id">D. Mengetik dengan huruf besar semua.</span><span class="lang-en">D. Type in all capital letters.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="8"><div class="question-text"><span class="lang-id">8. Pengubah nada manakah yang paling cocok untuk memo internal yang mengumumkan perubahan kebijakan?</span><span class="lang-en">8. Which tone modifier is best suited for an internal memo announcing policy changes?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q8" value="A"> <span class="lang-id">A. "Buat terdengar lucu dan santai"</span><span class="lang-en">A. "Make it sound funny and casual"</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="B"> <span class="lang-id">B. "Tulis ini dengan nada korporat yang profesional, jelas, dan meyakinkan"</span><span class="lang-en">B. "Write this in a professional, clear, and reassuring corporate tone"</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="C"> <span class="lang-id">C. "Gunakan bahasa yang sangat puitis"</span><span class="lang-en">C. "Use highly poetic language"</span></label>
+            <label class="option-label"><input type="radio" name="q8" value="D"> <span class="lang-id">D. "Buat menjadi agresif dan menuntut"</span><span class="lang-en">D. "Make it aggressive and demanding"</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="9"><div class="question-text"><span class="lang-id">9. Apa manfaat memberikan "Few-Shot Examples" (Beberapa Contoh) dalam perintah?</span><span class="lang-en">9. What is the benefit of providing "Few-Shot Examples" in a prompt?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q9" value="A"> <span class="lang-id">A. Ini membuat AI berjalan lebih cepat.</span><span class="lang-en">A. It makes the AI run faster.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="B"> <span class="lang-id">B. Ini menunjukkan format dan gaya persis yang Anda inginkan untuk hasil akhirnya.</span><span class="lang-en">B. It demonstrates the exact format and style you want the output to match.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="C"> <span class="lang-id">C. Ini menghapus memori cache aplikasi.</span><span class="lang-en">C. It clears the cache memory of the application.</span></label>
+            <label class="option-label"><input type="radio" name="q9" value="D"> <span class="lang-id">D. Ini melewati firewall keamanan.</span><span class="lang-en">D. It bypasses security firewalls.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="10"><div class="question-text"><span class="lang-id">10. Mengapa Anda harus menghindari mengunggah nomor identifikasi pribadi yang sangat sensitif ke model AI publik?</span><span class="lang-en">10. Why should you avoid uploading highly sensitive personal identification numbers to public AI models?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q10" value="A"> <span class="lang-id">A. AI akan error/crash.</span><span class="lang-en">A. The AI will crash.</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="B"> <span class="lang-id">B. Tergantung pengaturan platform, data yang dimasukkan ke model publik mungkin digunakan untuk pelatihan model di masa mendatang atau ditinjau.</span><span class="lang-en">B. Depending on the platform settings, data entered into public models might be used for future model training or reviewed.</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="C"> <span class="lang-id">C. Ini mengubah profil bahasa model tersebut.</span><span class="lang-en">C. It changes the language profile of the model.</span></label>
+            <label class="option-label"><input type="radio" name="q10" value="D"> <span class="lang-id">D. Model publik hanya dapat membaca angka bahasa Inggris.</span><span class="lang-en">D. Public models can only read English numbers.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="11"><div class="question-text"><span class="lang-id">11. Saat membuat tabel data, format manakah yang paling mudah disalin langsung dari obrolan AI ke Excel?</span><span class="lang-en">11. When generating data tables, which format is easiest to copy directly from an AI chat into Excel or Google Sheets?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q11" value="A"> <span class="lang-id">A. Paragraf teks biasa yang bersambung</span><span class="lang-en">A. A continuous raw text paragraph</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="B"> <span class="lang-id">B. Format Tabel Markdown atau CSV yang terstruktur</span><span class="lang-en">B. A structured Markdown Table or CSV format</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="C"> <span class="lang-id">C. File gambar</span><span class="lang-en">C. An image file</span></label>
+            <label class="option-label"><input type="radio" name="q11" value="D"> <span class="lang-id">D. Daftar berbasis poin dengan kotak centang</span><span class="lang-en">D. Bulleted lists with checkboxes</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="12"><div class="question-text"><span class="lang-id">12. Apakah cara terbaik untuk menangani alur kerja kantor multi-langkah yang kompleks dengan AI?</span><span class="lang-en">12. What is the best way to handle complex multi-step office workflows with an AI?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q12" value="A"> <span class="lang-id">A. Berikan semua 20 perintah dalam satu kalimat besar.</span><span class="lang-en">A. Give all 20 instructions in one huge sentence.</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="B"> <span class="lang-id">B. Pecah tugas menjadi langkah-langkah berurutan, meminta AI menyelesaikan satu fase sebelum pindah ke fase berikutnya.</span><span class="lang-en">B. Break the task down into sequential steps, asking the AI to complete one phase before moving to the next.</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="C"> <span class="lang-id">C. Jalankan beberapa obrolan berbeda secara bersamaan untuk tugas yang sama.</span><span class="lang-en">C. Run multiple different chats at the exact same time for the same task.</span></label>
+            <label class="option-label"><input type="radio" name="q12" value="D"> <span class="lang-id">D. Hindari penggunaan perintah dan biarkan AI menebak alur kerjanya.</span><span class="lang-en">D. Avoid using instructions and let the AI guess the workflow.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="13"><div class="question-text"><span class="lang-id">13. Apakah yang dimaksud dengan "Context Window" dalam istilah AI?</span><span class="lang-en">13. What is "Context Window" in AI terms?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q13" value="A"> <span class="lang-id">A. Ukuran fisik jendela layar obrolan.</span><span class="lang-en">A. The physical size of the chat screen window.</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="B"> <span class="lang-id">B. Batas waktu sebelum sesi obrolan berakhir.</span><span class="lang-en">B. The time limit before a chat session expires.</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="C"> <span class="lang-id">C. Jumlah maksimum informasi teks yang dapat diproses dan diingat oleh AI sekaligus dalam satu percakapan.</span><span class="lang-en">C. The maximum amount of text information the AI can process and remember at one time during a conversation.</span></label>
+            <label class="option-label"><input type="radio" name="q13" value="D"> <span class="lang-id">D. Antarmuka latar belakang desktop sistem operasi.</span><span class="lang-en">D. The operating system's desktop background interface.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="14"><div class="question-text"><span class="lang-id">14. Jika Anda ingin AI menganalisis teks umpan balik pelanggan tanpa mengubah maknanya, Anda harus menginstruksikannya untuk menghindari:</span><span class="lang-en">14. If you want an AI to analyze customer feedback text without changing its meaning, you should explicitly instruct it to avoid:</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q14" value="A"> <span class="lang-id">A. Pemformatan</span><span class="lang-en">A. Formatting</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="B"> <span class="lang-id">B. Asumsi eksternal atau bumbu-bumbu cerita</span><span class="lang-en">B. External assumptions or embellishments</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="C"> <span class="lang-id">C. Memperbaiki salah ketik (typo)</span><span class="lang-en">C. Correcting typos</span></label>
+            <label class="option-label"><input type="radio" name="q14" value="D"> <span class="lang-id">D. Menggunakan poin-poin</span><span class="lang-en">D. Using bullet points</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="15"><div class="question-text"><span class="lang-id">15. Pernyataan manakah yang benar tentang kemampuan bahasa AI?</span><span class="lang-en">15. What statement is true about AI language capabilities?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q15" value="A"> <span class="lang-id">A. AI hanya bisa memahami perintah bahasa Inggris.</span><span class="lang-en">A. It can only understand English commands.</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="B"> <span class="lang-id">B. AI dapat memproses, menerjemahkan, dan merespons dalam berbagai bahasa termasuk Indonesia, Inggris, dan dialek regional.</span><span class="lang-en">B. It can seamlessly process, translate, and respond in multiple languages including Indonesian, English, and regional dialects.</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="C"> <span class="lang-id">C. AI memerlukan restart manual untuk beralih antar bahasa.</span><span class="lang-en">C. It requires a manual restart to switch between languages.</span></label>
+            <label class="option-label"><input type="radio" name="q15" value="D"> <span class="lang-id">D. AI mengenakan biaya tambahan per kata terjemahan.</span><span class="lang-en">D. It charges extra per translation word.</span></label>
+        </div></div>
+
+        <!-- ===== TEST 2: GEMINI GEMS ===== -->
+        <div class="section-title"><span class="lang-id">TES 2: PEMBUATAN & OPTIMALISASI GEMINI GEMS</span><span class="lang-en">TEST 2: GEMINI GEMS CREATION & OPTIMIZATION</span></div>
+
+        <div class="question-block" data-qnum="16"><div class="question-text"><span class="lang-id">16. Apakah yang dimaksud dengan Google Gemini "Gem"?</span><span class="lang-en">16. What is a Google Gemini "Gem"?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q16" value="A"> <span class="lang-id">A. Mata uang digital premium untuk membeli penyimpanan.</span><span class="lang-en">A. A premium digital currency used to buy storage.</span></label>
+            <label class="option-label"><input type="radio" name="q16" value="B"> <span class="lang-id">B. Versi Gemini yang dikustomisasi dengan perintah dan basis pengetahuan tertentu.</span><span class="lang-en">B. A customized, reusable version of Gemini programmed with specific instructions and knowledge bases.</span></label>
+            <label class="option-label"><input type="radio" name="q16" value="C"> <span class="lang-id">C. Ekstensi browser yang memblokir iklan.</span><span class="lang-en">C. A browser extension that blocks advertisements.</span></label>
+            <label class="option-label"><input type="radio" name="q16" value="D"> <span class="lang-id">D. Perangkat fisik yang terhubung melalui USB.</span><span class="lang-en">D. A physical device connected via USB.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="17"><div class="question-text"><span class="lang-id">17. Ke bagian manakah Anda pergi di antarmuka Gemini untuk membuat pakar kustom baru?</span><span class="lang-en">17. Where do you go in the Gemini interface to create a new custom expert?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q17" value="A"> <span class="lang-id">A. Pengaturan Riwayat</span><span class="lang-en">A. History Settings</span></label>
+            <label class="option-label"><input type="radio" name="q17" value="B"> <span class="lang-id">B. Panel menu samping di bawah pilihan "Gems"</span><span class="lang-en">B. The side menu panel under "Gems"</span></label>
+            <label class="option-label"><input type="radio" name="q17" value="C"> <span class="lang-id">C. Penagihan Akun</span><span class="lang-en">C. Account Billing</span></label>
+            <label class="option-label"><input type="radio" name="q17" value="D"> <span class="lang-id">D. Pengaturan Google Search</span><span class="lang-en">D. Google Search settings</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="18"><div class="question-text"><span class="lang-id">18. Saat menulis perintah inti untuk sebuah Gem, bagian manakah yang menguraikan batasan dasarnya?</span><span class="lang-en">18. When writing the core instructions for a Gem, what section outlines its foundational boundaries?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q18" value="A"> <span class="lang-id">A. Model harga</span><span class="lang-en">A. The pricing model</span></label>
+            <label class="option-label"><input type="radio" name="q18" value="B"> <span class="lang-id">B. Profil lokasi pengguna</span><span class="lang-en">B. The user's location profile</span></label>
+            <label class="option-label"><input type="radio" name="q18" value="C"> <span class="lang-id">C. Perintah sistem yang menentukan peran, aturan, dan batasan ruang lingkup</span><span class="lang-en">C. System instructions specifying role, rules, and scope limitations</span></label>
+            <label class="option-label"><input type="radio" name="q18" value="D"> <span class="lang-id">D. Kolom tanda tangan email</span><span class="lang-en">D. The email signature field</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="19"><div class="question-text"><span class="lang-id">19. Bagaimana Anda bisa memberi Gem kustom akses ke materi referensi internal perusahaan?</span><span class="lang-en">19. How can you give a custom Gem access to internal company reference materials?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q19" value="A"> <span class="lang-id">A. Mengirimkannya via email ke dukungan Google.</span><span class="lang-en">A. By emailing it to Google support.</span></label>
+            <label class="option-label"><input type="radio" name="q19" value="B"> <span class="lang-id">B. Mengunggah file teks atau menautkan file dari Google Drive di bawah bagian "Knowledge".</span><span class="lang-en">B. By uploading text files or linking files from Google Drive under the "Knowledge" section.</span></label>
+            <label class="option-label"><input type="radio" name="q19" value="C"> <span class="lang-id">C. Mengubah kata sandi komputer Anda.</span><span class="lang-en">C. By changing your computer's password.</span></label>
+            <label class="option-label"><input type="radio" name="q19" value="D"> <span class="lang-id">D. Anda tidak dapat menambahkan dokumen eksternal ke Gem.</span><span class="lang-en">D. You cannot add external documents to a Gem.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="20"><div class="question-text"><span class="lang-id">20. Apakah manfaat utama berbagai Gem dengan anggota tim departemen Anda?</span><span class="lang-en">20. What is a major benefit of sharing a Gem with your department team?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q20" value="A"> <span class="lang-id">A. Menghapus email lama secara otomatis.</span><span class="lang-en">A. It deletes old emails automatically.</span></label>
+            <label class="option-label"><input type="radio" name="q20" value="B"> <span class="lang-id">B. Memastikan semua orang menggunakan parameter, gaya, dan standar data yang konsisten.</span><span class="lang-en">B. It ensures everyone uses consistent parameters, styles, and data baselines.</span></label>
+            <label class="option-label"><input type="radio" name="q20" value="C"> <span class="lang-id">C. Mempercepat router internet kantor.</span><span class="lang-en">C. It speeds up the office internet router.</span></label>
+            <label class="option-label"><input type="radio" name="q20" value="D"> <span class="lang-id">D. Melacak kehadiran karyawan.</span><span class="lang-en">D. It tracks employee attendance.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="21"><div class="question-text"><span class="lang-id">21. Jika Anda mengubah dokumen asli di Google Drive yang tertaut ke Knowledge Gem Anda, apa yang terjadi?</span><span class="lang-en">21. If you modify an original Google Drive document linked to your Gem's Knowledge, what happens?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q21" value="A"> <span class="lang-id">A. Gem akan rusak secara permanen.</span><span class="lang-en">A. The Gem will break permanently.</span></label>
+            <label class="option-label"><input type="radio" name="q21" value="B"> <span class="lang-id">B. Gemini menggunakan versi terbaru file, mencerminkan pembaruan di interaksi Gem.</span><span class="lang-en">B. Gemini uses the most recent version of the file, reflecting updates in your Gem interactions.</span></label>
+            <label class="option-label"><input type="radio" name="q21" value="C"> <span class="lang-id">C. Anda harus menghapus Gem dan membuatnya kembali.</span><span class="lang-en">C. You must delete the Gem and recreate it from scratch.</span></label>
+            <label class="option-label"><input type="radio" name="q21" value="D"> <span class="lang-id">D. File berubah menjadi format baca-saja.</span><span class="lang-en">D. The file turns into read-only format.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="22"><div class="question-text"><span class="lang-id">22. Jenis tugas manakah yang paling baik ditangani dengan membuat Gem permanen?</span><span class="lang-en">22. What type of task is best handled by creating a permanent Gem?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q22" value="A"> <span class="lang-id">A. Memeriksa prakiraan cuaca hari ini.</span><span class="lang-en">A. Checking today's weather forecast.</span></label>
+            <label class="option-label"><input type="radio" name="q22" value="B"> <span class="lang-id">B. Menjalankan laporan rekonsiliasi inventaris mingguan yang memerlukan struktur dan nada yang sama setiap Jumat.</span><span class="lang-en">B. Running a weekly inventory reconciliation report requiring the exact same structure and tone every Friday.</span></label>
+            <label class="option-label"><input type="radio" name="q22" value="C"> <span class="lang-id">C. Mencari definisi cepat akronim online.</span><span class="lang-en">C. Searching for a quick definition of an online acronym.</span></label>
+            <label class="option-label"><input type="radio" name="q22" value="D"> <span class="lang-id">D. Meminta rekomendasi tujuan liburan umum.</span><span class="lang-en">D. Asking for a general holiday destination recommendation.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="23"><div class="question-text"><span class="lang-id">23. Pengaturan administratif mana yang mengontrol apakah karyawan dapat mendistribusikan Gem perusahaan secara eksternal?</span><span class="lang-en">23. Which admin setting controls whether employees can distribute corporate Gems externally?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q23" value="A"> <span class="lang-id">A. Google Workspace Admin Console di bawah pengaturan Generative AI / Gemini app</span><span class="lang-en">A. Google Workspace Admin Console under Generative AI / Gemini app settings</span></label>
+            <label class="option-label"><input type="radio" name="q23" value="B"> <span class="lang-id">B. Riwayat browser Chrome pribadi</span><span class="lang-en">B. Personal Chrome browser history</span></label>
+            <label class="option-label"><input type="radio" name="q23" value="C"> <span class="lang-id">C. Pengelola Perangkat Windows</span><span class="lang-en">C. Device Manager</span></label>
+            <label class="option-label"><input type="radio" name="q23" value="D"> <span class="lang-id">D. Perangkat lunak Firewall Jaringan</span><span class="lang-en">D. Network Firewall software</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="24"><div class="question-text"><span class="lang-id">24. Apakah Gem dapat digunakan langsung dalam aliran data perusahaan multi-langkah otomatis?</span><span class="lang-en">24. Can a Gem be used directly within automated multi-step corporate data flows?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q24" value="A"> <span class="lang-id">A. Tidak, Gem benar-benar terisolasi.</span><span class="lang-en">A. No, Gems are completely isolated.</span></label>
+            <label class="option-label"><input type="radio" name="q24" value="B"> <span class="lang-id">B. Ya, melalui langkah "Ask a Gem" untuk mengotomatiskan pembuatan draf dokumen.</span><span class="lang-en">B. Yes, via steps like "Ask a Gem" to automate document drafting.</span></label>
+            <label class="option-label"><input type="radio" name="q24" value="C"> <span class="lang-id">C. Hanya jika pengguna menggunakan ponsel.</span><span class="lang-en">C. Only if the user is using a mobile phone.</span></label>
+            <label class="option-label"><input type="radio" name="q24" value="D"> <span class="lang-id">D. Gem hanya berfungsi sebagai wallpaper desktop dekoratif.</span><span class="lang-en">D. Gems only function as decorative desktop wallpapers.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="25"><div class="question-text"><span class="lang-id">25. Saat merancang Gem untuk departemen pengadaan Indonesia, bagaimana menentukan aturan pemformatan mata uang?</span><span class="lang-en">25. When designing a Gem for Indonesian procurement, how should you specify currency formatting?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q25" value="A"> <span class="lang-id">A. Biarkan kosong agar AI yang memilih.</span><span class="lang-en">A. Leave it blank so the AI chooses.</span></label>
+            <label class="option-label"><input type="radio" name="q25" value="B"> <span class="lang-id">B. Tulis perintah eksplisit: "Selalu format angka sebagai Rupiah menggunakan IDR atau Rp."</span><span class="lang-en">B. Write explicit instructions: "Always format numbers as Rupiah using IDR prefix or Rp symbol."</span></label>
+            <label class="option-label"><input type="radio" name="q25" value="C"> <span class="lang-id">C. Beri tahu AI untuk menggunakan simbol internasional acak.</span><span class="lang-en">C. Tell the AI to use random international symbols.</span></label>
+            <label class="option-label"><input type="radio" name="q25" value="D"> <span class="lang-id">D. Unggah gambar koin Rupiah Indonesia.</span><span class="lang-en">D. Upload a picture of an Indonesian coin.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="26"><div class="question-text"><span class="lang-id">26. Fitur apa yang memungkinkan Anda menguji respons Gem kustom sebelum menyebarkannya?</span><span class="lang-en">26. What feature lets you test your customized Gem's responses before deploying it?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q26" value="A"> <span class="lang-id">A. Opsi Hapus Sandbox</span><span class="lang-en">A. The Sandbox Delete option</span></label>
+            <label class="option-label"><input type="radio" name="q26" value="B"> <span class="lang-id">B. Kotak teks Pratinjau (Preview) interaktif di sisi kanan antarmuka pembuatan</span><span class="lang-en">B. The interactive Preview text box on the right side of the creation interface</span></label>
+            <label class="option-label"><input type="radio" name="q26" value="C"> <span class="lang-id">C. Tautan verifikasi email</span><span class="lang-en">C. The email verification link</span></label>
+            <label class="option-label"><input type="radio" name="q26" value="D"> <span class="lang-id">D. Mencetak cetak biru kode</span><span class="lang-en">D. Printing out the code blueprint</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="27"><div class="question-text"><span class="lang-id">27. Untuk mengatur Gem perusahaan yang sering digunakan di bagian atas daftar menu, gunakan fungsi:</span><span class="lang-en">27. To organize your most frequently used Gems at the top of your menu, use:</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q27" value="A"> <span class="lang-id">A. Hapus</span><span class="lang-en">A. Delete</span></label>
+            <label class="option-label"><input type="radio" name="q27" value="B"> <span class="lang-id">B. Blokir</span><span class="lang-en">B. Block</span></label>
+            <label class="option-label"><input type="radio" name="q27" value="C"> <span class="lang-id">C. Sematkan (Pin)</span><span class="lang-en">C. Pin</span></label>
+            <label class="option-label"><input type="radio" name="q27" value="D"> <span class="lang-id">D. Arsipkan</span><span class="lang-en">D. Archive</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="28"><div class="question-text"><span class="lang-id">28. Apa yang terjadi jika Anda menambahkan dokumen dengan jam operasional usang ke Knowledge Gem?</span><span class="lang-en">28. What happens if you add an outdated document into a Gem's knowledge base?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q28" value="A"> <span class="lang-id">A. AI memperbarui teks secara otomatis via satelit.</span><span class="lang-en">A. The AI automatically updates the text via satellite.</span></label>
+            <label class="option-label"><input type="radio" name="q28" value="B"> <span class="lang-id">B. Gem akan mengandalkan data usang dan berpotensi menghasilkan jawaban tidak akurat.</span><span class="lang-en">B. The Gem will rely on that outdated data and potentially generate inaccurate answers.</span></label>
+            <label class="option-label"><input type="radio" name="q28" value="C"> <span class="lang-id">C. Dokumen berubah menjadi file audio.</span><span class="lang-en">C. The document turns into an audio file.</span></label>
+            <label class="option-label"><input type="radio" name="q28" value="D"> <span class="lang-id">D. Akun Anda langsung ditangguhkan.</span><span class="lang-en">D. Your account gets suspended immediately.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="29"><div class="question-text"><span class="lang-id">29. Format mana yang TIDAK didukung sebagai file Knowledge di Gemini Gems?</span><span class="lang-en">29. Which format is NOT supported as a Knowledge file in Gemini Gems?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q29" value="A"> <span class="lang-id">A. File teks biasa (.txt)</span><span class="lang-en">A. Raw text files (.txt)</span></label>
+            <label class="option-label"><input type="radio" name="q29" value="B"> <span class="lang-id">B. Dokumen PDF (.pdf)</span><span class="lang-en">B. PDF documents (.pdf)</span></label>
+            <label class="option-label"><input type="radio" name="q29" value="C"> <span class="lang-id">C. Google Docs</span><span class="lang-en">C. Google Docs</span></label>
+            <label class="option-label"><input type="radio" name="q29" value="D"> <span class="lang-id">D. File program .exe</span><span class="lang-en">D. Executable .exe files</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="30"><div class="question-text"><span class="lang-id">30. Judul praktis terbaik untuk Gem yang meninjau kepatuhan pajak perusahaan Indonesia?</span><span class="lang-en">30. Best practical title for a Gem built to review Indonesian corporate tax compliance?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q30" value="A"> <span class="lang-id">A. "Asisten Acak Saya v2"</span><span class="lang-en">A. "My Random Assistant v2"</span></label>
+            <label class="option-label"><input type="radio" name="q30" value="B"> <span class="lang-id">B. "Reviewer_Kepatuhan_Pajak_Korporat"</span><span class="lang-en">B. "Reviewer_Kepatuhan_Pajak_Korporat"</span></label>
+            <label class="option-label"><input type="radio" name="q30" value="C"> <span class="lang-id">C. "Dokumen Tanpa Judul"</span><span class="lang-en">C. "Untitled Document"</span></label>
+            <label class="option-label"><input type="radio" name="q30" value="D"> <span class="lang-id">D. "Pajak_Semuanya_AI"</span><span class="lang-en">D. "Tax_Everything_AI"</span></label>
+        </div></div>
+
+        <!-- ===== TEST 3: AGENT SKILLS & SKILL.md ===== -->
+        <div class="section-title"><span class="lang-id">TES 3: AGENT SKILLS & MANAJEMEN SKILL.md</span><span class="lang-en">TEST 3: AGENT SKILLS WORKFLOW & SKILL.md MANAGEMENT</span></div>
+
+        <div class="question-block" data-qnum="31"><div class="question-text"><span class="lang-id">31. Apakah yang dimaksud dengan "Agent Skill" dalam ekosistem AI tingkat lanjut?</span><span class="lang-en">31. What is an "Agent Skill" in advanced AI ecosystems?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q31" value="A"> <span class="lang-id">A. Lencana tes sertifikasi untuk pekerja manusia.</span><span class="lang-en">A. A certification test badge for human workers.</span></label>
+            <label class="option-label"><input type="radio" name="q31" value="B"> <span class="lang-id">B. Direktori mandiri yang mengemas alur kerja prosedural menjadi kemampuan yang dapat ditemukan untuk agen AI.</span><span class="lang-en">B. A self-contained directory packaging specific procedural workflows into a discoverable capability for AI agents.</span></label>
+            <label class="option-label"><input type="radio" name="q31" value="C"> <span class="lang-id">C. Kartu grafis akselerasi perangkat keras.</span><span class="lang-en">C. A hardware acceleration graphics card.</span></label>
+            <label class="option-label"><input type="radio" name="q31" value="D"> <span class="lang-id">D. Daftar putar game online perusahaan.</span><span class="lang-en">D. An online corporate game playlist.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="32"><div class="question-text"><span class="lang-id">32. Apakah nama file persis yang diperlukan untuk perintah pengaturan inti sebuah Agent Skill?</span><span class="lang-en">32. What is the exact filename required for an Agent Skill's core setup instructions?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q32" value="A"> <span class="lang-id">A. README.txt</span><span class="lang-en">A. README.txt</span></label>
+            <label class="option-label"><input type="radio" name="q32" value="B"> <span class="lang-id">B. RUN_PROGRAM.exe</span><span class="lang-en">B. RUN_PROGRAM.exe</span></label>
+            <label class="option-label"><input type="radio" name="q32" value="C"> <span class="lang-id">C. SKILL.md</span><span class="lang-en">C. SKILL.md</span></label>
+            <label class="option-label"><input type="radio" name="q32" value="D"> <span class="lang-id">D. CONFIG.json</span><span class="lang-en">D. CONFIG.json</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="33"><div class="question-text"><span class="lang-id">33. Manfaat desain apa yang mencegah Agent Skill membebani memori AI di awal sesi?</span><span class="lang-en">33. What design benefit prevents an Agent Skill from overloading AI memory at session start?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q33" value="A"> <span class="lang-id">A. Hibernasi sistem</span><span class="lang-en">A. System hibernation</span></label>
+            <label class="option-label"><input type="radio" name="q33" value="B"> <span class="lang-id">B. Pengungkapan progresif (lazy-loading hanya ketika deskripsi cocok dengan tugas)</span><span class="lang-en">B. Progressive disclosure (lazy-loading only when the skill description matches the task)</span></label>
+            <label class="option-label"><input type="radio" name="q33" value="C"> <span class="lang-id">C. Kompresi teks otomatis</span><span class="lang-en">C. Automatic text compression</span></label>
+            <label class="option-label"><input type="radio" name="q33" value="D"> <span class="lang-id">D. Menurunkan kecerahan layar</span><span class="lang-en">D. Lowering screen brightness</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="34"><div class="question-text"><span class="lang-id">34. Di manakah keahlian lokal dalam cakupan proyek disimpan di ruang kerja repositori?</span><span class="lang-en">34. Where are project-scoped local skills saved within a repository workspace?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q34" value="A"> <span class="lang-id">A. Di folder root sistem C:/Windows</span><span class="lang-en">A. In the system root C:/Windows folder</span></label>
+            <label class="option-label"><input type="radio" name="q34" value="B"> <span class="lang-id">B. Di folder direktori .gemini/skills/ atau .agents/skills/</span><span class="lang-en">B. In the .gemini/skills/ or .agents/skills/ directory folder</span></label>
+            <label class="option-label"><input type="radio" name="q34" value="C"> <span class="lang-id">C. Di hard drive cadangan eksternal</span><span class="lang-en">C. On an external backup hard drive</span></label>
+            <label class="option-label"><input type="radio" name="q34" value="D"> <span class="lang-id">D. Di folder penanda tautan browser internet</span><span class="lang-en">D. In the internet browser bookmark folder</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="35"><div class="question-text"><span class="lang-id">35. Blok metadata apa yang harus ada di bagian atas file SKILL.md yang valid?</span><span class="lang-en">35. What metadata blocks must be at the top of a valid SKILL.md?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q35" value="A"> <span class="lang-id">A. Nomor pokok wajib pajak perusahaan</span><span class="lang-en">A. Corporate tax identification numbers</span></label>
+            <label class="option-label"><input type="radio" name="q35" value="B"> <span class="lang-id">B. Atribut Nama (Name) dan Deskripsi (Description)</span><span class="lang-en">B. Name and Description attributes</span></label>
+            <label class="option-label"><input type="radio" name="q35" value="C"> <span class="lang-id">C. Daftar gaji karyawan</span><span class="lang-en">C. Employee salary list</span></label>
+            <label class="option-label"><input type="radio" name="q35" value="D"> <span class="lang-id">D. Alamat IP Jaringan</span><span class="lang-en">D. Network IP addresses</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="36"><div class="question-text"><span class="lang-id">36. Bagaimana AI mengonfirmasi akan menjalankan perintah latar belakang dari sebuah skill?</span><span class="lang-en">36. How does AI confirm it will run a background command sequence from a skill?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q36" value="A"> <span class="lang-id">A. Dengan mengeluarkan (log out) pengguna.</span><span class="lang-en">A. By logging out the user.</span></label>
+            <label class="option-label"><input type="radio" name="q36" value="B"> <span class="lang-id">B. Menampilkan konfirmasi eksplisit dengan tujuan skill dan izin jalur direktori.</span><span class="lang-en">B. By displaying an explicit confirmation prompt detailing the skill's purpose and directory path clearance.</span></label>
+            <label class="option-label"><input type="radio" name="q36" value="C"> <span class="lang-id">C. Dengan memancarkan lampu merah di layar.</span><span class="lang-en">C. By flashing a red light on screen.</span></label>
+            <label class="option-label"><input type="radio" name="q36" value="D"> <span class="lang-id">D. Tidak pernah meminta konfirmasi.</span><span class="lang-en">D. It never requests confirmation.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="37"><div class="question-text"><span class="lang-id">37. Perintah slash apa yang menampilkan semua skill aktif yang tersedia?</span><span class="lang-en">37. Which slash command displays all discovered active skills currently available?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q37" value="A"> <span class="lang-id">A. /exit</span><span class="lang-en">A. /exit</span></label>
+            <label class="option-label"><input type="radio" name="q37" value="B"> <span class="lang-id">B. /delete:all</span><span class="lang-en">B. /delete:all</span></label>
+            <label class="option-label"><input type="radio" name="q37" value="C"> <span class="lang-id">C. /skills list</span><span class="lang-en">C. /skills list</span></label>
+            <label class="option-label"><input type="radio" name="q37" value="D"> <span class="lang-id">D. /help:me</span><span class="lang-en">D. /help:me</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="38"><div class="question-text"><span class="lang-id">38. Utilitas bawaan apa yang membantu membuat draf struktur boilerplate skill baru secara otomatis?</span><span class="lang-en">38. What built-in utility helps draft a new skill's boilerplate structure automatically?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q38" value="A"> <span class="lang-id">A. Alat meta-skill skill-creator</span><span class="lang-en">A. The skill-creator meta-skill tool</span></label>
+            <label class="option-label"><input type="radio" name="q38" value="B"> <span class="lang-id">B. Disk Defragmenter</span><span class="lang-en">B. Disk Defragmenter</span></label>
+            <label class="option-label"><input type="radio" name="q38" value="C"> <span class="lang-id">C. Microsoft Paint</span><span class="lang-en">C. Microsoft Paint</span></label>
+            <label class="option-label"><input type="radio" name="q38" value="D"> <span class="lang-id">D. System Recovery</span><span class="lang-en">D. System Recovery</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="39"><div class="question-text"><span class="lang-id">39. Apa yang terjadi jika dua skill dengan nama identik dalam ruang kerja yang sama?</span><span class="lang-en">39. What happens if two skills with identical names exist in the same workspace?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q39" value="A"> <span class="lang-id">A. Komputer akan meledak.</span><span class="lang-en">A. The computer will explode.</span></label>
+            <label class="option-label"><input type="radio" name="q39" value="B"> <span class="lang-id">B. Antarmuka menyelesaikan berdasarkan prioritas jalur atau memicu error konflik penamaan.</span><span class="lang-en">B. The interface resolves them based on path precedence or triggers a naming conflict error.</span></label>
+            <label class="option-label"><input type="radio" name="q39" value="C"> <span class="lang-id">C. Kedua skill bergabung menjadi satu dokumen teks.</span><span class="lang-en">C. Both skills combine into a single text document.</span></label>
+            <label class="option-label"><input type="radio" name="q39" value="D"> <span class="lang-id">D. Internet langsung terputus.</span><span class="lang-en">D. The internet disconnects immediately.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="40"><div class="question-text"><span class="lang-id">40. Mengapa menyatukan formulir templat dalam direktori Agent Skill sangat membantu?</span><span class="lang-en">40. Why is bundling template forms within an Agent Skill directory helpful?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q40" value="A"> <span class="lang-id">A. Mengurangi ruang penyimpanan di server perusahaan.</span><span class="lang-en">A. It reduces file storage space on company servers.</span></label>
+            <label class="option-label"><input type="radio" name="q40" value="B"> <span class="lang-id">B. Memastikan agen AI memiliki akses lokal ke semua sumber daya struktural untuk dokumen konsisten.</span><span class="lang-en">B. It ensures the AI agent has direct local access to all structural resources for consistent documents.</span></label>
+            <label class="option-label"><input type="radio" name="q40" value="C"> <span class="lang-id">C. Menyembunyikan file dari alat peninjau administratif.</span><span class="lang-en">C. It hides files from administrative viewing tools.</span></label>
+            <label class="option-label"><input type="radio" name="q40" value="D"> <span class="lang-id">D. Memformat konfigurasi tema desktop.</span><span class="lang-en">D. It formats your desktop theme configuration.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="41"><div class="question-text"><span class="lang-id">41. Saat memperbarui skill karena AI salah menafsirkan langkah penagihan Indonesia, Anda harus:</span><span class="lang-en">41. When updating a skill because the AI misinterprets an Indonesian billing step, you should:</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q41" value="A"> <span class="lang-id">A. Berhenti menggunakan AI sepenuhnya.</span><span class="lang-en">A. Stop using AI completely.</span></label>
+            <label class="option-label"><input type="radio" name="q41" value="B"> <span class="lang-id">B. Buka file SKILL.md lokal dan tambahkan batasan eksplisit atau langkah logis yang benar.</span><span class="lang-en">B. Open the local SKILL.md file and append explicit constraints detailing the correct workflow.</span></label>
+            <label class="option-label"><input type="radio" name="q41" value="C"> <span class="lang-id">C. Instal ulang sistem operasi Anda.</span><span class="lang-en">C. Reinstall your operating system.</span></label>
+            <label class="option-label"><input type="radio" name="q41" value="D"> <span class="lang-id">D. Tulis surat pengaduan ke penyedia jaringan.</span><span class="lang-en">D. Write a complaint letter to your network provider.</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="42"><div class="question-text"><span class="lang-id">42. Opsi perintah apa yang membatasi Agent Skill hanya di folder proyek tertentu?</span><span class="lang-en">42. What command restricts an Agent Skill to a specific project folder only?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q42" value="A"> <span class="lang-id">A. --global</span><span class="lang-en">A. --global</span></label>
+            <label class="option-label"><input type="radio" name="q42" value="B"> <span class="lang-id">B. --scope workspace</span><span class="lang-en">B. --scope workspace</span></label>
+            <label class="option-label"><input type="radio" name="q42" value="C"> <span class="lang-id">C. --all-users</span><span class="lang-en">C. --all-users</span></label>
+            <label class="option-label"><input type="radio" name="q42" value="D"> <span class="lang-id">D. --delete-local</span><span class="lang-en">D. --delete-local</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="43"><div class="question-text"><span class="lang-id">43. Bahasa markup apa yang digunakan di file SKILL.md standar?</span><span class="lang-en">43. What markup language is used in a standard SKILL.md file?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q43" value="A"> <span class="lang-id">A. HTML</span><span class="lang-en">A. HTML</span></label>
+            <label class="option-label"><input type="radio" name="q43" value="B"> <span class="lang-id">B. C++</span><span class="lang-en">B. C++</span></label>
+            <label class="option-label"><input type="radio" name="q43" value="C"> <span class="lang-id">C. Markdown</span><span class="lang-en">C. Markdown</span></label>
+            <label class="option-label"><input type="radio" name="q43" value="D"> <span class="lang-id">D. Binary Code</span><span class="lang-en">D. Binary Code</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="44"><div class="question-text"><span class="lang-id">44. Perintah terminal untuk menyegarkan indeks penemuan skill baru?</span><span class="lang-en">44. What terminal command force-refreshes the discovery indices of newly added skills?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q44" value="A"> <span class="lang-id">A. /skills reload atau /skills refresh</span><span class="lang-en">A. /skills reload or /skills refresh</span></label>
+            <label class="option-label"><input type="radio" name="q44" value="B"> <span class="lang-id">B. /exit_session</span><span class="lang-en">B. /exit_session</span></label>
+            <label class="option-label"><input type="radio" name="q44" value="C"> <span class="lang-id">C. /clear_history</span><span class="lang-en">C. /clear_history</span></label>
+            <label class="option-label"><input type="radio" name="q44" value="D"> <span class="lang-id">D. /shutdown</span><span class="lang-en">D. /shutdown</span></label>
+        </div></div>
+
+        <div class="question-block" data-qnum="45"><div class="question-text"><span class="lang-id">45. Kemampuan alat apa yang memungkinkan Agent Skill menjalankan pemeriksaan diagnostik?</span><span class="lang-en">45. What tool allows an Agent Skill to run precise diagnostic testing checks?</span></div>
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="q45" value="A"> <span class="lang-id">A. Penyuntikan skrip validasi kustom dalam profil aset direktori skill.</span><span class="lang-en">A. The injection of custom validation script execution setups within the skill directory asset profiles.</span></label>
+            <label class="option-label"><input type="radio" name="q45" value="B"> <span class="lang-id">B. Mengubah parameter resolusi layar.</span><span class="lang-en">B. Changing the screen resolution parameters.</span></label>
+            <label class="option-label"><input type="radio" name="q45" value="C"> <span class="lang-id">C. Menghapus riwayat log sistem.</span><span class="lang-en">C. Deleting system log histories.</span></label>
+            <label class="option-label"><input type="radio" name="q45" value="D"> <span class="lang-id">D. Memutuskan kabel koneksi jaringan lokal.</span><span class="lang-en">D. Disconnecting the local network patch cables.</span></label>
+        </div></div>
+
+        <div style="text-align:center;margin-top:30px;">
+            <button type="button" class="btn-submit" onclick="evaluateAll()"><span class="lang-id">Kirim Semua Jawaban</span><span class="lang-en">Submit All Answers</span></button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const answerKeys = {
+        q1: "B", q2: "C", q3: "C", q4: "B", q5: "C", q6: "B", q7: "C", q8: "B", q9: "B", q10: "B",
+        q11: "B", q12: "B", q13: "C", q14: "B", q15: "B", q16: "B", q17: "B", q18: "C", q19: "B", q20: "B",
+        q21: "B", q22: "B", q23: "A", q24: "B", q25: "B", q26: "B", q27: "C", q28: "B", q29: "D", q30: "B",
+        q31: "B", q32: "C", q33: "B", q34: "B", q35: "B", q36: "B", q37: "C", q38: "A", q39: "B", q40: "B",
+        q41: "B", q42: "B", q43: "C", q44: "A", q45: "A"
+    };
+
+    function setLang(l) {
+        document.querySelectorAll('.lang-id').forEach(e => e.style.display = l === 'id' ? 'block' : 'none');
+        document.querySelectorAll('.lang-en').forEach(e => e.style.display = l === 'en' ? 'block' : 'none');
+        document.getElementById('btn-id').classList.toggle('active', l === 'id');
+        document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    }
+
+    function evaluateAll() {
+        const name = document.getElementById('p_name').value.trim();
+        const dept = document.getElementById('p_dept').value.trim();
+        const phone = document.getElementById('p_phone').value.trim();
+        if (!name || !dept || !phone) { alert("Please fill in all participant fields."); return; }
+
+        let total = 0;
+        let s1 = 0, s2 = 0, s3 = 0;
+        const form = document.getElementById('quiz-form');
+
+        document.querySelectorAll('.option-label').forEach(l => l.classList.remove('correct-answer', 'wrong-answer'));
+
+        for (let i = 1; i <= 45; i++) {
+            const key = 'q' + i;
+            const selected = form.elements[key]?.value;
+            const correct = answerKeys[key];
+            const block = document.querySelector(`[data-qnum="${i}"]`);
+            if (!block) continue;
+            const labels = block.querySelectorAll('.option-label');
+            labels.forEach(label => {
+                const input = label.querySelector('input');
+                if (input.value === correct) label.classList.add('correct-answer');
+                if (selected && selected !== correct && input.value === selected) label.classList.add('wrong-answer');
+            });
+            if (selected === correct) {
+                total++;
+                if (i <= 15) s1++;
+                else if (i <= 30) s2++;
+                else s3++;
+            }
+        }
+
+        const pct = Math.round((total / 45) * 100);
+        document.getElementById('score-text').innerText = total + ' / 45';
+        document.getElementById('lbl-name').innerText = name;
+        document.getElementById('lbl-dept').innerText = dept;
+        document.getElementById('lbl-phone').innerText = phone;
+        document.getElementById('lbl-date').innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+
+        const ps = document.getElementById('progress-section');
+        ps.innerHTML = `
+            <div class="progress-card"><div class="label">Test 1: AI Fundamentals</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(s1/15*100)}%"></div></div><div class="num">${s1}/15</div></div>
+            <div class="progress-card"><div class="label">Test 2: Gemini Gems</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(s2/15*100)}%"></div></div><div class="num">${s2}/15</div></div>
+            <div class="progress-card"><div class="label">Test 3: SKILL.md</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(s3/15*100)}%"></div></div><div class="num">${s3}/15</div></div>
+        `;
+
+        const badge = document.getElementById('badge-area');
+        const analysis = document.getElementById('analysis-text');
+        const lang = document.getElementById('btn-id').classList.contains('active') ? 'id' : 'en';
+
+        if (total > 38) {
+            badge.innerHTML = '<span class="status-highly-rec">' + (lang === 'id' ? 'Sangat Direkomendasikan' : 'Highly Recommended') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Penguasaan AI tingkat lanjut. Kandidat siap memimpin implementasi AI dan melatih staf lainnya.' : 'Advanced AI mastery. Ready to lead AI implementation and train other staff.';
+        } else if (total >= 27) {
+            badge.innerHTML = '<span class="status-consider">' + (lang === 'id' ? 'Pertimbangkan dengan Catatan' : 'Consider with Prerequisites') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Pengetahuan AI cukup baik,但有 beberapa area yang perlu diperkuat melalui pelatihan tambahan.' : 'Good AI knowledge, but some areas need strengthening through additional training.';
+        } else {
+            badge.innerHTML = '<span class="status-not-rec">' + (lang === 'id' ? 'Perlu Pelatihan Dasar' : 'Needs Basic Training') + '</span>';
+            analysis.textContent = lang === 'id' ? 'Rekomendasi untuk mengikuti pelatihan AI dasar sebelum ditugaskan ke proyek berbasis AI.' : 'Recommended to complete basic AI training before being assigned to AI-based projects.';
+        }
+
+        document.getElementById('result-dashboard').style.display = 'block';
+        document.getElementById('result-dashboard').scrollIntoView({ behavior: 'smooth' });
+
+        // save result
+        const raw = localStorage.getItem('test_results');
+        const list = raw ? JSON.parse(raw) : [];
+        list.push({
+            testId: '5',
+            testName: 'AI Training Module (3 Tests)',
+            participant: name, dept: dept, phone: phone,
+            score: total + ' / 45 (' + pct + '%)',
+            answers: collectAnswers(form),
+            date: new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' })
+        });
+        localStorage.setItem('test_results', JSON.stringify(list));
+    }
+
+    function collectAnswers(form) {
+        let lines = [];
+        for (let i = 1; i <= 45; i++) {
+            const val = form.elements['q' + i]?.value || '-';
+            lines.push(i + '. ' + val);
+        }
+        return lines.join('\n');
+    }
+</script>
+
+</body>
+</html>
