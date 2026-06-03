@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>40 Mining Operation Prompts — Reference</title>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #38a169; --bg: #f7fafc; --text: #2d3748; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 30px 20px; }
+        .container { max-width: 960px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); position: relative; }
+        .lang-switcher { position: fixed; top: 20px; right: 30px; display: flex; gap: 5px; background: #edf2f7; padding: 4px; border-radius: 6px; border: 1px solid #cbd5e0; z-index: 100; }
+        .lang-btn { padding: 6px 14px; font-size: 13px; font-weight: bold; border: none; background: none; cursor: pointer; border-radius: 4px; }
+        .lang-btn.active { background: var(--primary); color: white; }
+        .lang-en { display: none; }
+        .company-name { font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: var(--primary); text-align: center; margin-bottom: 5px; }
+        h1 { text-align: center; color: var(--primary); font-size: 20px; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #718096; font-size: 14px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; }
+        .section-title { background: var(--primary); color: white; padding: 12px 18px; font-size: 16px; font-weight: bold; border-radius: 6px; margin: 30px 0 18px 0; }
+        .section-subtitle { font-size: 15px; font-weight: 700; color: var(--secondary); margin: 22px 0 10px 0; padding-bottom: 5px; border-bottom: 1px solid #e2e8f0; }
+        .prompt-block { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; background: #fafcff; }
+        .prompt-num { font-weight: 700; color: var(--secondary); font-size: 13px; margin-bottom: 6px; }
+        .prompt-text { font-size: 14px; line-height: 1.6; color: var(--text); }
+        .prompt-text code { background: #edf2f7; padding: 1px 6px; border-radius: 3px; font-size: 13px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--secondary); text-decoration: none; font-size: 14px; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        .meta-note { text-align: center; font-size: 13px; color: #a0aec0; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+        @media print { .lang-switcher, .back-link { display: none !important; } }
+    </style>
+</head>
+<body>
+<div class="lang-switcher">
+    <button class="lang-btn active" id="btn-id" onclick="setLang('id')">ID</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+<div class="container">
+    <a href="index.html" class="back-link lang-id">← Kembali ke Portal</a>
+    <a href="index.html" class="back-link lang-en">← Back to Portal</a>
+
+    <div class="company-name lang-id">VANGUARD MINING GROUP</div>
+    <div class="company-name lang-en">VANGUARD MINING GROUP</div>
+    <h1 class="lang-id">40 CONTOH PROMPT AI UNTUK OPERASI TAMBANG</h1>
+    <h1 class="lang-en">40 AI PROMPT SAMPLES FOR MINING OPERATIONS</h1>
+    <div class="subtitle lang-id">Referensi cepat untuk administrasi, keuangan, perizinan, perpajakan, RKAB, nikel, dan batu bara</div>
+    <div class="subtitle lang-en">Quick reference for admin, finance, licensing, taxation, RKAB, nickel, and coal operations</div>
+
+    <p class="lang-id" style="font-size:14px;color:#718096;margin-bottom:20px;">Kumpulan 40 prompt siap pakai untuk membantu staf kantor, administrasi, keuangan, dan operasional perusahaan tambang dalam tugas sehari-hari menggunakan AI.</p>
+    <p class="lang-en" style="font-size:14px;color:#718096;margin-bottom:20px;">A compilation of 40 ready-to-use prompts for office, administrative, financial, and operational staff of mining companies in daily AI-assisted tasks.</p>
+
+    <!-- ===== SECTION 1 ===== -->
+    <div class="section-title lang-id">1. UMUM, ADMINISTRASI & KEPATUHAN (1–30)</div>
+    <div class="section-title lang-en">1. GENERAL, ADMIN & COMPLIANCE (1–30)</div>
+
+    <div class="section-subtitle lang-id">1.1 Keuangan & PNBP</div>
+    <div class="section-subtitle lang-en">1.1 Finance & PNBP</div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 1 — Royalty Calculation Review</div><div class="prompt-text">"Act as an Indonesian mining financial analyst. I will provide you with our latest monthly production volumes for [insert mineral, e.g., coal/nickel] and current benchmark prices (HPM/HPB). Help me cross-check our internal calculations for the royalty payment (Royalti/Iuran Produksi) due to the government to ensure zero calculation discrepancies before submission."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 2 — PNBP Billing Code Verification</div><div class="prompt-text">"Draft an internal email reminder to our logistics and finance teams detailing the strict step-by-step verification process required before generating a SIMPONI billing code for PNBP payments, emphasizing how to avoid mismatched tariff codes."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 3 — Cost Benefit Analysis for Mining Fleet</div><div class="prompt-text">"Generate a template structure in a Markdown table comparing the long-term cost benefits of renewing a lease on heavy machinery fleet (excavators and dump trucks) versus outright purchasing new equipment under current Indonesian corporate banking interest rates."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 4 — Financial Reporting Summary</div><div class="prompt-text">"Summarize this 15-page internal quarterly operating cost statement into 5 major bullet points. Highlight unexpected variance spikes in site fuel consumption (Solar Industri) and contractor expenses."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 5 — Vendor Statement Reconciliation Strategy</div><div class="prompt-text">"Provide a troubleshooting checklist for our finance staff to reconcile a major price discrepancy between our internal purchase orders (PO) and an invoice issued by an explosive materials vendor."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 6 — Auditing Prep for BPK/BPKP</div><div class="prompt-text">"Act as a compliance auditor. Create a detailed preparation checklist of financial documents, operational logs, and escrow account records that our office staff must gather to prepare for a routine BPK/BPKP mining financial audit."</div></div>
+
+    <div class="section-subtitle lang-id">1.2 Perizinan & Kepatuhan Regulasi</div>
+    <div class="section-subtitle lang-en">1.2 Licensing & Regulatory Compliance</div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 7 — IUP Extension Checklist</div><div class="prompt-text">"Act as a mining legal officer in Indonesia. Create a comprehensive, chronological checklist of all administrative, technical, environmental, and financial requirements needed to apply for the extension of an Exploration IUP to a Production Operation IUP (IUP Operasi Produksi) according to current ESDM regulations."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 8 — AMDAL Monitoring Executive Summary</div><div class="prompt-text">"Draft an executive summary based on our raw environmental field data for the past quarter to be submitted to the local DLH (Dinas Lingkungan Hidup). Focus on water quality monitoring parameters at our sediment ponds and tailing management areas."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 9 — IPPKH / PPKH Forest Use Compliance</div><div class="prompt-text">"Review the following draft letter addressed to the Ministry of Environment and Forestry (KLHK) regarding our annual land rehabilitation and reclamation progress reporting within our Borrow-to-Use Forest Permit (PPKH) area. Refine the language to be formal, highly compliant, and professional."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 10 — MODI / MOMS Dashboard Sync Prep</div><div class="prompt-text">"Create a daily data-entry checklist for our corporate secretary to ensure our company's administrative profile, shareholder registry, and active management structure are perfectly synced with the ESDM MODI (Minerba One Data Indonesia) dashboard."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 11 — Drafting Legal Response to IUP Suspension Risk</div><div class="prompt-text">"Draft a highly professional, formal response letter to the Directorate General of Mineral and Coal (Ditjen Minerba) addressing an administrative warning letter regarding minor delays in community development (PPM) reports, requesting a 14-day extension to upload final documentation."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 12 — ET/PEB Export License Renewal</div><div class="prompt-text">"What are the latest administrative steps, system inputs, and regional clearances required to renew our Registered Exporter status (Eksportir Terdaftar) for minerals in the Indonesian OSS (Online Single Submission) system?"</div></div>
+
+    <div class="section-subtitle lang-id">1.3 Perpajakan</div>
+    <div class="section-subtitle lang-en">1.3 Taxation</div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 13 — PBB-P3 Sektor Pertambangan</div><div class="prompt-text">"Act as an Indonesian tax consultant specialized in the extractive sector. Explain the exact valuation parameters used to compute the PBB-P3 (Land and Building Tax) for a mining concession area, specifically differentiating between the tax treatment of the 'Tubuh Bumi' (underground reservoir/ore body) and the surface area."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 14 — PPh Pasal 22 on Mineral Sales</div><div class="prompt-text">"Create an internal training brief for junior accountants explaining when and how to withhold PPh Pasal 22 (Income Tax Art 22) on domestic sales of mineral ores to local smelters versus international buyers."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 15 — VAT / PPN 11% Claim Strategy</div><div class="prompt-text">"Draft a formal internal advisory memo explaining the impact of current VAT regulations on our procurement of raw minerals versus processed downstream mineral products, highlighting input tax credit mechanism pitfalls."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 16 — Regional Tax / Pajak Daerah Audit Prep</div><div class="prompt-text">"Develop an excel-ready structure template to track and cross-reference payments made for regional local taxes (Pajak Daerah), including Pajak Air Tanah (PAT), Pajak Penerangan Jalan (PPJ), and retributions for local infrastructure usage."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 17 — Tax Dispute / Banding Documentation Prep</div><div class="prompt-text">"Draft a structured outline for a tax objection letter (Surat Keberatan Pajak) to the Directorate General of Taxes (DJP) challenging an over-assessment of corporate income tax related to historical transfer pricing rules on coal/mineral sales."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 18 — Withholding Tax PPh 21/23 for Site Contractors</div><div class="prompt-text">"Create a step-by-step verification checklist for office staff checking monthly contractor billing invoices to ensure PPh Pasal 23 for heavy equipment rental services and technical consulting fees are correctly categorized and withheld."</div></div>
+
+    <div class="section-subtitle lang-id">1.4 RKAB Management</div>
+    <div class="section-subtitle lang-en">1.4 RKAB Management</div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 19 — RKAB Narrative Drafting — Production Blocks</div><div class="prompt-text">"Act as a mining planning engineer. Draft a highly professional narrative description for Chapter III (Production Plan) of our RKAB document, justifying a projected 15% increase in ore extraction based on the opening of a new mining block and optimized stripping ratios."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 20 — RKAB Financial Matrix Alignment</div><div class="prompt-text">"Review this structural cost-breakdown raw data for our upcoming RKAB submission. Help me organize it cleanly into a standardized markdown table matching the ESDM format requirements, grouping exploration costs, operational costs, environmental management, and community empowerment (PPM)."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 21 — Answering RKAB Evaluation Rejections</div><div class="prompt-text">"We received an evaluation note from the ESDM evaluator stating that our exploration drilling density data is insufficient to support our proposed mining block production target in the RKAB. Draft a formal, technically sound response indicating that supplementary geostatistical block modeling and assay data have been attached to satisfy the requirement."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 22 — RKAB Revision Strategy for Supply/Demand Cuts</div><div class="prompt-text">"Given the Ministry of Energy and Mineral Resources' recent supply-side constraints and macro production quota adjustments to stabilize global prices, draft an adaptive strategy memo for management outlining how to scale down our quarterly contractor operations to align with a 20% production quota cut."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 23 — PPM / Community Development RKAB Budgeting</div><div class="prompt-text">"Draft the Community Development and Empowerment (PPM) section of our annual RKAB. Propose a sustainable economic development program framework for village circles near our concession area focusing on local micro-businesses, ensuring it meets the mandatory 8 core pillars of ESDM guidelines."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 24 — Safety & K3 RKAB Chapter Summary</div><div class="prompt-text">"Translate our internal annual mine safety statistics and training plans into a formal, concise synthesis report tailored for the Occupational Safety (K3) chapter of the standard RKAB template."</div></div>
+
+    <div class="section-subtitle lang-id">1.5 Operasi Kantor, Logistik & SDM</div>
+    <div class="section-subtitle lang-en">1.5 Office Operations, Logistics & HR</div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 25 — Expatriate Worker TKA IMTA/RPTKA Licensing</div><div class="prompt-text">"Act as an HR Mobility Specialist. Outline the latest end-to-end procedural steps required by the Indonesian Ministry of Manpower (Kemnaker) and Immigration to secure a valid corporate RPTKA (Expatriate Placement Plan) and KITAS for a foreign senior mining technical expert."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 26 — Fuel Procurement Solar Industri Tender Invitation</div><div class="prompt-text">"Draft a formal Request for Proposal (RFP) invitation letter to reputable national fuel distributors for the annual procurement supply of High-Speed Diesel (HSD/Solar Industri) to our remote mine site location. Include strict clauses regarding B35/B40 biodiesel compliance and delivery reliability."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 27 — Mine Site vs. Jakarta Office Communication Protocol</div><div class="prompt-text">"Design a crisis communication protocol framework for our administrative office to manage information flows in the event of severe weather-induced site access shutdowns. Detail lines of communication between Site Managers, Jakarta Headquarters, and relevant government agencies."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 28 — Vendor SLA / Contract Review for Shipping Barges</div><div class="prompt-text">"Review the following core terms of an agreement for coal/ore transshipment barges (Tongkang). Identify 3 potential operational or financial risks regarding demurrage penalties, force majeure definitions due to river tidal heights, and fuel adjustment clauses."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 29 — CSR Press Release</div><div class="prompt-text">"Draft a dual-language (Bahasa Indonesia and English) public press release celebrating our company's achievement in successfully rehabilitating 50 hectares of post-mining land ahead of schedule in partnership with local agricultural cooperatives."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 30 — Onboarding Manual for Remote Site Admin Clerks</div><div class="prompt-text">"Create a 5-day structured onboarding curriculum for a newly hired office administrator located at our remote mine site office. Cover inventory management of PPE (Alat Pelindung Diri), processing local medical claims, and handling daily heavy machine hour-log entries."</div></div>
+
+    <!-- ===== SECTION 2 ===== -->
+    <div class="section-title lang-id">2. TEKNIS & ANALITIK KHUSUS SEKTOR (31–40)</div>
+    <div class="section-title lang-en">2. SECTOR-SPECIFIC TECHNICAL & ANALYTICS (31–40)</div>
+
+    <div class="section-subtitle lang-id">2.1 Nikel</div>
+    <div class="section-subtitle lang-en">2.1 Nickel Mining</div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 31 — Nickel Production Cost & HPM Revenue Analysis</div><div class="prompt-text">"Act as a senior financial analyst for an Indonesian nickel mining operation. I will provide you with our current mining metrics: an actual Stripping Ratio (SR) of [insert, e.g., 3.8:1], an industrial diesel consumption rate, and a fixed overhead factor. Our target is extracting Saprolite ore with a grade of 1.7% Ni and 30% MC (Moisture Content). Help me calculate the projected total cash cost per Wet Metric Tonne (WMT). Then, cross-reference this against the current ESDM HPM (Harga Patokan Mineral) formula pricing to calculate our gross profit margin per tonne, including a sensitivity table showing the impact if fuel prices spike by 15%."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 32 — Nickel Fleet Productivity — Match Factor Calculation</div><div class="prompt-text">"Act as a mining operations engineer at an Indonesian nickel pit. Calculate the Match Factor (MF) for our loading and hauling fleet using the standard formula: MF = (N_H × t_L) / (N_L × t_H). Where: Number of haul trucks (N_H) = [insert], Number of loaders (N_L) = [insert], Loader cycle time (t_L) = [insert], Truck total cycle time (t_H) = [insert]. Show your mathematical work step-by-step. Interpret the resulting MF value to tell me if our fleet suffers from loader bottlenecking or truck queuing, and suggest adjustments to optimize our hourly pit fuel consumption."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 34 — Nickel Stockpile Grade Blending for Smelter Feed</div><div class="prompt-text">"Act as a Nickel Mine Quality Control (QC) Specialist. We need to ship a barge to a local smelter that strictly demands a blended grade of exactly 1.65% Ni. We have two separate stockpiles available at our jetty: Stockpile A contains 25,000 WMT of high-grade Saprolite at 1.85% Ni. Stockpile B contains 15,000 WMT of mid-grade ore at 1.40% Ni. Calculate the exact blending ratio and tonnage required from each stockpile to hit the 1.65% Ni target exactly, avoiding any smelter rejection or pricing penalties."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 37 — Nickel Ore Weight Correction — WMT to DMT</div><div class="prompt-text">"Act as a nickel logistics accountant. Help me perform a dry weight correction calculation for a domestic bulk shipment to an Indonesian smelter. The wet metric tonnage (WMT) measured at our jetty weighbridge is 11,000 tonnes, with a Total Moisture (TM/MC) sample reading of 32%. Upon arrival at the buyer's smelter port, the independent surveyor measures a TM of 29%. Calculate the adjusted Dry Metric Tonnage (DMT) and the final target payable tonnage based on standard Indonesian nickel trading moisture adjustment rules."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 39 — Nickel Exploration Assay Data & Cut-off Grade Verification</div><div class="prompt-text">"Create a step-by-step Standard Operating Procedure (SOP) checklist for our office-based geological team to verify laboratory assay results from a recent nickel laterite infill drilling campaign. Include QA/QC validation steps for checking Ni, Fe (Iron), and the Fe/Mg ratio variance margins of inserted blank samples, duplicates, and certified standards before updating our master resource block model to separate Saprolite from Limonite zones."</div></div>
+
+    <div class="section-subtitle lang-id">2.2 Batu Bara</div>
+    <div class="section-subtitle lang-en">2.2 Coal Mining</div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 33 — Coal Logistics — River Barging & Transshipment</div><div class="prompt-text">"Create a logistical tracking matrix template in Markdown format to monitor our river jetty coal transshipment cycle times from our South/East Kalimantan jetty to the Taboneo anchorage point. The table must track: Loading Time at Jetty, River Transit Time (Tug & Barge), Discharge Time at Mother Vessel, Return Empty Transit Time, and Demurrage windows. Include a mathematical formula column for our office coordinators to flag when a barge exceeds its allowed 48-hour turn-around window under standard Indonesian shipping contracts."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 35 — Coal Fleet Availability Metrics — PA, UA, MA</div><div class="prompt-text">"Explain the practical operational differences between Physical Availability (PA), Use of Availability (UA), and Mechanical Availability (MA) for a fleet of coal overburden-removal trucks. Provide the standard industry formulas for each metric using hours (Available Hours, Operating Hours, Downtime Hours, Scheduled Maintenance Hours). Then, draft a formal email template an operations clerk can use to flag to our mining contractor when MA drops below our contractually agreed 85% Service Level Agreement (SLA)."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 36 — Coal Haul Road Maintenance & Fuel Efficiency</div><div class="prompt-text">"Act as a coal mine operations analyst. Write a technical brief for our engineering office evaluating the relationship between haul road maintenance (rolling resistance, grading frequency) and coal haul truck fuel efficiency during the Indonesian wet season. Detail how a 2% increase in road rolling resistance due to poor water shedding, heavy rain, or muddy conditions impacts our overall cycle times and industrial diesel burn rates, and justify a budget increase for our support fleet (motor graders and water trucks)."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 38 — Contractor Mining Rate vs. Owner-Operated Financial Model</div><div class="prompt-text">"Draft a structured financial evaluation framework for our executive committee comparing our current Contractor Mining structure (paying a flat rate per BCM of overburden removed and per tonne of coal mined) versus transitioning into an Owner-Operated model (purchasing our own fleet via debt financing, managing our own site labor, and handling direct equipment maintenance). Group the analysis into CAPEX risks, OPEX flexibilities, and regulatory compliance accountability under current ESDM guidelines."</div></div>
+
+    <div class="prompt-block"><div class="prompt-num">Prompt 40 — Coal Ocean Freight Demurrage & Despatch</div><div class="prompt-text">"Act as a coal shipping logistics specialist. Our charter party agreement for an upcoming Handymax vessel loading our coal states a loading rate of 8,000 Metric Tonnes per Weather Working Day (PWWD), with a Demurrage rate of USD 15,000 per day and a Despatch rate of USD 7,500 per day. If our total coal cargo is 55,000 Metric Tonnes and our jetty/anchorage team finishes loading the vessel exactly 2.5 days ahead of the allowed Laytime, calculate the net financial outcome (Despatch earned or Demurrage owed) and draft the formal laytime statement summary for our finance team."</div></div>
+
+    <div class="meta-note lang-id">Gunakan prompt ini sebagai titik awal. Sesuaikan angka, mineral, dan konteks sesuai kebutuhan operasional perusahaan Anda.</div>
+    <div class="meta-note lang-en">Use these prompts as starting points. Adjust numbers, minerals, and context to match your company's operational needs.</div>
+</div>
+
+<script>
+    function setLang(l) {
+        document.querySelectorAll('.lang-id').forEach(e => e.style.display = l === 'id' ? 'block' : 'none');
+        document.querySelectorAll('.lang-en').forEach(e => e.style.display = l === 'en' ? 'block' : 'none');
+        document.getElementById('btn-id').classList.toggle('active', l === 'id');
+        document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    }
+</script>
+</body>
+</html>
