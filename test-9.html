@@ -135,6 +135,42 @@
             .type-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .dim-bar-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; margin: 15px 10px; }
+            .lang-switcher { position: static; justify-content: center; margin-bottom: 10px; right: auto; top: auto; }
+            h1 { font-size: 18px; }
+            .meta-info { font-size: 12px; }
+            .participant-box { padding: 15px; }
+            .form-group { flex-direction: column; gap: 12px; }
+            .form-control { min-width: 100%; }
+            .section-title { font-size: 14px; margin-top: 30px; }
+            .question-block { padding: 12px; margin-bottom: 18px; }
+            .question-text { font-size: 14px; }
+            .scale-container { flex-direction: column; gap: 6px; }
+            .scale-option { padding: 12px 10px; font-size: 13px; border-radius: 6px; }
+            .scale-labels { display: none; }
+            .btn-submit { padding: 14px 28px; font-size: 15px; width: 100%; }
+            #result-dashboard { padding: 20px; }
+            .type-badge { font-size: 22px; padding: 12px 24px; }
+            .type-title { font-size: 18px; }
+            .type-desc { font-size: 14px; }
+            .dimension-grid { grid-template-columns: 1fr; gap: 12px; }
+            .dim-card { padding: 12px; }
+            .dim-card .dim-value { font-size: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 12px; margin: 10px 6px; }
+            h1 { font-size: 16px; }
+            .lang-btn { padding: 5px 10px; font-size: 11px; }
+            .question-block { padding: 10px; }
+            .scale-option { padding: 14px 8px; font-size: 12px; }
+            .type-badge { font-size: 18px; padding: 10px 18px; }
+            .dimension-grid { gap: 10px; }
+            .dim-card .dim-value { font-size: 17px; }
+            .bar-label { font-size: 10px; min-width: 16px; }
+        }
     </style>
 </head>
 <body>
