@@ -5,10 +5,12 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const RESULTS_FILE = path.join(DATA_DIR, 'results.json');
+const KEYS_FILE = path.join(DATA_DIR, 'keys.json');
 const PUBLIC_DIR = __dirname;
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(RESULTS_FILE)) fs.writeFileSync(RESULTS_FILE, '[]', 'utf-8');
+if (!fs.existsSync(KEYS_FILE)) fs.writeFileSync(KEYS_FILE, '{}', 'utf-8');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -112,6 +114,32 @@ const server = http.createServer(async (req, res) => {
     results.splice(idx, 1);
     writeResults(results);
     return sendJSON(res, 200, { ok: true });
+  }
+
+  if (pathname === '/api/keys' && method === 'GET') {
+    try {
+      const raw = fs.readFileSync(KEYS_FILE, 'utf-8');
+      const keys = JSON.parse(raw);
+      const masked = {};
+      for (const [provider, key] of Object.entries(keys)) {
+        masked[provider] = key.length > 8 ? key.slice(0, 4) + '*'.repeat(key.length - 8) + key.slice(-4) : key;
+      }
+      return sendJSON(res, 200, { keys, masked });
+    } catch (e) {
+      return sendJSON(res, 500, { error: e.message });
+    }
+  }
+
+  if (pathname === '/api/keys' && method === 'POST') {
+    try {
+      const body = await getBody(req);
+      const existing = JSON.parse(fs.readFileSync(KEYS_FILE, 'utf-8'));
+      const updated = { ...existing, ...body };
+      fs.writeFileSync(KEYS_FILE, JSON.stringify(updated, null, 2), 'utf-8');
+      return sendJSON(res, 200, { ok: true });
+    } catch (e) {
+      return sendJSON(res, 400, { error: e.message });
+    }
   }
 
   let filePath = pathname === '/' ? path.join(PUBLIC_DIR, 'index.html') : path.join(PUBLIC_DIR, pathname);

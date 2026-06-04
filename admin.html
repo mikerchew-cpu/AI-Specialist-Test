@@ -265,7 +265,7 @@
         <div class="tab-content active" id="tab-providers">
             <div class="card">
                 <h3>AI Provider API Keys</h3>
-                <p style="font-size:14px;color:#718096;margin-bottom:20px;">Konfigurasi API key untuk setiap penyedia AI. Keys tersimpan di browser admin. Jika toggle diaktifkan, responden tidak perlu memasukkan API key saat menggunakan fitur analisis AI.</p>
+                <p style="font-size:14px;color:#718096;margin-bottom:20px;">Konfigurasi API key untuk setiap penyedia AI. Keys tersimpan di server (data/keys.json). Jika toggle diaktifkan, responden tidak perlu memasukkan API key saat menggunakan fitur analisis AI.</p>
 
                 <div class="toggle-row">
                     <label>Gunakan API keys dari Admin (responden tidak perlu input key)</label>
@@ -365,28 +365,61 @@
         loadToggleState();
     }
 
-    function loadProviderKeys() {
-        const providers = ['openai', 'claude', 'gemini', 'deepseek'];
-        providers.forEach(p => {
-            const val = localStorage.getItem('admin_ai_key_' + p);
-            if (val) {
-                document.getElementById('key-' + p).value = val;
-                document.getElementById('saved-' + p).style.display = 'inline';
+    async function loadProviderKeys() {
+        try {
+            const res = await fetch(API_BASE + '/api/keys');
+            if (!res.ok) throw new Error('Fetch failed');
+            const data = await res.json();
+            for (const [provider, val] of Object.entries(data.keys)) {
+                const el = document.getElementById('key-' + provider);
+                if (el) {
+                    el.value = val;
+                    document.getElementById('saved-' + provider).style.display = 'inline';
+                }
             }
-        });
+        } catch (e) {
+            // fallback to localStorage
+            const providers = ['openai', 'claude', 'gemini', 'deepseek'];
+            providers.forEach(p => {
+                const val = localStorage.getItem('admin_ai_key_' + p);
+                if (val) {
+                    document.getElementById('key-' + p).value = val;
+                    document.getElementById('saved-' + p).style.display = 'inline';
+                }
+            });
+        }
     }
 
-    function saveProviderKeys() {
+    async function saveProviderKeys() {
         const providers = ['openai', 'claude', 'gemini', 'deepseek'];
+        const payload = {};
         providers.forEach(p => {
             const val = document.getElementById('key-' + p).value.trim();
-            if (val) {
-                localStorage.setItem('admin_ai_key_' + p, val);
-                document.getElementById('saved-' + p).style.display = 'inline';
-            }
+            if (val) payload[p] = val;
         });
-        document.getElementById('providerSaveMsg').style.display = 'block';
-        setTimeout(() => document.getElementById('providerSaveMsg').style.display = 'none', 3000);
+        try {
+            const res = await fetch(API_BASE + '/api/keys', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Save failed');
+            providers.forEach(p => {
+                if (payload[p]) document.getElementById('saved-' + p).style.display = 'inline';
+            });
+            document.getElementById('providerSaveMsg').style.display = 'block';
+            setTimeout(() => document.getElementById('providerSaveMsg').style.display = 'none', 3000);
+        } catch (e) {
+            // fallback to localStorage
+            providers.forEach(p => {
+                if (payload[p]) {
+                    localStorage.setItem('admin_ai_key_' + p, payload[p]);
+                    document.getElementById('saved-' + p).style.display = 'inline';
+                }
+            });
+            document.getElementById('providerSaveMsg').style.display = 'block';
+            setTimeout(() => document.getElementById('providerSaveMsg').style.display = 'none', 3000);
+        }
     }
 
     function toggleAdminKeys() {
