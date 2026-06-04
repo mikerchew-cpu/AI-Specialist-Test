@@ -336,9 +336,19 @@
 
     function getPassword() { return localStorage.getItem(ADMIN_PWD_KEY) || DEFAULT_PWD; }
 
+    function checkSession() {
+        if (sessionStorage.getItem('admin_logged_in') === 'true') {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAdminData();
+        }
+    }
+    checkSession();
+
     function adminLogin() {
         const pwd = document.getElementById('login-password').value;
         if (pwd === getPassword()) {
+            sessionStorage.setItem('admin_logged_in', 'true');
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             loadAdminData();
@@ -348,6 +358,7 @@
     }
 
     function adminLogout() {
+        sessionStorage.removeItem('admin_logged_in');
         document.getElementById('loginScreen').style.display = 'flex';
         document.getElementById('adminPanel').style.display = 'none';
         document.getElementById('login-password').value = '';
