@@ -72,14 +72,30 @@
         }
         .scale-option {
             flex: 1; text-align: center;
-            padding: 10px 4px; border: 1px solid #e2e8f0;
-            border-radius: 4px; cursor: pointer;
-            transition: all 0.2s; font-size: 13px;
+            padding: 10px 6px; border: 2px solid #e2e8f0;
+            border-radius: 10px; cursor: pointer;
+            transition: all 0.25s ease; font-size: 13px;
+            position: relative; user-select: none;
+            background: #fff;
         }
-        .scale-option:hover { background: #edf2f7; }
+        .scale-option:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .scale-option:active { transform: translateY(0); }
         .scale-option input { display: none; }
+        .scale-option .scale-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 22px; height: 22px; border-radius: 50%;
+            font-size: 11px; font-weight: 800; color: #fff;
+            margin-right: 5px; flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
         .scale-option.selected {
-            background: var(--secondary); color: white; border-color: var(--secondary);
+            border-color: inherit; color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        .scale-option.selected .scale-num { background: rgba(255,255,255,0.3) !important; color: #fff; }
+        .scale-option .scale-label {
+            display: inline; vertical-align: middle;
         }
         .scale-labels {
             display: flex; justify-content: space-between;
@@ -148,7 +164,7 @@
             .question-block { padding: 12px; margin-bottom: 18px; }
             .question-text { font-size: 14px; }
             .scale-container { flex-direction: column; gap: 6px; }
-            .scale-option { padding: 12px 10px; font-size: 13px; border-radius: 6px; }
+            .scale-option { padding: 12px 14px; font-size: 13px; border-radius: 8px; display: flex; align-items: center; }
             .scale-labels { display: none; }
             .btn-submit { padding: 14px 28px; font-size: 15px; width: 100%; }
             #result-dashboard { padding: 20px; }
@@ -165,7 +181,8 @@
             h1 { font-size: 16px; }
             .lang-btn { padding: 5px 10px; font-size: 11px; }
             .question-block { padding: 10px; }
-            .scale-option { padding: 14px 8px; font-size: 12px; }
+            .scale-option { padding: 14px 12px; font-size: 12px; }
+            .scale-option .scale-num { width: 20px; height: 20px; font-size: 10px; }
             .type-badge { font-size: 18px; padding: 10px 18px; }
             .dimension-grid { gap: 10px; }
             .dim-card .dim-value { font-size: 17px; }
@@ -393,11 +410,11 @@
     ];
 
     const scaleValues = [
-        { val: 1, label: 'Sangat Tidak Setuju', labelEn: 'Strongly Disagree' },
-        { val: 2, label: 'Tidak Setuju', labelEn: 'Disagree' },
-        { val: 3, label: 'Netral', labelEn: 'Neutral' },
-        { val: 4, label: 'Setuju', labelEn: 'Agree' },
-        { val: 5, label: 'Sangat Setuju', labelEn: 'Strongly Agree' }
+        { val: 1, label: 'Sangat Tidak Setuju', labelEn: 'Strongly Disagree', bg: '#e53e3e', num: '1' },
+        { val: 2, label: 'Tidak Setuju', labelEn: 'Disagree', bg: '#dd6b20', num: '2' },
+        { val: 3, label: 'Netral', labelEn: 'Neutral', bg: '#718096', num: '3' },
+        { val: 4, label: 'Setuju', labelEn: 'Agree', bg: '#319795', num: '4' },
+        { val: 5, label: 'Sangat Setuju', labelEn: 'Strongly Agree', bg: '#38a169', num: '5' }
     ];
 
     const dimMapping = {
@@ -505,10 +522,11 @@
                 <div class="question-text lang-en">${n}. ${qEn}</div>
                 <div class="scale-container" data-q="${n}">`;
             scaleValues.forEach(s => {
-                html += `<div class="scale-option" data-q="${n}" data-val="${s.val}" onclick="selectScale(${n},${s.val})">
+                html += `<div class="scale-option" data-q="${n}" data-val="${s.val}" data-bg="${s.bg}" onclick="selectScale(${n},${s.val})" style="--scale-bg:${s.bg}">
                     <input type="radio" name="q${n}" value="${s.val}">
-                    <span class="lang-id">${s.label}</span>
-                    <span class="lang-en">${s.labelEn}</span>
+                    <span class="scale-num" style="background:${s.bg}">${s.num}</span>
+                    <span class="scale-label lang-id">${s.label}</span>
+                    <span class="scale-label lang-en">${s.labelEn}</span>
                 </div>`;
             });
             html += `</div></div>`;
@@ -519,9 +537,13 @@
     function selectScale(qNum, val) {
         const container = document.querySelector(`.scale-container[data-q="${qNum}"]`);
         container.querySelectorAll('.scale-option').forEach(el => {
-            el.classList.toggle('selected', parseInt(el.dataset.val) === val);
-            if (parseInt(el.dataset.val) === val) {
+            const isSelected = parseInt(el.dataset.val) === val;
+            el.classList.toggle('selected', isSelected);
+            if (isSelected) {
                 el.querySelector('input').checked = true;
+                el.style.cssText = `--scale-bg:${el.dataset.bg};background:${el.dataset.bg};border-color:${el.dataset.bg};color:#fff`;
+            } else {
+                el.style.cssText = `--scale-bg:${el.dataset.bg};background:#fff;border-color:#e2e8f0;color:inherit`;
             }
         });
     }
