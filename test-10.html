@@ -236,27 +236,33 @@
             <p><strong class="lang-id">Email:</strong><strong class="lang-en">Email:</strong> <span id="lbl-email">-</span></p>
             <p><strong class="lang-id">Tanggal:</strong><strong class="lang-en">Date:</strong> <span id="lbl-date">-</span></p>
         </div>
+
         <div class="result-grid">
             <div class="type-badge" id="type-badge" style="background:#e07c3c;">?</div>
-            <div class="type-title" id="type-title">-</div>
-            <div class="type-desc" id="type-desc"></div>
+            <div class="type-code" id="type-code" style="font-size:14px;color:#a0aec0;letter-spacing:3px;font-weight:700;margin:5px 0;"></div>
+            <div class="type-title" id="type-title" style="font-size:26px;font-weight:800;margin:10px 0 5px;">-</div>
+            <div class="type-desc" id="type-desc" style="font-size:16px;color:#718096;max-width:550px;margin:0 auto 5px;"></div>
         </div>
-        <div class="dimension-grid" id="dim-grid"></div>
+
         <div class="analysis-section">
-            <h3 class="lang-id">Profil Kepribadian Lengkap</h3>
-            <h3 class="lang-en">Full Personality Profile</h3>
+            <h3 class="lang-id" style="text-align:center;font-size:18px;color:var(--primary);margin-bottom:20px;">Profil Kepribadian Lengkap</h3>
+            <h3 class="lang-en" style="text-align:center;font-size:18px;color:var(--primary);margin-bottom:20px;">Full Personality Profile</h3>
             <p id="analysis-text" style="font-size:15px;line-height:1.8;text-align:justify;"></p>
-            <div id="jobs-section" style="margin-top:25px;padding-top:20px;border-top:1px solid #e2e8f0;">
-                <h3 style="margin-bottom:8px;" class="lang-id">Karakteristik Utama</h3>
-                <h3 style="margin-bottom:8px;" class="lang-en">Key Characteristics</h3>
-                <p id="traits-text" style="font-size:14px;line-height:1.8;text-align:justify;margin-top:8px;color:#4a5568;"></p>
-            </div>
-            <div style="text-align:center;margin-top:20px;">
-                <button type="button" class="btn-print" onclick="window.print()">
-                    <span class="lang-id">Cetak Hasil (PDF)</span>
-                    <span class="lang-en">Print Result (PDF)</span>
-                </button>
-            </div>
+        </div>
+
+        <div id="dichotomy-detail" style="margin-top:30px;"></div>
+
+        <div id="traits-section" style="margin-top:30px;padding-top:25px;border-top:1px solid #e2e8f0;">
+            <h3 class="lang-id" style="text-align:center;font-size:18px;color:var(--primary);margin-bottom:15px;">Karakteristik Utama</h3>
+            <h3 class="lang-en" style="text-align:center;font-size:18px;color:var(--primary);margin-bottom:15px;">Key Characteristics</h3>
+            <p id="traits-text" style="font-size:14px;line-height:1.8;text-align:justify;margin-top:8px;color:#4a5568;"></p>
+        </div>
+
+        <div style="text-align:center;margin-top:30px;padding-top:25px;border-top:1px solid #e2e8f0;">
+            <button type="button" class="btn-print" onclick="window.print()">
+                <span class="lang-id">Cetak Hasil (PDF)</span>
+                <span class="lang-en">Print Result (PDF)</span>
+            </button>
         </div>
     </div>
 
@@ -342,83 +348,89 @@
         { val: 5, label: 'Sangat Setuju', labelEn: 'Strongly Agree', bg: '#38a169', num: '5' }
     ];
 
-    const dimMapping = [
-        {
-            id: 'analytical',
-            name: 'Analitis vs Sensing',
-            nameEn: 'Analytical vs Sensing',
-            forward: [0, 5, 10, 15],
-            reverse: [3, 8, 12, 16],
-            traitA: 'A',
-            traitB: 'S',
-            labelA: 'Analitis (A)',
-            labelB: 'Sensing (S)',
-            labelAEn: 'Analytical (A)',
-            labelBEn: 'Sensing (S)',
-            color: '#805ad5'
-        },
-        {
-            id: 'driven',
-            name: 'TerDorong vs TerGrounding',
-            nameEn: 'Driven vs Grounded',
-            forward: [2, 7, 11, 17],
-            reverse: [1, 4, 6, 9],
-            traitA: 'D',
-            traitB: 'G',
-            labelA: 'TerDorong (D)',
-            labelB: 'TerGrounding (G)',
-            labelAEn: 'Driven (D)',
-            labelBEn: 'Grounded (G)',
-            color: '#4299e1'
-        },
-        {
-            id: 'focused',
-            name: 'TerFokus vs Eksploratif',
-            nameEn: 'Focused vs Exploratory',
-            forward: [10, 13, 14, 18],
-            reverse: [3, 8, 16, 19],
-            traitA: 'F',
-            traitB: 'E',
-            labelA: 'TerFokus (F)',
-            labelB: 'Eksploratif (E)',
-            labelAEn: 'Focused (F)',
-            labelBEn: 'Exploratory (E)',
-            color: '#38a169'
-        },
-        {
-            id: 'network',
-            name: 'Jejaring vs Mandiri',
-            nameEn: 'Network vs Independent',
-            forward: [4, 9, 14, 19],
-            reverse: [1, 5, 6, 15],
-            traitA: 'N',
-            traitB: 'I',
-            labelA: 'Jejaring (N)',
-            labelB: 'Mandiri (I)',
-            labelAEn: 'Network (N)',
-            labelBEn: 'Independent (I)',
-            color: '#ecc94b'
-        }
-    ];
-
-    const typeInfo = {
-        'agfn': { cake: 'Cheesecake', title: 'Work Mom', titleId: 'Ibu Kantor', color: '#e07c3c', desc: 'The nurturing backbone of any team. You create harmony and ensure everyone feels supported and valued.', descId: 'Pilar pengasuh dari setiap tim. Anda menciptakan harmoni dan memastikan semua orang merasa didukung dan dihargai.', traits: 'Caring, Organized, Supportive, Reliable', traitsId: 'Peduli, Terorganisir, Mendukung, Andal' },
-        'adfn': { cake: 'Cinnamon Roll', title: 'Team Captain', titleId: 'Kapten Tim', color: '#c0392b', desc: 'A natural leader who inspires others with passion and drive. You take charge and get things done.', descId: 'Pemimpin alami yang menginspirasi orang lain dengan semangat dan dorongan. Anda mengambil alih dan menyelesaikan sesuatu.', traits: 'Ambitious, Decisive, Energetic, Inspiring', traitsId: 'Ambisi, Tegas, Enerjik, Inspiratif' },
-        'agei': { cake: 'Croissant', title: 'Guardian Angel', titleId: 'Malaikat Pelindung', color: '#d4a574', desc: 'A quiet protector who looks out for others. You are dependable, patient, and always ready to lend a hand.', descId: 'Pelindung yang tenang yang menjaga orang lain. Anda dapat diandalkan, sabar, dan selalu siap membantu.', traits: 'Patient, Protective, Humble, Dependable', traitsId: 'Sabar, Protektif, Rendah Hati, Andal' },
-        'sgen': { cake: 'Cupcake', title: 'Jack of All Trades', titleId: 'Serba Bisa', color: '#f4a460', desc: 'Versatile and adaptable, you can handle anything that comes your way. You thrive on variety and new challenges.', descId: 'Serba bisa dan mudah beradaptasi, Anda dapat menangani apa pun yang menghadang. Anda berkembang dengan variasi dan tantangan baru.', traits: 'Adaptable, Versatile, Creative, Sociable', traitsId: 'Adaptif, Serba Bisa, Kreatif, Mudah Bergaul' },
-        'sden': { cake: 'Donut', title: 'The Explorer', titleId: 'Penjelajah', color: '#f39c12', desc: 'An adventurer at heart, always seeking new horizons. You are spontaneous, brave, and love the thrill of discovery.', descId: 'Seorang petualang sejati, selalu mencari cakrawala baru. Anda spontan, berani, dan menyukai sensasi penemuan.', traits: 'Spontaneous, Brave, Curious, Free-spirited', traitsId: 'Spontan, Berani, Penasaran, Berjiwa Bebas' },
-        'aden': { cake: 'Fruit Tart', title: 'The Dreamer', titleId: 'Sang Pemimpi', color: '#e8a0bf', desc: 'A visionary who sees possibilities everywhere. You are creative, insightful, and inspire others with your big ideas.', descId: 'Seorang visioner yang melihat kemungkinan di mana-mana. Anda kreatif, berwawasan, dan menginspirasi orang lain dengan ide-ide besar Anda.', traits: 'Visionary, Creative, Insightful, Charismatic', traitsId: 'Visioner, Kreatif, Berwawasan, Karismatik' },
-        'sgfn': { cake: 'Jelly', title: 'Tough Guy', titleId: 'Pria Tangguh', color: '#27ae60', desc: 'Resilient and sturdy, you face challenges head-on. Your strength lies in your unwavering determination.', descId: 'Tangguh dan kokoh, Anda menghadapi tantangan secara langsung. Kekuatan Anda terletak pada tekad Anda yang tak tergoyahkan.', traits: 'Resilient, Determined, Practical, Loyal', traitsId: 'Tangguh, Bertekad, Praktis, Setia' },
-        'adei': { cake: 'Macaron', title: 'The Artist', titleId: 'Sang Seniman', color: '#9b59b6', desc: 'An elegant and creative soul who brings beauty into the workplace. You value aesthetics, originality, and self-expression.', descId: 'Jiwa yang elegan dan kreatif yang membawa keindahan ke tempat kerja. Anda menghargai estetika, orisinalitas, dan ekspresi diri.', traits: 'Creative, Elegant, Original, Expressive', traitsId: 'Kreatif, Elegan, Orisinal, Ekspresif' },
-        'agfi': { cake: 'Matcha Roll', title: 'The Thinker', titleId: 'Sang Pemikir', color: '#2ecc71', desc: 'A calm and analytical mind. You approach problems methodically and value deep understanding over quick answers.', descId: 'Pikiran yang tenang dan analitis. Anda mendekati masalah secara metodis dan menghargai pemahaman mendalam daripada jawaban cepat.', traits: 'Analytical, Calm, Methodical, Reflective', traitsId: 'Analitis, Tenang, Metodis, Reflektif' },
-        'agen': { cake: 'Mille Crepe', title: 'The Mastermind', titleId: 'Sang Otak', color: '#8e44ad', desc: 'A strategic genius who sees the big picture. You excel at planning, organizing, and executing complex initiatives.', descId: 'Jenius strategis yang melihat gambaran besar. Anda unggul dalam merencanakan, mengorganisir, dan melaksanakan inisiatif yang kompleks.', traits: 'Strategic, Organized, Visionary, Decisive', traitsId: 'Strategis, Terorganisir, Visioner, Tegas' },
-        'sgfi': { cake: 'Mochi', title: 'The Specialist', titleId: 'Sang Spesialis', color: '#1abc9c', desc: 'A master of your craft who values precision and expertise. You dive deep into your chosen field and excel through focus.', descId: 'Master dari keahlian Anda yang menghargai presisi dan keahlian. Anda menyelami bidang pilihan Anda dan unggul melalui fokus.', traits: 'Precise, Expert, Focused, Disciplined', traitsId: 'Presisi, Ahli, Fokus, Disiplin' },
-        'adfi': { cake: 'Lava Cake', title: 'The Perfectionist', titleId: 'Sang Perfeksionis', color: '#e74c3c', desc: 'Intense and driven, you pursue excellence in everything you do. Your high standards push everyone to be better.', descId: 'Intens dan terdorong, Anda mengejar keunggulan dalam segala hal yang Anda lakukan. Standar tinggi Anda mendorong semua orang menjadi lebih baik.', traits: 'Detail-oriented, Driven, High Standards, Passionate', traitsId: 'Berorientasi Detail, Terdorong, Standar Tinggi, Bergairah' },
-        'sdei': { cake: 'Pineapple Cake', title: 'The Challenger', titleId: 'Sang Penantang', color: '#f1c40f', desc: 'Bold and confident, you challenge the status quo. You are not afraid to speak your mind and push boundaries.', descId: 'Berani dan percaya diri, Anda menantang status quo. Anda tidak takut untuk berbicara dan mendorong batasan.', traits: 'Bold, Confident, Innovative, Assertive', traitsId: 'Berani, Percaya Diri, Inovatif, Tegas' },
-        'sdfn': { cake: 'Tiramisu', title: 'Risk-Taker', titleId: 'Pengambil Risiko', color: '#6c3483', desc: 'A bold adventurer who embraces uncertainty. You thrive in dynamic environments and are not afraid to take calculated risks.', descId: 'Petualang berani yang merangkul ketidakpastian. Anda berkembang di lingkungan yang dinamis dan tidak takut mengambil risiko yang diperhitungkan.', traits: 'Bold, Adventurous, Dynamic, Decisive', traitsId: 'Berani, Petualang, Dinamis, Tegas' },
-        'sgei': { cake: 'Waffle', title: 'Chill Guy', titleId: 'Pria Santai', color: '#3498db', desc: 'Easygoing and relaxed, you bring balance to any team. Your calm demeanor helps others stay grounded.', descId: 'Santai dan rileks, Anda membawa keseimbangan ke tim mana pun. Sikap tenang Anda membantu orang lain tetap membumi.', traits: 'Relaxed, Balanced, Friendly, Adaptable', traitsId: 'Santai, Seimbang, Ramah, Adaptif' },
-        'sdfi': { cake: 'White Bread', title: 'The Ace', titleId: 'Sang Andalan', color: '#95a5a6', desc: 'Quietly exceptional, you let your work speak for itself. You are reliable, consistent, and always deliver results.', descId: 'Luar biasa dengan tenang, Anda membiarkan pekerjaan Anda berbicara sendiri. Anda dapat diandalkan, konsisten, dan selalu memberikan hasil.', traits: 'Reliable, Consistent, Humble, Results-driven', traitsId: 'Andal, Konsisten, Rendah Hati, Berorientasi Hasil' }
+    const dimInfo = {
+        analytical: { name: 'Analitis vs Sensing', nameEn: 'Analytical vs Sensing', traitA: 'A', traitB: 'S', color: '#805ad5', 
+            labelA: 'Analitis (A)', labelAEn: 'Analytical (A)', descA: 'Logis, terorganisir, dan berbakat dalam perencanaan dan pemecahan masalah', descAEn: 'Logical, organized, and talented in planning and problem-solving',
+            labelB: 'Sensing (S)', labelBEn: 'Sensing (S)', descB: 'Imajinatif, inovatif, dan berbakat mengembangkan ide orisinal', descBEn: 'Imaginative, innovative, and gifted at developing original ideas' },
+        driven: { name: 'TerDorong vs TerGrounding', nameEn: 'Driven vs Grounded', traitA: 'D', traitB: 'G', color: '#4299e1',
+            labelA: 'TerDorong (D)', labelAEn: 'Driven (D)', descA: 'Bersemangat, berdedikasi, dan berorientasi pada tujuan', descAEn: 'Passionate, dedicated, and goal-oriented',
+            labelB: 'TerGrounding (G)', labelBEn: 'Grounded (G)', descB: 'Praktis, tenang, dan fokus pada keseimbangan', descBEn: 'Practical, composed, and balance-focused' },
+        focused: { name: 'TerFokus vs Eksploratif', nameEn: 'Focused vs Exploratory', traitA: 'F', traitB: 'E', color: '#38a169',
+            labelA: 'TerFokus (F)', labelAEn: 'Focused (F)', descA: 'Tekun, sistematis, dan berkomitmen menyelesaikan tugas', descAEn: 'Diligent, systematic, and committed to completing tasks',
+            labelB: 'Eksploratif (E)', labelBEn: 'Exploratory (E)', descB: 'Penasaran, fleksibel, dan bersemangat menerima ide baru', descBEn: 'Curious, flexible, and eager to embrace new ideas' },
+        network: { name: 'Jejaring vs Mandiri', nameEn: 'Network vs Independent', traitA: 'N', traitB: 'I', color: '#ecc94b',
+            labelA: 'Jejaring (N)', labelAEn: 'Network (N)', descA: 'Ramah, mudah bergaul, dan proaktif memperluas jaringan', descAEn: 'Outgoing, sociable, and proactive in expanding networks',
+            labelB: 'Mandiri (I)', labelBEn: 'Independent (I)', descB: 'Percaya diri, mandiri, dan menghargai otonomi', descBEn: 'Confident, self-sufficient, and values autonomy and self-discipline' }
     };
+
+    const characters = {
+        'agfn': { cake: 'Cheesecake', type: 'Work Mom', typeId: 'Ibu Kantor', color: '#e07c3c',
+            desc: 'Anda adalah tulang punggung tim yang penuh perhatian. Anda menggabungkan pemikiran logis dengan pendekatan yang membumi dan sistematis. Anda unggul dalam menciptakan lingkungan kerja yang harmonis di mana setiap orang merasa dihargai. Gaya kerja Anda yang terorganisir dan mendukung membuat Anda menjadi rekan kerja yang sangat diandalkan.',
+            descEn: 'You are the nurturing backbone of the team. You combine logical thinking with a grounded, systematic approach. You excel at creating a harmonious work environment where everyone feels valued. Your organized and supportive work style makes you a highly reliable colleague.',
+            traits: 'Peduli, Terorganisir, Mendukung, Andal', traitsEn: 'Caring, Organized, Supportive, Reliable' },
+        'adfn': { cake: 'Cinnamon Roll', type: 'Team Captain', typeId: 'Kapten Tim', color: '#c0392b',
+            desc: 'Anda adalah pemimpin alami yang menginspirasi melalui tindakan. Anda adalah kombinasi langka antara pemikir strategis dan eksekutor yang bersemangat. Anda unggul dalam mengarahkan tim menuju tujuan bersama, dan karisma Anda membuat orang lain ingin mengikuti visi Anda.',
+            descEn: 'You are a natural leader who inspires through action. You are a rare combination of strategic thinker and passionate executor. You excel at steering teams toward shared goals, and your charisma makes others want to follow your vision.',
+            traits: 'Ambisi, Tegas, Enerjik, Inspiratif', traitsEn: 'Ambitious, Decisive, Energetic, Inspiring' },
+        'agei': { cake: 'Croissant', type: 'Guardian Angel', typeId: 'Malaikat Pelindung', color: '#d4a574',
+            desc: 'Anda adalah pelindung yang tenang dan dapat diandalkan. Anda membawa keseimbangan unik antara pemikiran analitis dan kemandirian. Anda sangat setia kepada orang-orang di sekitar Anda dan selalu siap membantu tanpa mencari perhatian. Ketekunan dan kesabaran Anda adalah aset berharga.',
+            descEn: 'You are a quiet and reliable protector. You bring a unique balance of analytical thinking and independence. You are deeply loyal to those around you and always ready to help without seeking attention. Your patience and perseverance are invaluable assets.',
+            traits: 'Sabar, Protektif, Rendah Hati, Andal', traitsEn: 'Patient, Protective, Humble, Dependable' },
+        'sgen': { cake: 'Cupcake', type: 'Jack of All Trades', typeId: 'Serba Bisa', color: '#f4a460',
+            desc: 'Anda adalah individu serba bisa yang dapat beradaptasi dengan situasi apa pun. Anda memiliki kemampuan unik untuk berpikir kreatif sambil tetap membumi. Anda berkembang dalam lingkungan yang bervariasi dan senang bertemu orang baru. Fleksibilitas dan keramahan Anda membuat Anda sangat mudah diajak bekerja sama.',
+            descEn: 'You are a versatile individual who can adapt to any situation. You have a unique ability to think creatively while staying grounded. You thrive in varied environments and enjoy meeting new people. Your flexibility and friendliness make you highly collaborative.',
+            traits: 'Adaptif, Serba Bisa, Kreatif, Mudah Bergaul', traitsEn: 'Adaptable, Versatile, Creative, Sociable' },
+        'sden': { cake: 'Donut', type: 'The Explorer', typeId: 'Penjelajah', color: '#f39c12',
+            desc: 'Anda adalah petualang sejati yang selalu mencari cakrawala baru. Anda didorong oleh rasa ingin tahu dan keberanian. Anda tidak pernah puas dengan status quo dan selalu mendorong batasan. Energi dan antusiasme Anda menular, menginspirasi orang lain untuk keluar dari zona nyaman mereka.',
+            descEn: 'You are a true adventurer always seeking new horizons. You are driven by curiosity and courage. You are never satisfied with the status quo and always push boundaries. Your energy and enthusiasm are contagious, inspiring others to step out of their comfort zones.',
+            traits: 'Spontan, Berani, Penasaran, Berjiwa Bebas', traitsEn: 'Spontaneous, Brave, Curious, Free-spirited' },
+        'aden': { cake: 'Fruit Tart', type: 'The Dreamer', typeId: 'Sang Pemimpi', color: '#e8a0bf',
+            desc: 'Anda adalah seorang visioner dengan imajinasi tanpa batas. Anda memiliki kemampuan langka untuk melihat gambaran besar sambil tetap fokus pada pencapaian. Anda menggabungkan kreativitas dengan dorongan kuat untuk mewujudkan ide-ide Anda. Karisma Anda menarik orang lain ke dalam visi Anda.',
+            descEn: 'You are a visionary with boundless imagination. You have the rare ability to see the big picture while staying focused on achievement. You combine creativity with a strong drive to bring your ideas to life. Your charisma draws others into your vision.',
+            traits: 'Visioner, Kreatif, Berwawasan, Karismatik', traitsEn: 'Visionary, Creative, Insightful, Charismatic' },
+        'sgfn': { cake: 'Jelly', type: 'Tough Guy', typeId: 'Pria Tangguh', color: '#27ae60',
+            desc: 'Anda adalah individu yang tangguh dan bertekad baja. Anda membumi, praktis, dan sangat dapat diandalkan. Anda menghadapi tantangan secara langsung dan tidak mudah menyerah. Kekuatan Anda terletak pada kemampuan Anda untuk tetap tenang dan fokus bahkan dalam situasi yang paling sulit.',
+            descEn: 'You are a resilient individual with an iron will. You are down-to-earth, practical, and highly dependable. You face challenges head-on and never give up easily. Your strength lies in your ability to stay calm and focused even in the toughest situations.',
+            traits: 'Tangguh, Bertekad, Praktis, Setia', traitsEn: 'Resilient, Determined, Practical, Loyal' },
+        'adei': { cake: 'Macaron', type: 'The Artist', typeId: 'Sang Seniman', color: '#9b59b6',
+            desc: 'Anda adalah jiwa kreatif yang membawa keindahan ke tempat kerja. Anda menggabungkan pemikiran analitis dengan kreativitas artistik. Anda mandiri dan didorong oleh visi pribadi Anda. Anda unggul dalam peran yang memungkinkan Anda mengekspresikan diri dan menciptakan sesuatu yang bermakna.',
+            descEn: 'You are a creative soul who brings beauty to the workplace. You combine analytical thinking with artistic creativity. You are self-motivated and driven by your personal vision. You excel in roles that allow you to express yourself and create something meaningful.',
+            traits: 'Kreatif, Elegan, Orisinal, Ekspresif', traitsEn: 'Creative, Elegant, Original, Expressive' },
+        'agfi': { cake: 'Matcha Roll', type: 'The Thinker', typeId: 'Sang Pemikir', color: '#2ecc71',
+            desc: 'Anda adalah pemikir yang tenang dan analitis. Anda mendekati masalah dengan ketenangan dan presisi. Anda menghargai pemahaman mendalam dan tidak terburu-buru dalam mengambil kesimpulan. Kemandirian Anda memungkinkan Anda untuk bekerja secara efektif sendiri, sementara pemikiran analitis Anda memastikan solusi yang solid.',
+            descEn: 'You are a calm and analytical thinker. You approach problems with composure and precision. You value deep understanding and do not rush to conclusions. Your independence allows you to work effectively alone, while your analytical thinking ensures solid solutions.',
+            traits: 'Analitis, Tenang, Metodis, Reflektif', traitsEn: 'Analytical, Calm, Methodical, Reflective' },
+        'agen': { cake: 'Mille Crepe', type: 'The Mastermind', typeId: 'Sang Otak', color: '#8e44ad',
+            desc: 'Anda adalah seorang jenius strategis yang melihat gambaran besar. Anda menggabungkan pemikiran strategis dengan kemampuan untuk tetap membumi. Anda unggul dalam merencanakan inisiatif yang kompleks dan mengoordinasikan orang untuk mewujudkannya. Visi Anda menginspirasi, dan eksekusi Anda sempurna.',
+            descEn: 'You are a strategic genius who sees the big picture. You combine strategic thinking with the ability to stay grounded. You excel at planning complex initiatives and coordinating people to bring them to life. Your vision inspires, and your execution is flawless.',
+            traits: 'Strategis, Terorganisir, Visioner, Tegas', traitsEn: 'Strategic, Organized, Visionary, Decisive' },
+        'sgfi': { cake: 'Mochi', type: 'The Specialist', typeId: 'Sang Spesialis', color: '#1abc9c',
+            desc: 'Anda adalah master dari keahlian Anda. Anda menghargai presisi dan keahlian mendalam. Anda lebih suka menguasai satu bidang daripada mengetahui sedikit tentang banyak hal. Disiplin dan fokus Anda memungkinkan Anda mencapai keunggulan di bidang yang Anda pilih.',
+            descEn: 'You are a master of your craft. You value precision and deep expertise. You prefer mastering one field rather than knowing a little about many things. Your discipline and focus allow you to achieve excellence in your chosen domain.',
+            traits: 'Presisi, Ahli, Fokus, Disiplin', traitsEn: 'Precise, Expert, Focused, Disciplined' },
+        'adfi': { cake: 'Lava Cake', type: 'The Perfectionist', typeId: 'Sang Perfeksionis', color: '#e74c3c',
+            desc: 'Anda adalah individu yang intens dan berorientasi pada keunggulan. Anda memiliki standar tinggi untuk diri sendiri dan orang lain. Anda tidak pernah puas dengan hasil yang biasa-biasa saja dan selalu berusaha untuk meningkatkan. Dorongan Anda untuk kesempurnaan mendorong semua orang di sekitar Anda untuk menjadi lebih baik.',
+            descEn: 'You are an intense individual driven by excellence. You have high standards for yourself and others. You are never satisfied with mediocrity and constantly strive to improve. Your drive for perfection pushes everyone around you to be better.',
+            traits: 'Berorientasi Detail, Terdorong, Standar Tinggi, Bergairah', traitsEn: 'Detail-oriented, Driven, High Standards, Passionate' },
+        'sdei': { cake: 'Pineapple Cake', type: 'The Challenger', typeId: 'Sang Penantang', color: '#f1c40f',
+            desc: 'Anda adalah individu yang berani dan percaya diri. Anda tidak takut untuk menantang status quo dan mendorong batasan. Anda mandiri, inovatif, dan selalu mencari cara baru untuk melakukan sesuatu. Keyakinan Anda menginspirasi orang lain untuk berpikir lebih besar.',
+            descEn: 'You are a bold and confident individual. You are not afraid to challenge the status quo and push boundaries. You are self-reliant, innovative, and always looking for new ways to do things. Your confidence inspires others to think bigger.',
+            traits: 'Berani, Percaya Diri, Inovatif, Tegas', traitsEn: 'Bold, Confident, Innovative, Assertive' },
+        'sdfn': { cake: 'Tiramisu', type: 'Risk-Taker', typeId: 'Pengambil Risiko', color: '#6c3483',
+            desc: 'Anda adalah petualang berani yang merangkul ketidakpastian. Anda memiliki kombinasi unik antara keberanian dan fokus. Anda berkembang di lingkungan yang dinamis dan tidak takut mengambil risiko yang diperhitungkan. Kemampuan Anda untuk tetap fokus pada tujuan sambil menjelajahi peluang baru membuat Anda sangat efektif.',
+            descEn: 'You are a bold adventurer who embraces uncertainty. You have a unique combination of courage and focus. You thrive in dynamic environments and are not afraid to take calculated risks. Your ability to stay focused on goals while exploring new opportunities makes you highly effective.',
+            traits: 'Berani, Petualang, Dinamis, Tegas', traitsEn: 'Bold, Adventurous, Dynamic, Decisive' },
+        'sgei': { cake: 'Waffle', type: 'Chill Guy', typeId: 'Pria Santai', color: '#3498db',
+            desc: 'Anda adalah individu yang santai dan membawa keseimbangan. Anda mudah bergaul, fleksibel, dan mandiri. Anda tidak mudah stres dan mampu menyesuaikan diri dengan situasi apa pun. Sikap tenang Anda membantu orang lain tetap membumi dan fokus pada apa yang penting.',
+            descEn: 'You are an easygoing individual who brings balance. You are laid-back, flexible, and self-sufficient. You do not easily get stressed and can adjust to any situation. Your calm demeanor helps others stay grounded and focused on what matters.',
+            traits: 'Santai, Seimbang, Ramah, Adaptif', traitsEn: 'Relaxed, Balanced, Friendly, Adaptable' },
+        'sdfi': { cake: 'White Bread', type: 'The Ace', typeId: 'Sang Andalan', color: '#95a5a6',
+            desc: 'Anda adalah orang yang luar biasa dengan tenang. Anda menggabungkan dorongan kuat dengan kemandirian dan fokus. Anda membiarkan pekerjaan Anda berbicara sendiri dan secara konsisten memberikan hasil berkualitas tinggi. Anda dapat diandalkan, konsisten, dan selalu menepati janji.',
+            descEn: 'You are quietly exceptional. You combine strong drive with independence and focus. You let your work speak for itself and consistently deliver high-quality results. You are reliable, consistent, and always deliver on your promises.',
+            traits: 'Andal, Konsisten, Rendah Hati, Berorientasi Hasil', traitsEn: 'Reliable, Consistent, Humble, Results-driven' }
+    };
+
+    const dimOrder = ['analytical', 'driven', 'focused', 'network'];
 
     function toggleLang(lang) {
         activeLang = lang;
@@ -433,43 +445,49 @@
         let html = '';
         questions.forEach((qEn, idx) => {
             const n = idx + 1;
-            html += `<div class="question-block" data-q="${n}">
-                <div class="question-text lang-id">${n}. ${questionsId[idx]}</div>
-                <div class="question-text lang-en">${n}. ${qEn}</div>
-                <div class="scale-container" data-q="${n}">`;
+            html += '<div class="question-block" data-q="' + n + '">' +
+                '<div class="question-text lang-id">' + n + '. ' + questionsId[idx] + '</div>' +
+                '<div class="question-text lang-en">' + n + '. ' + qEn + '</div>' +
+                '<div class="scale-container" data-q="' + n + '">';
             scaleValues.forEach(s => {
-                html += `<div class="scale-option" data-q="${n}" data-val="${s.val}" data-bg="${s.bg}" onclick="selectScale(${n},${s.val})" style="--scale-bg:${s.bg}">
-                    <input type="radio" name="q${n}" value="${s.val}">
-                    <span class="scale-num" style="background:${s.bg}">${s.num}</span>
-                    <span class="scale-label lang-id">${s.label}</span>
-                    <span class="scale-label lang-en">${s.labelEn}</span>
-                </div>`;
+                html += '<div class="scale-option" data-q="' + n + '" data-val="' + s.val + '" data-bg="' + s.bg + '" onclick="selectScale(' + n + ',' + s.val + ')" style="--scale-bg:' + s.bg + '">' +
+                    '<input type="radio" name="q' + n + '" value="' + s.val + '">' +
+                    '<span class="scale-num" style="background:' + s.bg + '">' + s.num + '</span>' +
+                    '<span class="scale-label lang-id">' + s.label + '</span>' +
+                    '<span class="scale-label lang-en">' + s.labelEn + '</span>' +
+                    '</div>';
             });
-            html += `</div></div>`;
+            html += '</div></div>';
         });
         container.innerHTML = html;
     }
 
     function selectScale(qNum, val) {
-        const container = document.querySelector(`.scale-container[data-q="${qNum}"]`);
+        const container = document.querySelector('.scale-container[data-q="' + qNum + '"]');
         container.querySelectorAll('.scale-option').forEach(el => {
             const isSelected = parseInt(el.dataset.val) === val;
             el.classList.toggle('selected', isSelected);
             if (isSelected) {
                 el.querySelector('input').checked = true;
-                el.style.cssText = `--scale-bg:${el.dataset.bg};background:${el.dataset.bg};border-color:${el.dataset.bg};color:#fff`;
+                el.style.cssText = '--scale-bg:' + el.dataset.bg + ';background:' + el.dataset.bg + ';border-color:' + el.dataset.bg + ';color:#fff';
             } else {
-                el.style.cssText = `--scale-bg:${el.dataset.bg};background:#fff;border-color:#e2e8f0;color:inherit`;
+                el.style.cssText = '--scale-bg:' + el.dataset.bg + ';background:#fff;border-color:#e2e8f0;color:inherit';
             }
         });
     }
 
-    function getDimensionScore(dimIdx, answers) {
-        const cfg = dimMapping[dimIdx];
+    function getDimensionScore(dimId, answers) {
+        const cfg = dimInfo[dimId];
+        const idx = dimOrder.indexOf(dimId);
+        const fwd = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18];
+        const rev = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+        const qIndices = [];
+        for (let i = 0; i < 5; i++) { qIndices.push(fwd[idx * 5 + i]); }
+        for (let i = 0; i < 5; i++) { qIndices.push(rev[idx * 5 + i]); }
         let total = 0;
-        cfg.forward.forEach(i => { total += (answers[i] - 3); });
-        cfg.reverse.forEach(i => { total -= (answers[i] - 3); });
-        const max = (cfg.forward.length + cfg.reverse.length) * 2;
+        qIndices.slice(0, 5).forEach(i => { total += (answers[i] - 3); });
+        qIndices.slice(5).forEach(i => { total -= (answers[i] - 3); });
+        const max = 10 * 2;
         const pct = (total + max) / (max * 2) * 100;
         return { raw: total, pct, trait: total >= 0 ? cfg.traitA : cfg.traitB };
     }
@@ -487,18 +505,20 @@
 
         const answers = [];
         for (let i = 0; i < questions.length; i++) {
-            const sel = document.querySelector(`input[name="q${i+1}"]:checked`);
+            const sel = document.querySelector('input[name="q' + (i+1) + '"]:checked');
             if (!sel) {
-                alert(activeLang === 'id' ? `Harap jawab pertanyaan nomor ${i+1}.` : `Please answer question ${i+1}.`);
-                document.querySelector(`[data-q="${i+1}"]`).scrollIntoView({ behavior: 'smooth' });
+                alert(activeLang === 'id' ? 'Harap jawab pertanyaan nomor ' + (i+1) + '.' : 'Please answer question ' + (i+1) + '.');
+                document.querySelector('[data-q="' + (i+1) + '"]').scrollIntoView({ behavior: 'smooth' });
                 return;
             }
             answers.push(parseInt(sel.value));
         }
 
-        const dimResults = dimMapping.map((_, idx) => getDimensionScore(idx, answers));
-        const typeCode = dimResults.map(r => r.trait).join('').toLowerCase();
-        const info = typeInfo[typeCode] || typeInfo['sgei'];
+        const dimResults = {};
+        dimOrder.forEach(d => { dimResults[d] = getDimensionScore(d, answers); });
+        const typeCode = dimOrder.map(d => dimResults[d].trait).join('').toLowerCase();
+        const info = characters[typeCode] || characters['sgei'];
+        const displayCode = typeCode.toUpperCase();
 
         document.getElementById('lbl-name').innerText = uName;
         document.getElementById('lbl-email').innerText = uEmail;
@@ -506,48 +526,56 @@
         document.getElementById('lbl-date').innerText = d.toLocaleDateString(activeLang === 'id' ? 'id-ID' : 'en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
 
         const badge = document.getElementById('type-badge');
-        const displayCode = typeCode.toUpperCase();
-        badge.textContent = info.cake + ' (' + displayCode + ')';
+        badge.textContent = info.cake;
         badge.style.background = info.color;
 
-        const typeTitle = document.getElementById('type-title');
-        typeTitle.textContent = activeLang === 'id' ? info.titleId : info.title;
+        document.getElementById('type-code').textContent = displayCode;
+        document.getElementById('type-title').textContent = activeLang === 'id' ? info.typeId : info.type;
+        document.getElementById('type-desc').textContent = activeLang === 'id'
+            ? '"' + info.typeId + ' — Anda adalah seorang ' + info.typeId.toLowerCase() + '"'
+            : '"' + info.type + ' — You are a ' + info.type.toLowerCase() + '"';
 
-        document.getElementById('type-desc').textContent = activeLang === 'id' ? info.descId : info.desc;
+        document.getElementById('analysis-text').innerHTML = '<strong>' + info.cake + ' (' + displayCode + ')</strong> — ' + (activeLang === 'id' ? info.desc : info.descEn);
 
-        const dimGrid = document.getElementById('dim-grid');
-        dimGrid.innerHTML = dimMapping.map((cfg, idx) => {
-            const r = dimResults[idx];
-            const is = r.trait === cfg.traitA;
-            const pct = is ? r.pct : 100 - r.pct;
+        let diHtml = '';
+        dimOrder.forEach(dimId => {
+            const r = dimResults[dimId];
+            const cfg = dimInfo[dimId];
+            const isA = r.trait === cfg.traitA;
+            const pct = isA ? r.pct : 100 - r.pct;
             const name = activeLang === 'id' ? cfg.name : cfg.nameEn;
             const labelA = activeLang === 'id' ? cfg.labelA : cfg.labelAEn;
             const labelB = activeLang === 'id' ? cfg.labelB : cfg.labelBEn;
-            const barW = pct;
-            const oppositeW = 100 - barW;
-            return `<div class="dim-card">
-                <div class="dim-name">${name}</div>
-                <div class="dim-value">
-                    <span style="font-weight:${is?'bold':'normal'};color:${is?cfg.color:'#a0aec0'}">${labelA}</span>
-                    <span style="color:#a0aec0"> | </span>
-                    <span style="font-weight:${is?'normal':'bold'};color:${is?'#a0aec0':cfg.color}">${labelB}</span>
-                </div>
-                <div class="bar-wrapper">
-                    <span class="bar-label" style="color:${is?cfg.color:'#a0aec0'}">${Math.round(barW)}%</span>
-                    <div class="dim-bar-bg">
-                        <div class="dim-bar-fill" style="width:${barW}%;background:${cfg.color}"></div>
-                    </div>
-                    <span class="bar-label" style="color:${is?'#a0aec0':cfg.color}">${Math.round(oppositeW)}%</span>
-                </div>
-            </div>`;
-        }).join('');
-
-        document.getElementById('analysis-text').innerHTML = getTypeDescription(typeCode, info, activeLang);
+            const descA = activeLang === 'id' ? cfg.descA : cfg.descAEn;
+            const descB = activeLang === 'id' ? cfg.descB : cfg.descBEn;
+            diHtml += '<div style="margin-bottom:20px;padding:20px;border-radius:10px;border:1px solid #e2e8f0;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+                    '<span style="font-weight:700;color:' + (isA ? cfg.color : '#a0aec0') + ';font-size:15px;">' + labelA + '</span>' +
+                    '<span style="font-size:12px;color:#a0aec0;font-weight:600;">' + name + '</span>' +
+                    '<span style="font-weight:700;color:' + (isA ? '#a0aec0' : cfg.color) + ';font-size:15px;">' + labelB + '</span>' +
+                '</div>' +
+                '<div class="bar-wrapper" style="margin-bottom:8px;">' +
+                    '<span class="bar-label" style="color:' + cfg.color + ';font-size:14px;min-width:35px;">' + Math.round(pct) + '%</span>' +
+                    '<div class="dim-bar-bg" style="height:12px;">' +
+                        '<div class="dim-bar-fill" style="width:' + pct + '%;background:' + cfg.color + '"></div>' +
+                    '</div>' +
+                    '<span class="bar-label" style="color:#a0aec0;font-size:14px;min-width:35px;">' + Math.round(100 - pct) + '%</span>' +
+                '</div>' +
+                '<div style="display:flex;gap:15px;font-size:13px;color:#718096;">' +
+                    '<div style="flex:1;text-align:left;padding:8px 12px;background:' + (isA ? cfg.color + '10' : '#f7fafc') + ';border-radius:6px;">' + descA + '</div>' +
+                    '<div style="flex:1;text-align:right;padding:8px 12px;background:' + (isA ? '#f7fafc' : cfg.color + '10') + ';border-radius:6px;">' + descB + '</div>' +
+                '</div>' +
+            '</div>';
+        });
+        document.getElementById('dichotomy-detail').innerHTML = '<h3 class="lang-id" style="text-align:center;font-size:18px;color:var(--primary);margin-bottom:15px;">Rincian Dimensi CPTI</h3>' +
+            '<h3 class="lang-en" style="text-align:center;font-size:18px;color:var(--primary);margin-bottom:15px;">CPTI Dimension Breakdown</h3>' + diHtml;
 
         const traitsEl = document.getElementById('traits-text');
-        const traitsRaw = activeLang === 'id' ? info.traitsId : info.traits;
+        const traitsRaw = activeLang === 'id' ? info.traits : info.traitsEn;
         const traitsList = traitsRaw.split(',').map(j => j.trim());
-        traitsEl.innerHTML = `<ul style="margin:0;padding-left:20px;display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding-left:0;">${traitsList.map(t => `<li style="background:${info.color}20;color:${info.color};padding:6px 18px;border-radius:20px;font-size:13px;font-weight:600;display:inline-block;border:1px solid ${info.color}40;">${t}</li>`).join('')}</ul>`;
+        traitsEl.innerHTML = '<ul style="margin:0;padding-left:20px;display:flex;flex-wrap:wrap;gap:10px;list-style:none;padding-left:0;justify-content:center;">' +
+            traitsList.map(t => '<li style="background:' + info.color + '15;color:' + info.color + ';padding:8px 22px;border-radius:25px;font-size:14px;font-weight:600;display:inline-block;border:1px solid ' + info.color + '30;">' + t + '</li>').join('') +
+            '</ul>';
 
         document.getElementById('result-dashboard').style.display = 'block';
         document.getElementById('result-dashboard').scrollIntoView({ behavior: 'smooth' });
@@ -558,100 +586,14 @@
             participant: uName,
             dept: uEmail,
             phone: uPhone,
-            score: info.cake + ' (' + displayCode + ') - ' + (activeLang === 'id' ? info.titleId : info.title),
+            score: info.cake + ' (' + displayCode + ') - ' + (activeLang === 'id' ? info.typeId : info.type),
             answers: collectAnswers(displayCode, dimResults)
         });
     }
 
-    function getTypeDescription(type, info, lang) {
-        const descriptions = {
-            'agfn': [
-                lang === 'id'
-                    ? '<b>Kue Keju — Ibu Kantor (AGFN)</b><br><br>Anda adalah tulang punggung tim yang penuh perhatian. Sebagai tipe <b>Analitis (A), Grounded (G), Fokus (F), Jejaring (N)</b>, Anda menggabungkan pemikiran logis dengan pendekatan yang membumi dan sistematis. Anda unggul dalam menciptakan lingkungan kerja yang harmonis di mana setiap orang merasa dihargai. Gaya kerja Anda yang terorganisir dan mendukung membuat Anda menjadi rekan kerja yang sangat diandalkan.'
-                    : '<b>Cheesecake — Work Mom (AGFN)</b><br><br>You are the nurturing backbone of the team. As an <b>Analytical (A), Grounded (G), Focused (F), Network (N)</b> type, you combine logical thinking with a grounded, systematic approach. You excel at creating a harmonious work environment where everyone feels valued. Your organized and supportive work style makes you a highly reliable colleague.'
-            ],
-            'adfn': [
-                lang === 'id'
-                    ? '<b>Gulungan Kayu Manis — Kapten Tim (ADFN)</b><br><br>Anda adalah pemimpin alami yang menginspirasi melalui tindakan. Sebagai tipe <b>Analitis (A), Terdorong (D), Fokus (F), Jejaring (N)</b>, Anda adalah kombinasi langka antara pemikir strategis dan eksekutor yang bersemangat. Anda unggul dalam mengarahkan tim menuju tujuan bersama, dan karisma Anda membuat orang lain ingin mengikuti visi Anda.'
-                    : '<b>Cinnamon Roll — Team Captain (ADFN)</b><br><br>You are a natural leader who inspires through action. As an <b>Analytical (A), Driven (D), Focused (F), Network (N)</b> type, you are a rare combination of strategic thinker and passionate executor. You excel at steering teams toward shared goals, and your charisma makes others want to follow your vision.'
-            ],
-            'agei': [
-                lang === 'id'
-                    ? '<b>Croissant — Malaikat Pelindung (AGEI)</b><br><br>Anda adalah pelindung yang tenang dan dapat diandalkan. Sebagai tipe <b>Analitis (A), Grounded (G), Eksploratif (E), Mandiri (I)</b>, Anda membawa keseimbangan unik antara pemikiran analitis dan kemandirian. Anda sangat setia kepada orang-orang di sekitar Anda dan selalu siap membantu tanpa mencari perhatian. Ketekunan dan kesabaran Anda adalah aset berharga.'
-                    : '<b>Croissant — Guardian Angel (AGEI)</b><br><br>You are a quiet and reliable protector. As an <b>Analytical (A), Grounded (G), Exploratory (E), Independent (I)</b> type, you bring a unique balance of analytical thinking and independence. You are deeply loyal to those around you and always ready to help without seeking attention. Your patience and perseverance are invaluable assets.'
-            ],
-            'sgen': [
-                lang === 'id'
-                    ? '<b>Kue Cup — Serba Bisa (SGEN)</b><br><br>Anda adalah individu serba bisa yang dapat beradaptasi dengan situasi apa pun. Sebagai tipe <b>Sensing (S), Grounded (G), Eksploratif (E), Jejaring (N)</b>, Anda memiliki kemampuan unik untuk berpikir kreatif sambil tetap membumi. Anda berkembang dalam lingkungan yang bervariasi dan senang bertemu orang baru. Fleksibilitas dan keramahan Anda membuat Anda sangat mudah diajak bekerja sama.'
-                    : '<b>Cupcake — Jack of All Trades (SGEN)</b><br><br>You are a versatile individual who can adapt to any situation. As a <b>Sensing (S), Grounded (G), Exploratory (E), Network (N)</b> type, you have a unique ability to think creatively while staying grounded. You thrive in varied environments and enjoy meeting new people. Your flexibility and friendliness make you highly collaborative.'
-            ],
-            'sden': [
-                lang === 'id'
-                    ? '<b>Donat — Penjelajah (SDEN)</b><br><br>Anda adalah petualang sejati yang selalu mencari petualangan baru. Sebagai tipe <b>Sensing (S), Terdorong (D), Eksploratif (E), Jejaring (N)</b>, Anda didorong oleh rasa ingin tahu dan keberanian. Anda tidak pernah puas dengan status quo dan selalu mendorong batasan. Energi dan antusiasme Anda menular, menginspirasi orang lain untuk keluar dari zona nyaman mereka.'
-                    : '<b>Donut — The Explorer (SDEN)</b><br><br>You are a true adventurer always seeking new horizons. As a <b>Sensing (S), Driven (D), Exploratory (E), Network (N)</b> type, you are driven by curiosity and courage. You are never satisfied with the status quo and always push boundaries. Your energy and enthusiasm are contagious, inspiring others to step out of their comfort zones.'
-            ],
-            'aden': [
-                lang === 'id'
-                    ? '<b>Tart Buah — Sang Pemimpi (ADEN)</b><br><br>Anda adalah seorang visioner dengan imajinasi tanpa batas. Sebagai tipe <b>Analitis (A), Terdorong (D), Eksploratif (E), Jejaring (N)</b>, Anda memiliki kemampuan langka untuk melihat gambaran besar sambil tetap fokus pada pencapaian. Anda menggabungkan kreativitas dengan dorongan kuat untuk mewujudkan ide-ide Anda. Karisma Anda menarik orang lain ke dalam visi Anda.'
-                    : '<b>Fruit Tart — The Dreamer (ADEN)</b><br><br>You are a visionary with boundless imagination. As an <b>Analytical (A), Driven (D), Exploratory (E), Network (N)</b> type, you have the rare ability to see the big picture while staying focused on achievement. You combine creativity with a strong drive to bring your ideas to life. Your charisma draws others into your vision.'
-            ],
-            'sgfn': [
-                lang === 'id'
-                    ? '<b>Jeli — Pria Tangguh (SGFN)</b><br><br>Anda adalah individu yang tangguh dan bertekad baja. Sebagai tipe <b>Sensing (S), Grounded (G), Fokus (F), Jejaring (N)</b>, Anda membumi, praktis, dan sangat dapat diandalkan. Anda menghadapi tantangan secara langsung dan tidak mudah menyerah. Kekuatan Anda terletak pada kemampuan Anda untuk tetap tenang dan fokus bahkan dalam situasi yang paling sulit.'
-                    : '<b>Jelly — Tough Guy (SGFN)</b><br><br>You are a resilient individual with an iron will. As a <b>Sensing (S), Grounded (G), Focused (F), Network (N)</b> type, you are down-to-earth, practical, and highly dependable. You face challenges head-on and never give up easily. Your strength lies in your ability to stay calm and focused even in the toughest situations.'
-            ],
-            'adei': [
-                lang === 'id'
-                    ? '<b>Macaron — Sang Seniman (ADEI)</b><br><br>Anda adalah jiwa kreatif yang membawa keindahan ke tempat kerja. Sebagai tipe <b>Analitis (A), Terdorong (D), Eksploratif (E), Mandiri (I)</b>, Anda menggabungkan pemikiran analitis dengan kreativitas artistik. Anda mandiri dan didorong oleh visi pribadi Anda. Anda unggul dalam peran yang memungkinkan Anda mengekspresikan diri dan menciptakan sesuatu yang bermakna.'
-                    : '<b>Macaron — The Artist (ADEI)</b><br><br>You are a creative soul who brings beauty to the workplace. As an <b>Analytical (A), Driven (D), Exploratory (E), Independent (I)</b> type, you combine analytical thinking with artistic creativity. You are self-motivated and driven by your personal vision. You excel in roles that allow you to express yourself and create something meaningful.'
-            ],
-            'agfi': [
-                lang === 'id'
-                    ? '<b>Gulungan Matcha — Sang Pemikir (AGFI)</b><br><br>Anda adalah pemikir yang tenang dan analitis. Sebagai tipe <b>Analitis (A), Grounded (G), Fokus (F), Mandiri (I)</b>, Anda mendekati masalah dengan ketenangan dan presisi. Anda menghargai pemahaman mendalam dan tidak terburu-buru dalam mengambil kesimpulan. Kemandirian Anda memungkinkan Anda untuk bekerja secara efektif sendiri, sementara pemikiran analitis Anda memastikan solusi yang solid.'
-                    : '<b>Matcha Roll — The Thinker (AGFI)</b><br><br>You are a calm and analytical thinker. As an <b>Analytical (A), Grounded (G), Focused (F), Independent (I)</b> type, you approach problems with composure and precision. You value deep understanding and do not rush to conclusions. Your independence allows you to work effectively alone, while your analytical thinking ensures solid solutions.'
-            ],
-            'agen': [
-                lang === 'id'
-                    ? '<b>Mille Crepe — Sang Otak (AGEN)</b><br><br>Anda adalah seorang jenius strategis yang melihat gambaran besar. Sebagai tipe <b>Analitis (A), Grounded (G), Eksploratif (E), Jejaring (N)</b>, Anda menggabungkan pemikiran strategis dengan kemampuan untuk tetap membumi. Anda unggul dalam merencanakan inisiatif yang kompleks dan mengoordinasikan orang untuk mewujudkannya. Visi Anda menginspirasi, dan eksekusi Anda sempurna.'
-                    : '<b>Mille Crepe — The Mastermind (AGEN)</b><br><br>You are a strategic genius who sees the big picture. As an <b>Analytical (A), Grounded (G), Exploratory (E), Network (N)</b> type, you combine strategic thinking with the ability to stay grounded. You excel at planning complex initiatives and coordinating people to bring them to life. Your vision inspires, and your execution is flawless.'
-            ],
-            'sgfi': [
-                lang === 'id'
-                    ? '<b>Mochi — Sang Spesialis (SGFI)</b><br><br>Anda adalah master dari keahlian Anda. Sebagai tipe <b>Sensing (S), Grounded (G), Fokus (F), Mandiri (I)</b>, Anda menghargai presisi dan keahlian mendalam. Anda lebih suka menguasai satu bidang daripada mengetahui sedikit tentang banyak hal. Disiplin dan fokus Anda memungkinkan Anda mencapai keunggulan di bidang yang Anda pilih. Anda dapat diandalkan dan sangat kompeten.'
-                    : '<b>Mochi — The Specialist (SGFI)</b><br><br>You are a master of your craft. As a <b>Sensing (S), Grounded (G), Focused (F), Independent (I)</b> type, you value precision and deep expertise. You prefer mastering one field rather than knowing a little about many things. Your discipline and focus allow you to achieve excellence in your chosen domain. You are reliable and highly competent.'
-            ],
-            'adfi': [
-                lang === 'id'
-                    ? '<b>Kue Lava — Sang Perfeksionis (ADFI)</b><br><br>Anda adalah individu yang intens dan berorientasi pada keunggulan. Sebagai tipe <b>Analitis (A), Terdorong (D), Fokus (F), Mandiri (I)</b>, Anda memiliki standar tinggi untuk diri sendiri dan orang lain. Anda tidak pernah puas dengan hasil yang biasa-biasa saja dan selalu berusaha untuk meningkatkan. Dorongan Anda untuk kesempurnaan mendorong semua orang di sekitar Anda untuk menjadi lebih baik.'
-                    : '<b>Lava Cake — The Perfectionist (ADFI)</b><br><br>You are an intense individual driven by excellence. As an <b>Analytical (A), Driven (D), Focused (F), Independent (I)</b> type, you have high standards for yourself and others. You are never satisfied with mediocrity and constantly strive to improve. Your drive for perfection pushes everyone around you to be better.'
-            ],
-            'sdei': [
-                lang === 'id'
-                    ? '<b>Kue Nanas — Sang Penantang (SDEI)</b><br><br>Anda adalah individu yang berani dan percaya diri. Sebagai tipe <b>Sensing (S), Terdorong (D), Eksploratif (E), Mandiri (I)</b>, Anda tidak takut untuk menantang status quo dan mendorong batasan. Anda mandiri, inovatif, dan selalu mencari cara baru untuk melakukan sesuatu. Keyakinan Anda menginspirasi orang lain untuk berpikir lebih besar.'
-                    : '<b>Pineapple Cake — The Challenger (SDEI)</b><br><br>You are a bold and confident individual. As a <b>Sensing (S), Driven (D), Exploratory (E), Independent (I)</b> type, you are not afraid to challenge the status quo and push boundaries. You are self-reliant, innovative, and always looking for new ways to do things. Your confidence inspires others to think bigger.'
-            ],
-            'sdfn': [
-                lang === 'id'
-                    ? '<b>Tiramisu — Pengambil Risiko (SDFN)</b><br><br>Anda adalah petualang berani yang merangkul ketidakpastian. Sebagai tipe <b>Sensing (S), Terdorong (D), Fokus (F), Jejaring (N)</b>, Anda memiliki kombinasi unik antara keberanian dan fokus. Anda berkembang di lingkungan yang dinamis dan tidak takut mengambil risiko yang diperhitungkan. Kemampuan Anda untuk tetap fokus pada tujuan sambil menjelajahi peluang baru membuat Anda sangat efektif.'
-                    : '<b>Tiramisu — Risk-Taker (SDFN)</b><br><br>You are a bold adventurer who embraces uncertainty. As a <b>Sensing (S), Driven (D), Focused (F), Network (N)</b> type, you have a unique combination of courage and focus. You thrive in dynamic environments and are not afraid to take calculated risks. Your ability to stay focused on goals while exploring new opportunities makes you highly effective.'
-            ],
-            'sgei': [
-                lang === 'id'
-                    ? '<b>Wafel — Pria Santai (SGEI)</b><br><br>Anda adalah individu yang santai dan membawa keseimbangan. Sebagai tipe <b>Sensing (S), Grounded (G), Eksploratif (E), Mandiri (I)</b>, Anda mudah bergaul, fleksibel, dan mandiri. Anda tidak mudah stres dan mampu menyesuaikan diri dengan situasi apa pun. Sikap tenang Anda membantu orang lain tetap membumi dan fokus pada apa yang penting.'
-                    : '<b>Waffle — Chill Guy (SGEI)</b><br><br>You are an easygoing individual who brings balance. As a <b>Sensing (S), Grounded (G), Exploratory (E), Independent (I)</b> type, you are laid-back, flexible, and self-sufficient. You do not easily get stressed and can adjust to any situation. Your calm demeanor helps others stay grounded and focused on what matters.'
-            ],
-            'sdfi': [
-                lang === 'id'
-                    ? '<b>Roti Tawar — Sang Andalan (SDFI)</b><br><br>Anda adalah orang yang luar biasa dengan tenang. Sebagai tipe <b>Sensing (S), Terdorong (D), Fokus (F), Mandiri (I)</b>, Anda menggabungkan dorongan kuat dengan kemandirian dan fokus. Anda membiarkan pekerjaan Anda berbicara sendiri dan secara konsisten memberikan hasil berkualitas tinggi. Anda dapat diandalkan, konsisten, dan selalu menepati janji.'
-                    : '<b>White Bread — The Ace (SDFI)</b><br><br>You are quietly exceptional. As a <b>Sensing (S), Driven (D), Focused (F), Independent (I)</b> type, you combine strong drive with independence and focus. You let your work speak for itself and consistently deliver high-quality results. You are reliable, consistent, and always deliver on your promises.'
-            ]
-        };
-        return (descriptions[type] && descriptions[type][0]) || info.desc;
-    }
-
     function collectAnswers(type, dimResults) {
         const dimNames = ['Analytical vs Sensing', 'Driven vs Grounded', 'Focused vs Exploratory', 'Network vs Independent'];
-        const dims = dimResults.map((r, i) => dimNames[i] + ': ' + r.trait + ' (' + Math.round(r.pct) + '%)');
+        const dims = dimOrder.map((d, i) => dimNames[i] + ': ' + dimResults[d].trait + ' (' + Math.round(dimResults[d].pct) + '%)');
         const form = document.getElementById('quiz-form');
         let lines = ['Tipe: ' + type];
         for (let i = 1; i <= questions.length; i++) {
