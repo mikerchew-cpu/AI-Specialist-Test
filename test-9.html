@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16Personalities — Tes Kepribadian / Personality Test</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --success: #38a169;
+            --fail: #e53e3e;
+            --bg: #f7fafc;
+            --text: #2d3748;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .lang-switcher {
+            position: absolute; top: 20px; right: 40px;
+            display: flex; gap: 5px;
+            background: #edf2f7; padding: 4px;
+            border-radius: 6px; border: 1px solid #cbd5e0;
+        }
+        .lang-btn {
+            padding: 6px 12px; font-size: 12px; font-weight: bold;
+            border: none; background: none; cursor: pointer;
+            border-radius: 4px;
+        }
+        .lang-btn.active { background: var(--primary); color: white; }
+        .lang-en { display: none; }
+        .header {
+            text-align: center; border-bottom: 3px double #e2e8f0;
+            padding-bottom: 20px; margin-bottom: 30px; margin-top: 20px;
+        }
+        h1 { color: var(--primary); font-size: 24px; margin: 0 0 10px; text-transform: uppercase; }
+        .meta-info { font-size: 14px; color: #718096; font-style: italic; }
+        .participant-box {
+            background: #ebf8ff; border: 1px solid #bee3f8;
+            padding: 20px; border-radius: 6px; margin-bottom: 30px;
+        }
+        .participant-box h3 { margin-top: 0; color: var(--secondary); }
+        .form-group { display: flex; gap: 20px; flex-wrap: wrap; }
+        .form-control { flex: 1; min-width: 200px; }
+        .form-control label { font-weight: 600; font-size: 14px; display: block; margin-bottom: 5px; }
+        .form-control input { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 14px; }
+        .section-title {
+            background: var(--primary); color: #fff;
+            padding: 8px 15px; font-size: 16px; font-weight: bold;
+            border-radius: 4px; margin-top: 40px; margin-bottom: 20px;
+        }
+        .question-block {
+            margin-bottom: 25px; padding: 20px;
+            border: 1px solid #edf2f7; border-radius: 6px; background: #fff;
+        }
+        .question-text { font-weight: 600; margin-bottom: 15px; font-size: 15px; }
+        .scale-container {
+            display: flex; justify-content: space-between; gap: 6px;
+        }
+        .scale-option {
+            flex: 1; text-align: center;
+            padding: 10px 4px; border: 1px solid #e2e8f0;
+            border-radius: 4px; cursor: pointer;
+            transition: all 0.2s; font-size: 13px;
+        }
+        .scale-option:hover { background: #edf2f7; }
+        .scale-option input { display: none; }
+        .scale-option.selected {
+            background: var(--secondary); color: white; border-color: var(--secondary);
+        }
+        .scale-labels {
+            display: flex; justify-content: space-between;
+            font-size: 12px; color: #718096; margin-top: 6px; padding: 0 4px;
+        }
+        .action-area { text-align: center; margin-top: 40px; }
+        .btn-submit {
+            background: var(--secondary); color: white; border: none;
+            padding: 15px 40px; font-size: 16px; font-weight: bold;
+            border-radius: 5px; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(50,50,93,0.11);
+        }
+        .btn-submit:hover { background: var(--primary); }
+        .btn-print {
+            background: var(--success); color: white; border: none;
+            padding: 15px 40px; font-size: 16px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; margin-top: 20px;
+        }
+        .btn-print:hover { background: #276749; }
+        #result-dashboard {
+            display: none; margin-top: 40px; padding: 35px;
+            border-radius: 8px; background: #fff;
+            border: 2px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        .result-grid { text-align: center; margin-bottom: 30px; }
+        .type-badge {
+            display: inline-block; padding: 15px 40px;
+            border-radius: 30px; font-size: 28px; font-weight: bold;
+            color: white; margin: 10px 0;
+        }
+        .type-title { font-size: 22px; font-weight: bold; color: var(--primary); margin-bottom: 5px; }
+        .type-desc { font-size: 15px; color: #4a5568; max-width: 600px; margin: 0 auto 20px; }
+        .dimension-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .dim-card { padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center; }
+        .dim-card .dim-name { font-weight: 600; font-size: 14px; color: #718096; }
+        .dim-card .dim-value { font-size: 24px; font-weight: bold; margin: 5px 0; }
+        .dim-bar-bg { background: #e2e8f0; border-radius: 10px; height: 10px; width: 100%; overflow: hidden; position: relative; }
+        .dim-bar-fill { height: 100%; border-radius: 10px; transition: width 1s; }
+        .fill-purple { background: #805ad5; }
+        .fill-blue { background: #4299e1; }
+        .fill-green { background: #38a169; }
+        .fill-yellow { background: #ecc94b; }
+        .bar-wrapper { display: flex; align-items: center; gap: 10px; }
+        .bar-label { font-size: 12px; font-weight: bold; min-width: 20px; text-align: center; }
+        .analysis-section { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 25px; }
+        .print-meta { display: none; margin-bottom: 20px; border-bottom: 2px solid #2d3748; padding-bottom: 15px; }
+        @media print {
+            body { background: #fff !important; color: #000 !important; font-size: 12pt; }
+            .container { box-shadow: none; padding: 0; margin: 0; max-width: 100%; }
+            #quiz-form, .header, .participant-box, .btn-print, .lang-switcher, .btn-submit { display: none !important; }
+            #result-dashboard { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+            .print-meta { display: block !important; }
+            .type-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .dim-bar-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="lang-switcher no-print">
+        <button class="lang-btn active" id="btn-id" onclick="toggleLang('id')">ID</button>
+        <button class="lang-btn" id="btn-en" onclick="toggleLang('en')">EN</button>
+    </div>
+
+    <div class="header">
+        <h1 class="lang-id">Tes Kepribadian 16Personalities</h1>
+        <h1 class="lang-en">16Personalities Personality Test</h1>
+        <div class="meta-info lang-id">Waktu: ~10-12 Menit | 60 Pertanyaan | Skala Persetujuan</div>
+        <div class="meta-info lang-en">Time: ~10-12 Minutes | 60 Questions | Agreement Scale</div>
+    </div>
+
+    <div class="participant-box" id="info-box">
+        <h3 class="lang-id">Formulir Data Diri</h3>
+        <h3 class="lang-en">Personal Information</h3>
+        <div class="form-group">
+            <div class="form-control">
+                <label class="lang-id">Nama Lengkap <span style="color:red">*</span></label>
+                <label class="lang-en">Full Name <span style="color:red">*</span></label>
+                <input type="text" id="p_name" required>
+            </div>
+            <div class="form-control">
+                <label class="lang-id">Email <span style="color:red">*</span></label>
+                <label class="lang-en">Email <span style="color:red">*</span></label>
+                <input type="email" id="p_email" required>
+            </div>
+            <div class="form-control">
+                <label class="lang-id">Telepon / WA <span style="color:red">*</span></label>
+                <label class="lang-en">Phone / WhatsApp <span style="color:red">*</span></label>
+                <input type="tel" id="p_phone" required>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-dashboard">
+        <div class="print-meta">
+            <h2 style="margin:0 0 10px;text-transform:uppercase;">
+                <span class="lang-id">KARTU HASIL TES KEPRIBADIAN</span>
+                <span class="lang-en">PERSONALITY TEST RESULT CARD</span>
+            </h2>
+            <p><strong class="lang-id">Nama:</strong><strong class="lang-en">Name:</strong> <span id="lbl-name">-</span></p>
+            <p><strong class="lang-id">Email:</strong><strong class="lang-en">Email:</strong> <span id="lbl-email">-</span></p>
+            <p><strong class="lang-id">Tanggal:</strong><strong class="lang-en">Date:</strong> <span id="lbl-date">-</span></p>
+        </div>
+        <div class="result-grid">
+            <div class="type-badge" id="type-badge" style="background:#805ad5;">INTJ</div>
+            <div class="type-title" id="type-title">The Architect</div>
+            <div class="type-desc" id="type-desc"></div>
+        </div>
+        <div class="dimension-grid" id="dim-grid"></div>
+        <div class="analysis-section">
+            <h3 class="lang-id">Deskripsi Kepribadian</h3>
+            <h3 class="lang-en">Personality Description</h3>
+            <p id="analysis-text" style="font-size:15px;line-height:1.8;text-align:justify;"></p>
+            <div style="text-align:center;margin-top:20px;">
+                <button type="button" class="btn-print" onclick="window.print()">
+                    <span class="lang-id">Cetak Hasil (PDF)</span>
+                    <span class="lang-en">Print Result (PDF)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form id="quiz-form">
+        <div class="section-title">
+            <span class="lang-id">BAGIAN 1: PIKIRAN (Mind)</span>
+            <span class="lang-en">SECTION 1: MIND</span>
+        </div>
+        <div class="scale-labels">
+            <span class="lang-id">Sangat Tidak Setuju</span>
+            <span class="lang-id">Netral</span>
+            <span class="lang-id">Sangat Setuju</span>
+            <span class="lang-en">Strongly Disagree</span>
+            <span class="lang-en">Neutral</span>
+            <span class="lang-en">Strongly Agree</span>
+        </div>
+
+        <div id="questions-container"></div>
+
+        <div class="action-area">
+            <button type="button" class="btn-submit" onclick="runEvaluation()">
+                <span class="lang-id">Lihat Hasil Kepribadian</span>
+                <span class="lang-en">See Personality Results</span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let activeLang = 'id';
+
+    const questions = [
+        "You regularly make new friends.",
+        "Complex and novel ideas excite you more than simple and straightforward ones.",
+        "You usually feel more persuaded by what resonates emotionally with you than by factual arguments.",
+        "Your living and working spaces are clean and organized.",
+        "You usually stay calm, even under a lot of pressure.",
+        "You find the idea of networking or promoting yourself to strangers very daunting.",
+        "You prioritize and plan tasks effectively, often completing them well before the deadline.",
+        "People\u2019s stories and emotions speak louder to you than numbers or data.",
+        "You like to use organizing tools like schedules and lists.",
+        "Even a small mistake can cause you to doubt your overall abilities and knowledge.",
+        "You feel comfortable just walking up to someone you find interesting and striking up a conversation.",
+        "You are not too interested in discussions about various interpretations of creative works.",
+        "You prioritize facts over people\u2019s feelings when determining a course of action.",
+        "You often allow the day to unfold without any schedule at all.",
+        "You rarely worry about whether you make a good impression on people you meet.",
+        "You enjoy participating in team-based activities.",
+        "You enjoy experimenting with new and untested approaches.",
+        "You prioritize being sensitive over being completely honest.",
+        "You actively seek out new experiences and knowledge areas to explore.",
+        "You are prone to worrying that things will take a turn for the worse.",
+        "You enjoy solitary hobbies or activities more than group ones.",
+        "You cannot imagine yourself writing fictional stories for a living.",
+        "You favor efficiency in decisions, even if it means disregarding some emotional aspects.",
+        "You prefer to do your chores before allowing yourself to relax.",
+        "In disagreements, you prioritize proving your point over preserving the feelings of others.",
+        "You usually wait for others to introduce themselves first at social gatherings.",
+        "Your mood can change very quickly.",
+        "You are not easily swayed by emotional arguments.",
+        "You often end up doing things at the last possible moment.",
+        "You enjoy debating ethical dilemmas.",
+        "You usually prefer to be around others rather than on your own.",
+        "You become bored or lose interest when the discussion gets highly theoretical.",
+        "When facts and feelings conflict, you usually find yourself following your heart.",
+        "You find it challenging to maintain a consistent work or study schedule.",
+        "You rarely second-guess the choices that you have made.",
+        "Your friends would describe you as lively and outgoing.",
+        "You are drawn to various forms of creative expression, such as writing.",
+        "You usually base your choices on objective facts rather than emotional impressions.",
+        "You like to have a to-do list for each day.",
+        "You rarely feel insecure.",
+        "You avoid making phone calls.",
+        "You enjoy exploring unfamiliar ideas and viewpoints.",
+        "You can easily connect with people you have just met.",
+        "If your plans are interrupted, your top priority is to get back on track as soon as possible.",
+        "You are still bothered by mistakes that you made a long time ago.",
+        "You are not too interested in discussing theories on what the world could look like in the future.",
+        "Your emotions control you more than you control them.",
+        "When making decisions, you focus more on how the affected people might feel than on what is most logical or efficient.",
+        "Your personal work style is closer to spontaneous bursts of energy than organized and consistent efforts.",
+        "When someone thinks highly of you, you wonder how long it will take them to feel disappointed in you.",
+        "You would love a job that requires you to work alone most of the time.",
+        "You believe that pondering abstract philosophical questions is a waste of time.",
+        "You feel more drawn to busy, bustling atmospheres than to quiet, intimate places.",
+        "If a decision feels right to you, you often act on it without needing further proof.",
+        "You often feel overwhelmed.",
+        "You complete things methodically without skipping over any steps.",
+        "You prefer tasks that require you to come up with creative solutions rather than follow concrete steps.",
+        "You are more likely to rely on emotional intuition than logical reasoning when making a choice.",
+        "You struggle with deadlines.",
+        "You feel confident that things will work out for you."
+    ];
+
+    const questionsId = [
+        "Anda secara rutin mendapat teman baru.",
+        "Ide yang kompleks dan baru lebih menarik bagi Anda daripada ide yang sederhana dan lugas.",
+        "Anda biasanya lebih mudah diyakinkan oleh hal yang beresonansi secara emosional daripada argumen faktual.",
+        "Ruang tinggal dan kerja Anda bersih dan terorganisir.",
+        "Anda biasanya tetap tenang, bahkan di bawah tekanan berat.",
+        "Anda merasa sangat berat untuk networking atau mempromosikan diri ke orang asing.",
+        "Anda memprioritaskan dan merencanakan tugas secara efektif, sering menyelesaikannya jauh sebelum tenggat.",
+        "Cerita dan emosi orang lain lebih berarti bagi Anda daripada angka atau data.",
+        "Anda suka menggunakan alat pengatur seperti jadwal dan daftar.",
+        "Bahkan kesalahan kecil dapat membuat Anda meragukan kemampuan dan pengetahuan Anda secara keseluruhan.",
+        "Anda merasa nyaman menghampiri orang yang menarik minat Anda dan memulai percakapan.",
+        "Anda tidak terlalu tertarik pada diskusi tentang berbagai interpretasi karya kreatif.",
+        "Anda memprioritaskan fakta di atas perasaan orang saat menentukan tindakan.",
+        "Anda sering membiarkan hari berjalan tanpa jadwal sama sekali.",
+        "Anda jarang khawatir tentang kesan yang Anda buat pada orang yang Anda temui.",
+        "Anda menikmati berpartisipasi dalam aktivitas berbasis tim.",
+        "Anda senang bereksperimen dengan pendekatan baru dan belum teruji.",
+        "Anda memprioritaskan bersikap sensitif daripada bersikap jujur sepenuhnya.",
+        "Anda secara aktif mencari pengalaman baru dan bidang pengetahuan untuk dijelajahi.",
+        "Anda cenderung khawatir bahwa hal-hal akan berubah menjadi buruk.",
+        "Anda lebih menikmati hobi atau aktivitas soliter daripada aktivitas kelompok.",
+        "Anda tidak bisa membayangkan diri Anda menulis cerita fiksi untuk mencari nafkah.",
+        "Anda lebih mengutamakan efisiensi dalam keputusan, meskipun itu berarti mengabaikan beberapa aspek emosional.",
+        "Anda lebih suka mengerjakan pekerjaan rumah sebelum bersantai.",
+        "Dalam perselisihan, Anda memprioritaskan membuktikan sudut pandang Anda daripada menjaga perasaan orang lain.",
+        "Anda biasanya menunggu orang lain memperkenalkan diri terlebih dahulu di pertemuan sosial.",
+        "Suasana hati Anda bisa berubah sangat cepat.",
+        "Anda tidak mudah terpengaruh oleh argumen emosional.",
+        "Anda sering melakukan sesuatu di menit-menit terakhir.",
+        "Anda senang memperdebatkan dilema etika.",
+        "Anda biasanya lebih suka berada di sekitar orang lain daripada sendirian.",
+        "Anda menjadi bosan atau kehilangan minat saat diskusi menjadi sangat teoretis.",
+        "Ketika fakta dan perasaan bertentangan, Anda biasanya mengikuti hati Anda.",
+        "Anda merasa sulit mempertahankan jadwal kerja atau belajar yang konsisten.",
+        "Anda jarang meragukan kembali pilihan yang telah Anda buat.",
+        "Teman-teman Anda akan menggambarkan Anda sebagai orang yang ceria dan ekstrover.",
+        "Anda tertarik pada berbagai bentuk ekspresi kreatif, seperti menulis.",
+        "Anda biasanya mendasarkan pilihan pada fakta objektif daripada kesan emosional.",
+        "Anda suka memiliki daftar tugas untuk setiap hari.",
+        "Anda jarang merasa tidak percaya diri.",
+        "Anda menghindari menelepon.",
+        "Anda senang menjelajahi ide dan sudut pandang yang tidak dikenal.",
+        "Anda dapat dengan mudah terhubung dengan orang yang baru Anda temui.",
+        "Jika rencana Anda terganggu, prioritas utama Anda adalah kembali ke jalur secepat mungkin.",
+        "Anda masih terganggu oleh kesalahan yang Anda buat sejak lama.",
+        "Anda tidak terlalu tertarik mendiskusikan teori tentang seperti apa dunia di masa depan.",
+        "Emosi Anda mengendalikan Anda lebih dari Anda mengendalikannya.",
+        "Saat membuat keputusan, Anda lebih fokus pada bagaimana perasaan orang yang terpengaruh daripada apa yang paling logis atau efisien.",
+        "Gaya kerja pribadi Anda lebih dekat ke semburan energi spontan daripada upaya terorganisir yang konsisten.",
+        "Ketika seseorang berpikir tinggi tentang Anda, Anda bertanya-tanya berapa lama waktu yang dibutuhkan mereka untuk kecewa pada Anda.",
+        "Anda akan menyukai pekerjaan yang mengharuskan Anda bekerja sendiri sebagian besar waktu.",
+        "Anda percaya bahwa merenungkan pertanyaan filosofis abstrak adalah buang-buang waktu.",
+        "Anda lebih tertarik pada suasana ramai dan sibuk daripada tempat yang tenang dan intim.",
+        "Jika suatu keputusan terasa benar bagi Anda, Anda sering bertindak tanpa perlu bukti lebih lanjut.",
+        "Anda sering merasa kewalahan.",
+        "Anda menyelesaikan sesuatu secara metodis tanpa melewatkan langkah apa pun.",
+        "Anda lebih suka tugas yang membutuhkan solusi kreatif daripada mengikuti langkah konkret.",
+        "Anda lebih cenderung mengandalkan intuisi emosional daripada penalaran logis saat membuat pilihan.",
+        "Anda kesulitan dengan tenggat waktu.",
+        "Anda merasa yakin bahwa semuanya akan berhasil untuk Anda."
+    ];
+
+    const scaleValues = [
+        { val: 1, label: 'Sangat Tidak Setuju', labelEn: 'Strongly Disagree' },
+        { val: 2, label: 'Tidak Setuju', labelEn: 'Disagree' },
+        { val: 3, label: 'Netral', labelEn: 'Neutral' },
+        { val: 4, label: 'Setuju', labelEn: 'Agree' },
+        { val: 5, label: 'Sangat Setuju', labelEn: 'Strongly Agree' }
+    ];
+
+    const dimMapping = {
+        mind: {
+            name: 'Pikiran / Mind',
+            nameEn: 'Mind',
+            forward: [0, 10, 15, 30, 35, 42, 52],
+            reverse: [5, 20, 25, 40, 50],
+            traitA: 'E',
+            traitB: 'I',
+            labelA: 'Ekstrover (E)',
+            labelB: 'Introver (I)',
+            labelAEn: 'Extraverted (E)',
+            labelBEn: 'Introverted (I)',
+            color: '#805ad5'
+        },
+        energy: {
+            name: 'Energi / Energy',
+            nameEn: 'Energy',
+            forward: [1, 16, 18, 29, 36, 41, 56],
+            reverse: [11, 21, 31, 45, 51],
+            traitA: 'N',
+            traitB: 'S',
+            labelA: 'Intuitif (N)',
+            labelB: 'Observan (S)',
+            labelAEn: 'Intuitive (N)',
+            labelBEn: 'Observant (S)',
+            color: '#4299e1'
+        },
+        nature: {
+            name: 'Sifat / Nature',
+            nameEn: 'Nature',
+            forward: [2, 7, 17, 32, 47, 53, 57],
+            reverse: [12, 22, 24, 27, 37],
+            traitA: 'F',
+            traitB: 'T',
+            labelA: 'Perasaan (F)',
+            labelB: 'Pemikiran (T)',
+            labelAEn: 'Feeling (F)',
+            labelBEn: 'Thinking (T)',
+            color: '#38a169'
+        },
+        tactics: {
+            name: 'Taktik / Tactics',
+            nameEn: 'Tactics',
+            forward: [3, 6, 8, 23, 38, 43, 55],
+            reverse: [13, 28, 33, 48, 58],
+            traitA: 'J',
+            traitB: 'P',
+            labelA: 'Mengorganisir (J)',
+            labelB: 'Mengeksplorasi (P)',
+            labelAEn: 'Judging (J)',
+            labelBEn: 'Prospecting (P)',
+            color: '#ecc94b'
+        },
+        identity: {
+            name: 'Identitas / Identity',
+            nameEn: 'Identity',
+            forward: [4, 14, 34, 39, 59],
+            reverse: [9, 19, 26, 44, 46, 49, 54],
+            traitA: 'A',
+            traitB: 'T',
+            labelA: 'Tegas (A)',
+            labelB: 'Turbulen (T)',
+            labelAEn: 'Assertive (A)',
+            labelBEn: 'Turbulent (T)',
+            color: '#e53e3e'
+        }
+    };
+
+    const typeInfo = {
+        'INTJ': { title: 'The Architect', titleId: 'Arsitek', desc: 'Imaginative and strategic thinkers, with a plan for everything.', color: '#805ad5', descId: 'Pemikir imajinatif dan strategis, dengan rencana untuk segalanya.' },
+        'INTP': { title: 'The Thinker', titleId: 'Pemikir', desc: 'Innovative inventors with an unquenchable thirst for knowledge.', color: '#805ad5', descId: 'Penemu inovatif dengan haus pengetahuan yang tak terpadamkan.' },
+        'ENTJ': { title: 'The Commander', titleId: 'Komandan', desc: 'Bold, imaginative and strong-willed leaders, always finding a way.', color: '#805ad5', descId: 'Pemimpin yang berani, imajinatif, dan berkemauan kuat, selalu menemukan jalan.' },
+        'ENTP': { title: 'The Debater', titleId: 'Debatir', desc: 'Smart and curious thinkers who cannot resist an intellectual challenge.', color: '#805ad5', descId: 'Pemikir cerdas dan penasaran yang tidak bisa menolak tantangan intelektual.' },
+        'INFJ': { title: 'The Advocate', titleId: 'Advokat', desc: 'Quiet and mystical, yet very inspiring and tireless idealists.', color: '#38a169', descId: 'Idealis yang tenang dan mistis, namun sangat menginspirasi dan tak kenal lelah.' },
+        'INFP': { title: 'The Mediator', titleId: 'Mediator', desc: 'Poetic, kind and altruistic people, always eager to help a good cause.', color: '#38a169', descId: 'Orang puitis, baik hati, dan altruistik, selalu ingin membantu tujuan yang baik.' },
+        'ENFJ': { title: 'The Protagonist', titleId: 'Protagonis', desc: 'Charismatic and inspiring leaders, able to mesmerize their listeners.', color: '#38a169', descId: 'Pemimpin karismatik dan inspiratif, mampu memukau pendengarnya.' },
+        'ENFP': { title: 'The Campaigner', titleId: 'Kampanye', desc: 'Enthusiastic, creative and sociable free spirits, who can always find a reason to smile.', color: '#38a169', descId: 'Jiwa bebas yang antusias, kreatif, dan mudah bergaul, selalu punya alasan untuk tersenyum.' },
+        'ISTJ': { title: 'The Logistician', titleId: 'Logistik', desc: 'Practical and fact-minded individuals, whose reliability cannot be doubted.', color: '#4299e1', descId: 'Individu praktis dan berorientasi fakta, yang keandalannya tidak perlu diragukan.' },
+        'ISFJ': { title: 'The Defender', titleId: 'Pembela', desc: 'Very dedicated and warm protectors, always ready to defend their loved ones.', color: '#4299e1', descId: 'Pelindung yang sangat berdedikasi dan hangat, selalu siap membela orang yang dicintai.' },
+        'ESTJ': { title: 'The Executive', titleId: 'Eksekutif', desc: 'Excellent administrators, unsurpassed at managing things.', color: '#4299e1', descId: 'Administrator yang sangat baik, tak tertandingi dalam mengelola sesuatu.' },
+        'ESFJ': { title: 'The Consul', titleId: 'Konsul', desc: 'Extraordinarily caring, social and popular people, always eager to help.', color: '#4299e1', descId: 'Orang yang sangat peduli, sosial, dan populer, selalu ingin membantu.' },
+        'ISTP': { title: 'The Virtuoso', titleId: 'Virtuoso', desc: 'Bold and practical experimenters, masters of all tools.', color: '#ecc94b', descId: 'Eksperimenter yang berani dan praktis, master dari semua alat.' },
+        'ISFP': { title: 'The Adventurer', titleId: 'Petualang', desc: 'Flexible and charming artists, always ready to explore and experience something new.', color: '#ecc94b', descId: 'Seniman yang fleksibel dan menawan, selalu siap menjelajahi hal baru.' },
+        'ESTP': { title: 'The Entrepreneur', titleId: 'Pengusaha', desc: 'Smart, energetic and very perceptive people, who truly enjoy living on the edge.', color: '#ecc94b', descId: 'Orang yang cerdas, energik, dan sangat perseptif, yang benar-benar menikmati hidup.' },
+        'ESFP': { title: 'The Entertainer', titleId: 'Penghibur', desc: 'Spontaneous, energetic and enthusiastic people, life is never boring around them.', color: '#ecc94b', descId: 'Orang spontan, energik, dan antusias, hidup tidak pernah membosankan di sekitar mereka.' }
+    };
+
+    function toggleLang(lang) {
+        activeLang = lang;
+        document.querySelectorAll('.lang-id').forEach(el => el.style.display = lang === 'id' ? 'block' : 'none');
+        document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'block' : 'none');
+        document.getElementById('btn-id').classList.toggle('active', lang === 'id');
+        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        let html = '';
+        questions.forEach((qEn, idx) => {
+            const n = idx + 1;
+            html += `<div class="question-block" data-q="${n}">
+                <div class="question-text lang-id">${n}. ${questionsId[idx]}</div>
+                <div class="question-text lang-en">${n}. ${qEn}</div>
+                <div class="scale-container" data-q="${n}">`;
+            scaleValues.forEach(s => {
+                html += `<div class="scale-option" data-q="${n}" data-val="${s.val}" onclick="selectScale(${n},${s.val})">
+                    <input type="radio" name="q${n}" value="${s.val}">
+                    <span class="lang-id">${s.label}</span>
+                    <span class="lang-en">${s.labelEn}</span>
+                </div>`;
+            });
+            html += `</div></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function selectScale(qNum, val) {
+        const container = document.querySelector(`.scale-container[data-q="${qNum}"]`);
+        container.querySelectorAll('.scale-option').forEach(el => {
+            el.classList.toggle('selected', parseInt(el.dataset.val) === val);
+            if (parseInt(el.dataset.val) === val) {
+                el.querySelector('input').checked = true;
+            }
+        });
+    }
+
+    function getDimensionScore(dim, answers) {
+        const cfg = dimMapping[dim];
+        let total = 0;
+        cfg.forward.forEach(i => { total += (answers[i] - 3); });
+        cfg.reverse.forEach(i => { total -= (answers[i] - 3); });
+        const max = (cfg.forward.length + cfg.reverse.length) * 2;
+        const pct = (total + max) / (max * 2) * 100;
+        return { raw: total, pct, trait: total >= 0 ? cfg.traitA : cfg.traitB };
+    }
+
+    function runEvaluation() {
+        const uName = document.getElementById('p_name').value.trim();
+        const uEmail = document.getElementById('p_email').value.trim();
+        const uPhone = document.getElementById('p_phone').value.trim();
+
+        if (!uName || !uEmail || !uPhone) {
+            alert(activeLang === 'id' ? 'Harap lengkapi Nama, Email, dan Telepon.' : 'Please fill in Name, Email, and Phone.');
+            document.getElementById('info-box').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        const answers = [];
+        for (let i = 0; i < questions.length; i++) {
+            const sel = document.querySelector(`input[name="q${i+1}"]:checked`);
+            if (!sel) {
+                alert(activeLang === 'id' ? `Harap jawab pertanyaan nomor ${i+1}.` : `Please answer question ${i+1}.`);
+                document.querySelector(`[data-q="${i+1}"]`).scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            answers.push(parseInt(sel.value));
+        }
+
+        const mind = getDimensionScore('mind', answers);
+        const energy = getDimensionScore('energy', answers);
+        const nature = getDimensionScore('nature', answers);
+        const tactics = getDimensionScore('tactics', answers);
+        const identity = getDimensionScore('identity', answers);
+
+        const typeCode = mind.trait + energy.trait + nature.trait + tactics.trait;
+        const identityTrait = identity.trait;
+        const fullType = typeCode + identityTrait;
+        const info = typeInfo[typeCode] || typeInfo['INTJ'];
+
+        document.getElementById('lbl-name').innerText = uName;
+        document.getElementById('lbl-email').innerText = uEmail;
+        const d = new Date();
+        document.getElementById('lbl-date').innerText = d.toLocaleDateString(activeLang === 'id' ? 'id-ID' : 'en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+
+        const badge = document.getElementById('type-badge');
+        badge.textContent = fullType;
+        badge.style.background = info.color;
+
+        const typeTitle = document.getElementById('type-title');
+        typeTitle.textContent = activeLang === 'id' ? info.titleId : info.title;
+
+        document.getElementById('type-desc').textContent = activeLang === 'id' ? info.descId : info.desc;
+
+        const dimGrid = document.getElementById('dim-grid');
+        const dims = ['mind', 'energy', 'nature', 'tactics', 'identity'];
+        const dimResults = { mind, energy, nature, tactics, identity };
+        dimGrid.innerHTML = dims.map(d => {
+            const r = dimResults[d];
+            const cfg = dimMapping[d];
+            const is = r.trait === cfg.traitA;
+            const pct = is ? r.pct : 100 - r.pct;
+            const name = activeLang === 'id' ? cfg.name : cfg.nameEn;
+            const labelA = activeLang === 'id' ? cfg.labelA : cfg.labelAEn;
+            const labelB = activeLang === 'id' ? cfg.labelB : cfg.labelBEn;
+            const barW = pct;
+            const oppositeW = 100 - barW;
+            return `<div class="dim-card">
+                <div class="dim-name">${name}</div>
+                <div class="dim-value">
+                    <span style="font-weight:${is?'bold':'normal'};color:${is?cfg.color:'#a0aec0'}">${labelA}</span>
+                    <span style="color:#a0aec0"> | </span>
+                    <span style="font-weight:${is?'normal':'bold'};color:${is?'#a0aec0':cfg.color}">${labelB}</span>
+                </div>
+                <div class="bar-wrapper">
+                    <span class="bar-label" style="color:${is?cfg.color:'#a0aec0'}">${Math.round(barW)}%</span>
+                    <div class="dim-bar-bg">
+                        <div class="dim-bar-fill" style="width:${barW}%;background:${cfg.color}"></div>
+                    </div>
+                    <span class="bar-label" style="color:${is?'#a0aec0':cfg.color}">${Math.round(oppositeW)}%</span>
+                </div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('analysis-text').innerHTML = getTypeDescription(typeCode, info, activeLang);
+
+        document.getElementById('result-dashboard').style.display = 'block';
+        document.getElementById('result-dashboard').scrollIntoView({ behavior: 'smooth' });
+
+        saveTestResult({
+            testId: '9',
+            testName: '16Personalities Personality Test',
+            participant: uName,
+            dept: uEmail,
+            phone: uPhone,
+            score: fullType + ' - ' + (activeLang === 'id' ? info.titleId : info.title),
+            answers: collectAnswers(fullType, mind, energy, nature, tactics, identity)
+        });
+    }
+
+    function getTypeDescription(type, info, lang) {
+        const descriptions = {
+            'INTJ': lang === 'id'
+                ? '<b>Arsitek (INTJ-A/T)</b> adalah pemikir strategis yang selalu memiliki rencana. Mereka imajinatif, mandiri, dan ambisius. Orang dengan tipe ini cenderung melihat pola di mana orang lain melihat kekacauan, dan mereka terus-menerus menyusun strategi untuk mencapai tujuan jangka panjang mereka. Mereka menghargai pengetahuan, kompetensi, dan struktur.'
+                : '<b>Architect (INTJ-A/T)</b> are imaginative and strategic thinkers, with a plan for everything. They are independent, ambitious, and analytical. People with this type tend to see patterns where others see chaos, constantly strategizing to achieve their long-term goals. They value knowledge, competence, and structure.',
+            'INTP': lang === 'id'
+                ? '<b>Pemikir (INTP-A/T)</b> adalah penemu inovatif dengan rasa haus akan pengetahuan. Mereka adalah pemikir abstrak yang senang menganalisis teori dan membangun pemahaman mendalam. Mereka cenderung pendiam, fleksibel, dan sangat logis.'
+                : '<b>Thinker (INTP-A/T)</b> are innovative inventors with an unquenchable thirst for knowledge. They are abstract thinkers who enjoy analyzing theories and building deep understanding. They tend to be quiet, flexible, and highly logical.',
+            'ENTJ': lang === 'id'
+                ? '<b>Komandan (ENTJ-A/T)</b> adalah pemimpin pemberani, imajinatif, dan berkemauan keras. Mereka terlahir sebagai pemimpin alami dengan dorongan kuat untuk mewujudkan visi mereka. Mereka efisien, karismatik, dan selalu mencari cara untuk meningkatkan sistem di sekitar mereka.'
+                : '<b>Commander (ENTJ-A/T)</b> are bold, imaginative, and strong-willed leaders. They are natural-born leaders with a strong drive to realize their vision. They are efficient, charismatic, and always looking for ways to improve the systems around them.',
+            'ENTP': lang === 'id'
+                ? '<b>Debatir (ENTP-A/T)</b> adalah pemikir cerdas dan ingin tahu yang tidak bisa menolak tantangan intelektual. Mereka senang memperdebatkan ide dan memandang dunia sebagai tempat yang penuh kemungkinan. Mereka kreatif, antusias, dan tidak takut mengambil risiko.'
+                : '<b>Debater (ENTP-A/T)</b> are smart and curious thinkers who cannot resist an intellectual challenge. They enjoy debating ideas and see the world as full of possibilities. They are creative, enthusiastic, and not afraid to take risks.',
+            'INFJ': lang === 'id'
+                ? '<b>Advokat (INFJ-A/T)</b> adalah idealis yang tenang dan mistis, namun sangat menginspirasi. Mereka memiliki keyakinan kuat dan kemampuan langka untuk membaca emosi orang lain. Mereka berdedikasi, kreatif, dan selalu berjuang untuk kebaikan yang lebih besar.'
+                : '<b>Advocate (INFJ-A/T)</b> are quiet and mystical, yet very inspiring and tireless idealists. They have strong beliefs and a rare ability to read others\' emotions. They are dedicated, creative, and always fighting for the greater good.',
+            'INFP': lang === 'id'
+                ? '<b>Mediator (INFP-A/T)</b> adalah orang yang puitis, baik hati, dan altruistik. Mereka memiliki nilai-nilai yang dalam dan keinginan kuat untuk membantu orang lain. Mereka imajinatif, empatik, dan selalu mencari makna dalam segala hal.'
+                : '<b>Mediator (INFP-A/T)</b> are poetic, kind, and altruistic people. They have deep values and a strong desire to help others. They are imaginative, empathetic, and always seeking meaning in everything.',
+            'ENFJ': lang === 'id'
+                ? '<b>Protagonis (ENFJ-A/T)</b> adalah pemimpin karismatik dan inspiratif. Mereka memiliki kemampuan alami untuk memengaruhi dan memotivasi orang lain. Mereka hangat, berwawasan luas, dan berdedikasi untuk membantu orang lain mencapai potensi mereka.'
+                : '<b>Protagonist (ENFJ-A/T)</b> are charismatic and inspiring leaders. They have a natural ability to influence and motivate others. They are warm, insightful, and dedicated to helping others reach their potential.',
+            'ENFP': lang === 'id'
+                ? '<b>Kampanye (ENFP-A/T)</b> adalah jiwa bebas yang antusias, kreatif, dan mudah bergaul. Mereka selalu punya alasan untuk tersenyum dan menyebarkan energi positif. Mereka imajinatif, spontan, dan selalu mencari petualangan baru.'
+                : '<b>Campaigner (ENFP-A/T)</b> are enthusiastic, creative, and sociable free spirits who can always find a reason to smile. They are imaginative, spontaneous, and always looking for new adventures.',
+            'ISTJ': lang === 'id'
+                ? '<b>Logistik (ISTJ-A/T)</b> adalah individu praktis dan berorientasi fakta yang keandalannya tidak perlu diragukan. Mereka bertanggung jawab, pekerja keras, dan selalu menepati janji. Mereka menghargai tradisi, keamanan, dan keteraturan.'
+                : '<b>Logistician (ISTJ-A/T)</b> are practical and fact-minded individuals whose reliability cannot be doubted. They are responsible, hardworking, and always keep their promises. They value tradition, security, and order.',
+            'ISFJ': lang === 'id'
+                ? '<b>Pembela (ISFJ-A/T)</b> adalah pelindung yang sangat berdedikasi dan hangat. Mereka selalu siap membela orang yang mereka cintai. Mereka praktis, penuh perhatian, dan memiliki ingatan kuat tentang detail yang penting bagi orang lain.'
+                : '<b>Defender (ISFJ-A/T)</b> are very dedicated and warm protectors, always ready to defend their loved ones. They are practical, caring, and have a strong memory for details important to others.',
+            'ESTJ': lang === 'id'
+                ? '<b>Eksekutif (ESTJ-A/T)</b> adalah administrator yang sangat baik dan tak tertandingi dalam mengelola sesuatu. Mereka tegas, praktis, dan berorientasi pada hasil. Mereka menghargai kejujuran, dedikasi, dan martabat.'
+                : '<b>Executive (ESTJ-A/T)</b> are excellent administrators, unsurpassed at managing things. They are decisive, practical, and results-oriented. They value honesty, dedication, and dignity.',
+            'ESFJ': lang === 'id'
+                ? '<b>Konsul (ESFJ-A/T)</b> adalah orang yang sangat peduli, sosial, dan populer. Mereka selalu ingin membantu dan membuat orang lain merasa dihargai. Mereka hangat, teliti, dan sangat terorganisir.'
+                : '<b>Consul (ESFJ-A/T)</b> are extraordinarily caring, social, and popular people, always eager to help. They are warm, conscientious, and highly organized. They put great effort into their duties and relationships.',
+            'ISTP': lang === 'id'
+                ? '<b>Virtuoso (ISTP-A/T)</b> adalah eksperimenter yang berani dan praktis, master dari semua alat. Mereka mandiri, analitis, dan suka memahami bagaimana sesuatu bekerja. Mereka tenang dalam krisis dan selalu siap bertindak.'
+                : '<b>Virtuoso (ISTP-A/T)</b> are bold and practical experimenters, masters of all tools. They are independent, analytical, and enjoy understanding how things work. They stay calm in crises and are always ready to act.',
+            'ISFP': lang === 'id'
+                ? '<b>Petualang (ISFP-A/T)</b> adalah seniman yang fleksibel dan menawan. Mereka selalu siap menjelajahi dan mengalami sesuatu yang baru. Mereka pendiam, sensitif, dan memiliki apresiasi mendalam terhadap keindahan.'
+                : '<b>Adventurer (ISFP-A/T)</b> are flexible and charming artists, always ready to explore and experience something new. They are quiet, sensitive, and have a deep appreciation for beauty.',
+            'ESTP': lang === 'id'
+                ? '<b>Pengusaha (ESTP-A/T)</b> adalah orang yang cerdas, energik, dan sangat perseptif. Mereka benar-benar menikmati hidup dan selalu mencari tantangan baru. Mereka pragmatis, langsung, dan sangat persuasif.'
+                : '<b>Entrepreneur (ESTP-A/T)</b> are smart, energetic, and very perceptive people who truly enjoy living on the edge. They are pragmatic, direct, and highly persuasive. They thrive on action and risk.',
+            'ESFP': lang === 'id'
+                ? '<b>Penghibur (ESFP-A/T)</b> adalah orang spontan, energik, dan antusias. Hidup tidak pernah membosankan di sekitar mereka. Mereka ramah, optimis, dan selalu membawa kegembiraan ke mana pun mereka pergi.'
+                : '<b>Entertainer (ESFP-A/T)</b> are spontaneous, energetic, and enthusiastic people. Life is never boring around them. They are friendly, optimistic, and always bring joy wherever they go.'
+        };
+        return descriptions[type] || info.desc;
+    }
+
+    function collectAnswers(type, mind, energy, nature, tactics, identity) {
+        const dims = [
+            'Mind: ' + mind.trait + ' (' + Math.round(mind.pct) + '%)',
+            'Energy: ' + energy.trait + ' (' + Math.round(energy.pct) + '%)',
+            'Nature: ' + nature.trait + ' (' + Math.round(nature.pct) + '%)',
+            'Tactics: ' + tactics.trait + ' (' + Math.round(tactics.pct) + '%)',
+            'Identity: ' + identity.trait + ' (' + Math.round(identity.pct) + '%)'
+        ];
+        const form = document.getElementById('quiz-form');
+        let lines = ['Tipe: ' + type];
+        for (let i = 1; i <= questions.length; i++) {
+            const val = form.elements['q' + i]?.value || '-';
+            lines.push(i + '. ' + val);
+        }
+        return dims.join(' | ') + '\n' + lines.join('\n');
+    }
+
+    function saveTestResult(data) {
+        const raw = localStorage.getItem('test_results');
+        const list = raw ? JSON.parse(raw) : [];
+        data.date = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+        list.push(data);
+        localStorage.setItem('test_results', JSON.stringify(list));
+    }
+
+    renderQuestions();
+</script>
+</body>
+</html>
