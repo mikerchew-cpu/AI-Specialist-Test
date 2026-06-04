@@ -235,6 +235,7 @@
             .results-table th, .results-table td { padding: 6px 8px; }
         }
     </style>
+<script src="js/api.js"></script>
 </head>
 <body>
 
@@ -314,6 +315,16 @@
         <!-- SETTINGS TAB -->
         <div class="tab-content" id="tab-settings">
             <div class="card">
+                <h3>Server Configuration</h3>
+                <p style="font-size:14px;color:#718096;margin-bottom:15px;">Set the backend API server URL where test results are sent. Leave empty to disable server sync (localStorage only).</p>
+                <div class="pwd-section">
+                    <input type="text" id="api-server-url" placeholder="https://your-server.com" style="width:400px;">
+                    <button onclick="saveServerUrl()">Simpan</button>
+                    <div id="server-url-msg" class="pwd-msg"></div>
+                </div>
+                <p style="font-size:12px;color:#a0aec0;margin-top:10px;">Example: <code>https://my-backend.onrender.com</code> (no trailing slash)</p>
+            </div>
+            <div class="card">
                 <h3>Ubah Password Admin</h3>
                 <div class="pwd-section">
                     <input type="password" id="new-password" placeholder="Password baru">
@@ -374,6 +385,30 @@
         loadProviderKeys();
         loadResults();
         loadToggleState();
+        loadServerUrl();
+    }
+
+    function loadServerUrl() {
+        const url = localStorage.getItem('api_server_url') || '';
+        document.getElementById('api-server-url').value = url;
+    }
+
+    function saveServerUrl() {
+        const url = document.getElementById('api-server-url').value.trim().replace(/\/+$/, '');
+        const msg = document.getElementById('server-url-msg');
+        if (url && !url.startsWith('http')) {
+            msg.textContent = 'URL harus diawali http:// atau https://';
+            msg.style.color = '#e53e3e';
+            return;
+        }
+        if (url) {
+            localStorage.setItem('api_server_url', url);
+        } else {
+            localStorage.removeItem('api_server_url');
+        }
+        msg.textContent = url ? '✅ Server URL disimpan!' : '✅ Server sync dinonaktifkan';
+        msg.style.color = '#38a169';
+        setTimeout(() => msg.textContent = '', 3000);
     }
 
     async function loadProviderKeys() {
@@ -452,7 +487,7 @@
         document.getElementById('toggleStatus').textContent = enabled ? 'Aktif' : 'Nonaktif';
     }
 
-    const API_BASE = window.location.origin;
+    const API_BASE = (getApiBaseUrl && getApiBaseUrl()) || window.location.origin;
 
     async function loadResults() {
         const container = document.getElementById('resultsContainer');

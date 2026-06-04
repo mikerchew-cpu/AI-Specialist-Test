@@ -305,6 +305,7 @@
             .feedback-box { display: block !important; background-color: transparent !important; border: 1px solid #000000 !important; page-break-inside: avoid; }
         }
     </style>
+    <script src="js/api.js"></script>
 </head>
 <body>
 
@@ -767,7 +768,7 @@
         const list = raw ? JSON.parse(raw) : [];
         list.push(data);
         localStorage.setItem('test_results', JSON.stringify(list));
-        fetch(window.location.origin + '/api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(() => {});
+        postResult(data);
     }
 </script>
 

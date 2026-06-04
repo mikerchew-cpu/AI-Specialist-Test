@@ -189,6 +189,7 @@
             .bar-label { font-size: 10px; min-width: 16px; }
         }
     </style>
+    <script src="js/api.js"></script>
 </head>
 <body>
 <div class="container">
@@ -607,7 +608,7 @@
         const list = raw ? JSON.parse(raw) : [];
         list.push(data);
         localStorage.setItem('test_results', JSON.stringify(list));
-        fetch(window.location.origin + '/api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(() => {});
+        postResult(data);
     }
 
     renderQuestions();

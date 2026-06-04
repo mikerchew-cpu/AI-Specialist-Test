@@ -289,6 +289,7 @@
             .progress-bar-bg { border: 1px solid #000000; background-color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
     </style>
+    <script src="js/api.js"></script>
 </head>
 <body>
 
@@ -875,7 +876,7 @@
         const list = raw ? JSON.parse(raw) : [];
         list.push(data);
         localStorage.setItem('test_results', JSON.stringify(list));
-        fetch(window.location.origin + '/api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(() => {});
+        postResult(data);
     }
 </script>
 
