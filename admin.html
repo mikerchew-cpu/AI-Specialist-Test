@@ -235,7 +235,8 @@
             .results-table th, .results-table td { padding: 6px 8px; }
         }
     </style>
-<script src="js/api.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/supabase.js"></script>
 </head>
 <body>
 
@@ -315,14 +316,23 @@
         <!-- SETTINGS TAB -->
         <div class="tab-content" id="tab-settings">
             <div class="card">
-                <h3>Server Configuration</h3>
-                <p style="font-size:14px;color:#718096;margin-bottom:15px;">Set the backend API server URL where test results are sent. Leave empty to disable server sync (localStorage only).</p>
-                <div class="pwd-section">
-                    <input type="text" id="api-server-url" placeholder="https://your-server.com" style="width:400px;">
-                    <button onclick="saveServerUrl()">Simpan</button>
-                    <div id="server-url-msg" class="pwd-msg"></div>
+                <h3>Supabase Configuration</h3>
+                <p style="font-size:14px;color:#718096;margin-bottom:15px;">Masukkan kredensial Supabase untuk menyimpan hasil tes dan API keys. Dapatkan dari <strong>Settings > API</strong> di dashboard Supabase.</p>
+                <div style="margin-bottom:12px;">
+                    <label style="font-weight:600;font-size:14px;display:block;margin-bottom:4px;">Supabase URL</label>
+                    <input type="text" id="supabase_url" placeholder="https://xxxxx.supabase.co" style="width:100%;padding:10px;border:1px solid #cbd5e0;border-radius:6px;font-size:14px;">
                 </div>
-                <p style="font-size:12px;color:#a0aec0;margin-top:10px;">Example: <code>https://my-backend.onrender.com</code> (no trailing slash)</p>
+                <div style="margin-bottom:12px;">
+                    <label style="font-weight:600;font-size:14px;display:block;margin-bottom:4px;">Anon Key (public)</label>
+                    <input type="password" id="supabase_anon_key" placeholder="eyJhbGciOi..." style="width:100%;padding:10px;border:1px solid #cbd5e0;border-radius:6px;font-size:14px;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-weight:600;font-size:14px;display:block;margin-bottom:4px;">Service Role Key (rahasia)</label>
+                    <input type="password" id="supabase_service_key" placeholder="eyJhbGciOi..." style="width:100%;padding:10px;border:1px solid #cbd5e0;border-radius:6px;font-size:14px;">
+                    <p style="font-size:12px;color:#e53e3e;margin-top:4px;">⚠️ Jangan pernah bagikan key ini. Hanya untuk admin.</p>
+                </div>
+                <button class="btn-save" onclick="saveSupabaseConfig()">Simpan Konfigurasi Supabase</button>
+                <div class="save-msg" id="supabase-config-msg"></div>
             </div>
             <div class="card">
                 <h3>Ubah Password Admin</h3>
@@ -382,41 +392,38 @@
     }
 
     function loadAdminData() {
+        loadSupabaseConfig();
         loadProviderKeys();
         loadResults();
         loadToggleState();
-        loadServerUrl();
     }
 
-    function loadServerUrl() {
-        const url = localStorage.getItem('api_server_url') || '';
-        document.getElementById('api-server-url').value = url;
+    function loadSupabaseConfig() {
+        const fields = ['supabase_url', 'supabase_anon_key', 'supabase_service_key'];
+        fields.forEach(f => {
+            document.getElementById(f).value = localStorage.getItem(f) || '';
+        });
     }
 
-    function saveServerUrl() {
-        const url = document.getElementById('api-server-url').value.trim().replace(/\/+$/, '');
-        const msg = document.getElementById('server-url-msg');
-        if (url && !url.startsWith('http')) {
-            msg.textContent = 'URL harus diawali http:// atau https://';
-            msg.style.color = '#e53e3e';
-            return;
-        }
-        if (url) {
-            localStorage.setItem('api_server_url', url);
-        } else {
-            localStorage.removeItem('api_server_url');
-        }
-        msg.textContent = url ? '✅ Server URL disimpan!' : '✅ Server sync dinonaktifkan';
+    function saveSupabaseConfig() {
+        const fields = ['supabase_url', 'supabase_anon_key', 'supabase_service_key'];
+        const labels = { supabase_url: 'Supabase URL', supabase_anon_key: 'Anon Key', supabase_service_key: 'Service Role Key' };
+        fields.forEach(f => {
+            const val = document.getElementById(f).value.trim();
+            if (val) localStorage.setItem(f, val);
+            else localStorage.removeItem(f);
+        });
+        const msg = document.getElementById('supabase-config-msg');
+        msg.textContent = '✅ Konfigurasi Supabase disimpan!';
         msg.style.color = '#38a169';
-        setTimeout(() => msg.textContent = '', 3000);
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 3000);
     }
 
     async function loadProviderKeys() {
         try {
-            const res = await fetch(API_BASE + '/api/keys');
-            if (!res.ok) throw new Error('Fetch failed');
-            const data = await res.json();
-            for (const [provider, val] of Object.entries(data.keys)) {
+            const keys = await getKeys();
+            for (const [provider, val] of Object.entries(keys)) {
                 const el = document.getElementById('key-' + provider);
                 if (el) {
                     el.value = val;
@@ -424,7 +431,6 @@
                 }
             }
         } catch (e) {
-            // fallback to localStorage
             const providers = ['openai', 'claude', 'gemini', 'deepseek'];
             providers.forEach(p => {
                 const val = localStorage.getItem('admin_ai_key_' + p);
@@ -443,29 +449,18 @@
             const val = document.getElementById('key-' + p).value.trim();
             if (val) payload[p] = val;
         });
-        try {
-            const res = await fetch(API_BASE + '/api/keys', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error('Save failed');
+        const ok = await saveKeys(payload);
+        if (ok) {
             providers.forEach(p => {
                 if (payload[p]) document.getElementById('saved-' + p).style.display = 'inline';
             });
-            document.getElementById('providerSaveMsg').style.display = 'block';
-            setTimeout(() => document.getElementById('providerSaveMsg').style.display = 'none', 3000);
-        } catch (e) {
-            // fallback to localStorage
+        } else {
             providers.forEach(p => {
-                if (payload[p]) {
-                    localStorage.setItem('admin_ai_key_' + p, payload[p]);
-                    document.getElementById('saved-' + p).style.display = 'inline';
-                }
+                if (payload[p]) localStorage.setItem('admin_ai_key_' + p, payload[p]);
             });
-            document.getElementById('providerSaveMsg').style.display = 'block';
-            setTimeout(() => document.getElementById('providerSaveMsg').style.display = 'none', 3000);
         }
+        document.getElementById('providerSaveMsg').style.display = 'block';
+        setTimeout(() => document.getElementById('providerSaveMsg').style.display = 'none', 3000);
     }
 
     function toggleAdminKeys() {
@@ -487,14 +482,10 @@
         document.getElementById('toggleStatus').textContent = enabled ? 'Aktif' : 'Nonaktif';
     }
 
-    const API_BASE = (getApiBaseUrl && getApiBaseUrl()) || window.location.origin;
-
     async function loadResults() {
         const container = document.getElementById('resultsContainer');
         try {
-            const res = await fetch(API_BASE + '/api/results');
-            if (!res.ok) throw new Error('Fetch failed');
-            const results = await res.json();
+            const results = await fetchResults();
             if (!results.length) {
                 container.innerHTML = '<div class="no-results">Belum ada hasil tes yang tersimpan.</div>';
                 return;
@@ -512,15 +503,15 @@
                 </tr></thead><tbody>`;
 
             results.forEach((r, idx) => {
-                const badgeClass = 'badge-t' + (r.testId || '1');
+                const badgeClass = 'badge-t' + (r.test_id || '1');
                 html += `<tr>
                     <td>${r.date || '-'}</td>
-                    <td><span class="badge-test ${badgeClass}">${r.testName || 'Test'}</span></td>
+                    <td><span class="badge-test ${badgeClass}">${r.test_name || 'Test'}</span></td>
                     <td>${r.participant || '-'}</td>
                     <td>${r.dept || '-'}</td>
                     <td><strong>${r.score || '-'}</strong></td>
                     <td><button class="btn-save" style="padding:4px 12px;font-size:12px;" onclick="viewDetail(${idx})">Lihat</button></td>
-                    <td><button class="btn-delete" onclick="deleteResult(${idx})">✕</button></td>
+                    <td><button class="btn-delete" onclick="deleteResult(${r.id})">✕</button></td>
                 </tr>`;
             });
 
@@ -529,7 +520,7 @@
             container.innerHTML = html;
             window._cachedResults = results;
         } catch (e) {
-            container.innerHTML = '<div class="no-results">Gagal memuat data dari server. Pastikan server berjalan.</div>';
+            container.innerHTML = '<div class="no-results">Gagal memuat data dari Supabase. Periksa konfigurasi di Settings.</div>';
         }
     }
 
@@ -539,7 +530,7 @@
         if (!r) return;
         const detail = [
             '=== DETAIL HASIL TES ===',
-            'Test: ' + (r.testName || '-'),
+            'Test: ' + (r.test_name || '-'),
             'Nama: ' + (r.participant || '-'),
             'Divisi: ' + (r.dept || '-'),
             'Telepon: ' + (r.phone || '-'),
@@ -552,34 +543,24 @@
         alert(detail);
     }
 
-    async function deleteResult(idx) {
+    async function deleteResult(id) {
         if (!confirm('Hapus hasil tes ini?')) return;
-        try {
-            const res = await fetch(API_BASE + '/api/results/' + idx, { method: 'DELETE' });
-            if (!res.ok) throw new Error('Delete failed');
-            loadResults();
-        } catch (e) {
-            alert('Gagal menghapus data.');
-        }
+        const ok = await sbDeleteResult(id);
+        if (ok) loadResults();
+        else alert('Gagal menghapus data.');
     }
 
     async function clearAllResults() {
         if (!confirm('Hapus SEMUA hasil tes? Tindakan ini tidak dapat dibatalkan.')) return;
-        try {
-            const res = await fetch(API_BASE + '/api/results', { method: 'DELETE' });
-            if (!res.ok) throw new Error('Clear failed');
-            loadResults();
-        } catch (e) {
-            alert('Gagal menghapus data.');
-        }
+        const ok = await sbClearAllResults();
+        if (ok) loadResults();
+        else alert('Gagal menghapus data.');
     }
 
     async function exportResults() {
         try {
-            const res = await fetch(API_BASE + '/api/results');
-            if (!res.ok) throw new Error('Fetch failed');
-            const text = await res.text();
-            const blob = new Blob([text], { type: 'application/json' });
+            const results = await fetchResults();
+            const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
