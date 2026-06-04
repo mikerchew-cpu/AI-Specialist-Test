@@ -349,18 +349,22 @@
     ];
 
     const dimInfo = {
-        analytical: { name: 'Analitis vs Sensing', nameEn: 'Analytical vs Sensing', traitA: 'A', traitB: 'S', color: '#805ad5', 
+        analytical: { name: 'Analitis vs Sensing', nameEn: 'Analytical vs Sensing', traitA: 'A', traitB: 'S', color: '#805ad5',
             labelA: 'Analitis (A)', labelAEn: 'Analytical (A)', descA: 'Logis, terorganisir, dan berbakat dalam perencanaan dan pemecahan masalah', descAEn: 'Logical, organized, and talented in planning and problem-solving',
-            labelB: 'Sensing (S)', labelBEn: 'Sensing (S)', descB: 'Imajinatif, inovatif, dan berbakat mengembangkan ide orisinal', descBEn: 'Imaginative, innovative, and gifted at developing original ideas' },
+            labelB: 'Sensing (S)', labelBEn: 'Sensing (S)', descB: 'Imajinatif, inovatif, dan berbakat mengembangkan ide orisinal', descBEn: 'Imaginative, innovative, and gifted at developing original ideas',
+            forward: [0,5,10,15], reverse: [3,8,12,16] },
         driven: { name: 'TerDorong vs TerGrounding', nameEn: 'Driven vs Grounded', traitA: 'D', traitB: 'G', color: '#4299e1',
             labelA: 'TerDorong (D)', labelAEn: 'Driven (D)', descA: 'Bersemangat, berdedikasi, dan berorientasi pada tujuan', descAEn: 'Passionate, dedicated, and goal-oriented',
-            labelB: 'TerGrounding (G)', labelBEn: 'Grounded (G)', descB: 'Praktis, tenang, dan fokus pada keseimbangan', descBEn: 'Practical, composed, and balance-focused' },
+            labelB: 'TerGrounding (G)', labelBEn: 'Grounded (G)', descB: 'Praktis, tenang, dan fokus pada keseimbangan', descBEn: 'Practical, composed, and balance-focused',
+            forward: [2,7,11,17], reverse: [1,4,6,9] },
         focused: { name: 'TerFokus vs Eksploratif', nameEn: 'Focused vs Exploratory', traitA: 'F', traitB: 'E', color: '#38a169',
             labelA: 'TerFokus (F)', labelAEn: 'Focused (F)', descA: 'Tekun, sistematis, dan berkomitmen menyelesaikan tugas', descAEn: 'Diligent, systematic, and committed to completing tasks',
-            labelB: 'Eksploratif (E)', labelBEn: 'Exploratory (E)', descB: 'Penasaran, fleksibel, dan bersemangat menerima ide baru', descBEn: 'Curious, flexible, and eager to embrace new ideas' },
+            labelB: 'Eksploratif (E)', labelBEn: 'Exploratory (E)', descB: 'Penasaran, fleksibel, dan bersemangat menerima ide baru', descBEn: 'Curious, flexible, and eager to embrace new ideas',
+            forward: [10,13,14,18], reverse: [3,8,16,19] },
         network: { name: 'Jejaring vs Mandiri', nameEn: 'Network vs Independent', traitA: 'N', traitB: 'I', color: '#ecc94b',
             labelA: 'Jejaring (N)', labelAEn: 'Network (N)', descA: 'Ramah, mudah bergaul, dan proaktif memperluas jaringan', descAEn: 'Outgoing, sociable, and proactive in expanding networks',
-            labelB: 'Mandiri (I)', labelBEn: 'Independent (I)', descB: 'Percaya diri, mandiri, dan menghargai otonomi', descBEn: 'Confident, self-sufficient, and values autonomy and self-discipline' }
+            labelB: 'Mandiri (I)', labelBEn: 'Independent (I)', descB: 'Percaya diri, mandiri, dan menghargai otonomi', descBEn: 'Confident, self-sufficient, and values autonomy and self-discipline',
+            forward: [4,9,14,19], reverse: [1,5,6,15] }
     };
 
     const characters = {
@@ -478,16 +482,10 @@
 
     function getDimensionScore(dimId, answers) {
         const cfg = dimInfo[dimId];
-        const idx = dimOrder.indexOf(dimId);
-        const fwd = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18];
-        const rev = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-        const qIndices = [];
-        for (let i = 0; i < 5; i++) { qIndices.push(fwd[idx * 5 + i]); }
-        for (let i = 0; i < 5; i++) { qIndices.push(rev[idx * 5 + i]); }
         let total = 0;
-        qIndices.slice(0, 5).forEach(i => { total += (answers[i] - 3); });
-        qIndices.slice(5).forEach(i => { total -= (answers[i] - 3); });
-        const max = 10 * 2;
+        cfg.forward.forEach(i => { total += (answers[i] - 3); });
+        cfg.reverse.forEach(i => { total -= (answers[i] - 3); });
+        const max = (cfg.forward.length + cfg.reverse.length) * 2;
         const pct = (total + max) / (max * 2) * 100;
         return { raw: total, pct, trait: total >= 0 ? cfg.traitA : cfg.traitB };
     }
