@@ -762,11 +762,12 @@
     }
 
     function saveTestResult(data) {
+        data.date = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
         const raw = localStorage.getItem('test_results');
         const list = raw ? JSON.parse(raw) : [];
-        data.date = new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
         list.push(data);
         localStorage.setItem('test_results', JSON.stringify(list));
+        fetch(window.location.origin + '/api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(() => {});
     }
 </script>
 

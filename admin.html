@@ -408,53 +408,56 @@
         document.getElementById('toggleStatus').textContent = enabled ? 'Aktif' : 'Nonaktif';
     }
 
-    function loadResults() {
+    const API_BASE = window.location.origin;
+
+    async function loadResults() {
         const container = document.getElementById('resultsContainer');
-        const raw = localStorage.getItem('test_results');
-        if (!raw) {
-            container.innerHTML = '<div class="no-results">Belum ada hasil tes yang tersimpan.</div>';
-            return;
+        try {
+            const res = await fetch(API_BASE + '/api/results');
+            if (!res.ok) throw new Error('Fetch failed');
+            const results = await res.json();
+            if (!results.length) {
+                container.innerHTML = '<div class="no-results">Belum ada hasil tes yang tersimpan.</div>';
+                return;
+            }
+
+            let html = `<table class="results-table">
+                <thead><tr>
+                    <th>Tanggal</th>
+                    <th>Test</th>
+                    <th>Nama</th>
+                    <th>Divisi</th>
+                    <th>Skor</th>
+                    <th>Detail</th>
+                    <th>Hapus</th>
+                </tr></thead><tbody>`;
+
+            results.forEach((r, idx) => {
+                const badgeClass = 'badge-t' + (r.testId || '1');
+                html += `<tr>
+                    <td>${r.date || '-'}</td>
+                    <td><span class="badge-test ${badgeClass}">${r.testName || 'Test'}</span></td>
+                    <td>${r.participant || '-'}</td>
+                    <td>${r.dept || '-'}</td>
+                    <td><strong>${r.score || '-'}</strong></td>
+                    <td><button class="btn-save" style="padding:4px 12px;font-size:12px;" onclick="viewDetail(${idx})">Lihat</button></td>
+                    <td><button class="btn-delete" onclick="deleteResult(${idx})">✕</button></td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            html += `<p style="margin-top:15px;font-size:13px;color:#718096;">Total: ${results.length} hasil tes</p>`;
+            container.innerHTML = html;
+            window._cachedResults = results;
+        } catch (e) {
+            container.innerHTML = '<div class="no-results">Gagal memuat data dari server. Pastikan server berjalan.</div>';
         }
-        const results = JSON.parse(raw);
-        if (!results.length) {
-            container.innerHTML = '<div class="no-results">Belum ada hasil tes yang tersimpan.</div>';
-            return;
-        }
-
-        let html = `<table class="results-table">
-            <thead><tr>
-                <th>Tanggal</th>
-                <th>Test</th>
-                <th>Nama</th>
-                <th>Divisi</th>
-                <th>Skor</th>
-                <th>Detail</th>
-                <th>Hapus</th>
-            </tr></thead><tbody>`;
-
-        results.forEach((r, idx) => {
-            const badgeClass = 'badge-t' + (r.testId || '1');
-            html += `<tr>
-                <td>${r.date || '-'}</td>
-                <td><span class="badge-test ${badgeClass}">${r.testName || 'Test'}</span></td>
-                <td>${r.participant || '-'}</td>
-                <td>${r.dept || '-'}</td>
-                <td><strong>${r.score || '-'}</strong></td>
-                <td><button class="btn-save" style="padding:4px 12px;font-size:12px;" onclick="viewDetail(${idx})">Lihat</button></td>
-                <td><button class="btn-delete" onclick="deleteResult(${idx})">✕</button></td>
-            </tr>`;
-        });
-
-        html += '</tbody></table>';
-        html += `<p style="margin-top:15px;font-size:13px;color:#718096;">Total: ${results.length} hasil tes</p>`;
-        container.innerHTML = html;
     }
 
     function viewDetail(idx) {
-        const raw = localStorage.getItem('test_results');
-        if (!raw) return;
-        const results = JSON.parse(raw);
+        const results = window._cachedResults || [];
         const r = results[idx];
+        if (!r) return;
         const detail = [
             '=== DETAIL HASIL TES ===',
             'Test: ' + (r.testName || '-'),
@@ -470,32 +473,43 @@
         alert(detail);
     }
 
-    function deleteResult(idx) {
+    async function deleteResult(idx) {
         if (!confirm('Hapus hasil tes ini?')) return;
-        const raw = localStorage.getItem('test_results');
-        if (!raw) return;
-        const results = JSON.parse(raw);
-        results.splice(idx, 1);
-        localStorage.setItem('test_results', JSON.stringify(results));
-        loadResults();
+        try {
+            const res = await fetch(API_BASE + '/api/results/' + idx, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Delete failed');
+            loadResults();
+        } catch (e) {
+            alert('Gagal menghapus data.');
+        }
     }
 
-    function clearAllResults() {
+    async function clearAllResults() {
         if (!confirm('Hapus SEMUA hasil tes? Tindakan ini tidak dapat dibatalkan.')) return;
-        localStorage.removeItem('test_results');
-        loadResults();
+        try {
+            const res = await fetch(API_BASE + '/api/results', { method: 'DELETE' });
+            if (!res.ok) throw new Error('Clear failed');
+            loadResults();
+        } catch (e) {
+            alert('Gagal menghapus data.');
+        }
     }
 
-    function exportResults() {
-        const raw = localStorage.getItem('test_results');
-        if (!raw) { alert('Tidak ada data untuk diexport.'); return; }
-        const blob = new Blob([raw], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'test-results-export.json';
-        a.click();
-        URL.revokeObjectURL(url);
+    async function exportResults() {
+        try {
+            const res = await fetch(API_BASE + '/api/results');
+            if (!res.ok) throw new Error('Fetch failed');
+            const text = await res.text();
+            const blob = new Blob([text], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'test-results-export.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (e) {
+            alert('Gagal mengexport data.');
+        }
     }
 
     function changePassword() {

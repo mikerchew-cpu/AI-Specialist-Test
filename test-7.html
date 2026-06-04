@@ -270,8 +270,10 @@
 
         const raw = localStorage.getItem('test_results');
         const list = raw ? JSON.parse(raw) : [];
-        list.push({ testId:'7', testName:'Agent Skills Workflow & SKILL.md', participant:name, dept:dept, phone:phone, score: total + ' / 15 (' + pct + '%)', answers:collectAnswers(form), date: new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' }) });
+        const resultData = { testId:'7', testName:'Agent Skills Workflow & SKILL.md', participant:name, dept:dept, phone:phone, score: total + ' / 15 (' + pct + '%)', answers:collectAnswers(form), date: new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' }) };
+        list.push(resultData);
         localStorage.setItem('test_results', JSON.stringify(list));
+        fetch(window.location.origin + '/api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(resultData) }).catch(() => {});
     }
 
     function collectAnswers(form) {
