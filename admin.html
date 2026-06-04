@@ -485,6 +485,10 @@
         const container = document.getElementById('resultsContainer');
         try {
             const results = await fetchResults();
+            if (results === null) {
+                container.innerHTML = '<div class="no-results" style="color:#e53e3e;">⚠️ Gagal terhubung ke Supabase. Periksa konfigurasi di tab Settings.</div>';
+                return;
+            }
             if (!results.length) {
                 container.innerHTML = '<div class="no-results">Belum ada hasil tes yang tersimpan.</div>';
                 return;

@@ -51,16 +51,16 @@ function postResult(data) {
 
 async function fetchResults() {
     const cfg = getSupabaseConfig();
-    if (!cfg.url || !cfg.serviceKey) return [];
+    if (!cfg.url || !cfg.serviceKey) return null;
     try {
         const r = await fetch(_supabaseUrl('results') + '?order=id.desc', {
             headers: _supabaseHeaders(cfg.serviceKey)
         });
-        if (!r.ok) throw new Error(r.status);
+        if (!r.ok) throw new Error(r.status + ' ' + (await r.text()));
         return await r.json();
     } catch (e) {
         console.error('[Supabase] fetchResults error:', e.message);
-        return [];
+        return null;
     }
 }
 
